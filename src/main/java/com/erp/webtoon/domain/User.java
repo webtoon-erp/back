@@ -1,0 +1,73 @@
+package com.erp.webtoon.domain;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Getter
+@NoArgsConstructor
+public class User {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long id;
+
+    private String empNo; // 사번
+
+    private String LoginId; // 아이디
+
+    private String password;    // 비밀번호
+
+    private String name;    // 이름
+
+    private String deptCode;    //부서코드
+
+    private String deptName;    //부서명
+
+    private int teamNum;    // 팀 번호
+
+    private String position;    // 직급
+
+    private String email;   // 이메일
+
+    private String tel; // 전화번호
+
+    private String birthDate;   // 생년월일
+
+    private String address;     // 주소
+
+    private String joinDate;    // 입사날짜
+
+    //private List<String> roles = new ArrayList<>();     // 접근 권한 (로그인 시 설정 아마도,,)
+
+    private int dayOff;     // 연차개수
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Message> messages = new ArrayList<>();     // 메세지 목록
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Attendence> attendences  = new ArrayList<>();  // 근태 목록
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Pay pay;    // 유저의 급여
+
+    @OneToMany(mappedBy = "reqUser", cascade = CascadeType.ALL)
+    private List<Request> requests = new ArrayList<>();     // 요청한 요청들
+
+    @OneToMany(mappedBy = "itUser", cascade = CascadeType.ALL)
+    private List<Request> itRequests = new ArrayList<>();   // 담당 요청들
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<DocumentRcv> documentRcvs = new ArrayList<>();     // 수신 문서들
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private RefreshToken refreshToken;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Qualification> qualifications = new ArrayList<>();     // 자격증들
+
+}

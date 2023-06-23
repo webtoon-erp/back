@@ -1,0 +1,26 @@
+package com.erp.webtoon.domain;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+@Entity
+@Getter
+@NoArgsConstructor
+public class RequestDt {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "req_dt_id")
+    private Long id;
+
+    private String content; // 상세 내용
+
+    private int count;
+
+    private int cost;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "req_id")
+    private Request request;
+}
