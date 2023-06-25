@@ -30,6 +30,6 @@ public class Webtoon {
     private List<File> files = new ArrayList<>();   // 썸네일 피알들
 
     @OneToMany(mappedBy = "webtoon", cascade = CascadeType.ALL)
-    private List<WebtoonDt> webtoonDts = new ArrayList<>();
+    private List<WebtoonDt> webtoonDts = new ArrayList<>();     // 해당 웹툰의 각 회차
 
 }

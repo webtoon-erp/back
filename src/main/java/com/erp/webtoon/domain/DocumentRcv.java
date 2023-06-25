@@ -14,6 +14,8 @@ public class DocumentRcv {
     @Column(name = "doc_rcv_id")
     private Long id;
 
+    private int sortSequence; // 정렬번호
+
     private String receiveType;
 
     @ManyToOne(fetch = FetchType.LAZY)

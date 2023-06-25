@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -18,9 +19,9 @@ public class Attendence {
 
     private String attendType;
 
-    private String inTime;  // 출근시간
+    private LocalDateTime inTime;  // 출근시간
 
-    private String outTime; // 퇴근 시간
+    private LocalDateTime outTime; // 퇴근 시간
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

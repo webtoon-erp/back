@@ -16,11 +16,11 @@ public class DocumentTpl {
     @Column(name = "doc_tpl_id")
     private Long id;
 
-    private String templateName;
+    private String templateName;    // 템플릿 이름
 
     private String intro; // 설명
 
-    private String template;
+    private String template;    // 템플릿
 
     @OneToMany(mappedBy = "documentTpl", cascade = CascadeType.ALL)
     private List<Document> documents = new ArrayList<>();   // 문서들

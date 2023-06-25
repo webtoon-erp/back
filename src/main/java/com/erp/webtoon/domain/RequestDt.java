@@ -14,6 +14,8 @@ public class RequestDt {
     @Column(name = "req_dt_id")
     private Long id;
 
+    private int sortSequence; // 정렬번호
+
     private String content; // 상세 내용
 
     private int count;

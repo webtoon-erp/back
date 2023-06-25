@@ -16,15 +16,15 @@ public class Program {
     @Column(name = "pgm_id")
     private Long id;
 
-    private String programName;
+    private String programName; // 프로그램 이름
 
-    private Long serviceId;
+    private Long serviceId; // 서비스아이디
 
-    private String serviceName;
-
-    @OneToMany(mappedBy = "program", cascade = CascadeType.ALL)
-    private List<Auth> authList = new ArrayList<>();
+    private String serviceName; // 서비스 이름
 
     @OneToMany(mappedBy = "program", cascade = CascadeType.ALL)
-    private List<Message> messages = new ArrayList<>();
+    private List<Auth> authList = new ArrayList<>();    //해당 프로그램이 가진 권한 목록
+
+    @OneToMany(mappedBy = "program", cascade = CascadeType.ALL)
+    private List<Message> messages = new ArrayList<>();     // 해당 프로그램이 가진 메세지 목록
 }

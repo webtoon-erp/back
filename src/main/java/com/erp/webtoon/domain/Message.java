@@ -14,9 +14,9 @@ public class Message {
     @Column(name = "msg_id")
     private Long id;
 
-    private String msgType;
+    private String msgType;     // 메세지 타입
 
-    private String content;
+    private String content;     // 메세지 내용
 
     private int refId; // 참조 ID
 

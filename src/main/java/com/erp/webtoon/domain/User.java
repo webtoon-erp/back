@@ -38,8 +38,6 @@ public class User {
 
     private String birthDate;   // 생년월일
 
-    private String address;     // 주소
-
     private String joinDate;    // 입사날짜
 
     //private List<String> roles = new ArrayList<>();     // 접근 권한 (로그인 시 설정 아마도,,)
@@ -52,8 +50,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Attendence> attendences  = new ArrayList<>();  // 근태 목록
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Pay pay;    // 유저의 급여
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Pay> pays = new ArrayList<>();    // 유저의 급여 목록
 
     @OneToMany(mappedBy = "reqUser", cascade = CascadeType.ALL)
     private List<Request> requests = new ArrayList<>();     // 요청한 요청들

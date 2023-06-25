@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -18,13 +20,13 @@ public class Plan {
 
     private String content; // 플랜 내용
 
-    private String startDate;
+    private LocalDate startDate;
 
-    private String startTime;
+    private LocalTime startTime;
 
-    private String endDate;
+    private LocalDate endDate;
 
-    private String endTime;
+    private LocalTime endTime;
 
     private boolean holidayYN;  // 휴일 여부
 }

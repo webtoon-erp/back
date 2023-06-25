@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +25,9 @@ public class Request {
 
     private int step;
 
-    private String dueDate;     // 기한 일자
+    private LocalDate dueDate;     // 기한 일자
 
-    private String doneDate;    // 완료 일자
+    private LocalDate doneDate;    // 완료 일자
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "user_id" , name = "req_user_id")

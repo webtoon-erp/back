@@ -29,4 +29,7 @@ public class Document {
 
     @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
     private List<DocumentRcv> documentRcvs = new ArrayList<>();   // 수신자 목록
+
+    @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
+    private List<DocumentData> documentDataList = new ArrayList<>();   // 데이터 목록
 }

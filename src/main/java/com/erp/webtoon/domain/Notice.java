@@ -24,10 +24,7 @@ public class Notice {
 
     private int readCount;  // 조회수
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "file_id")
-//    private File file;
     @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL)
-    private List<NoticeFile> noticeFiles = new ArrayList<>();   // 공지사항에 여러개 첨부파일
+    private List<File> files = new ArrayList<>();   // 공지사항에 여러개 첨부파일 목록
 
 }

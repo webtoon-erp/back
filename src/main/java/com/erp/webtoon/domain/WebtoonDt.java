@@ -16,9 +16,9 @@ public class WebtoonDt {
     @Column(name = "webtoon_dt_id")
     private Long id;
 
-    private String episodeNum;  // 에피소드 넘버
+    private String episodeNum;  // 회차번호
 
-    private String subTitle; // 제목
+    private String subTitle; // 소제목
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "webtoon_id")
