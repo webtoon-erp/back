@@ -8,9 +8,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/webtoon?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
-    username: webtoon-erp
-    password: 1234!
+    url: jdbc:mysql://localhost:3306/[??? ?]?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    username: [??]
+    password: [????]
 
 
   jpa:
