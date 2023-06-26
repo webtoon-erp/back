@@ -17,7 +17,7 @@ public class Attendence {
 
     private String attendDate;  //  기준일
 
-    private String attendType;
+    private String attendType;  // 타입
 
     private LocalDateTime inTime;  // 출근시간
 
