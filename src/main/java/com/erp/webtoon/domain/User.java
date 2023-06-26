@@ -16,7 +16,7 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    private String empolyeeID; // 사번
+    private String empolyeeId; // 사번
 
     private String LoginId; // 아이디
 
