@@ -1,7 +1,8 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.User;
-import com.erp.webtoon.dto.UserResponseDto;
+import com.erp.webtoon.dto.user.UserResponseDto;
+import com.erp.webtoon.dto.user.UserUpdateDto;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,13 @@ public class UserService {
     /**
      * 회원 수정
      */
+    public void update(UserUpdateDto dto) {
+        User updateUser = userRepository.findByEmployeeId(dto.getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
+
+        updateUser.updateInfo(dto.getLoginId(), dto.getPassword(), dto.getName(), dto.getDeptCode(), dto.getDeptName(), dto.getTeamNum(), dto.getPosition(),
+                dto.getEmail(), dto.getTel(), dto.getBirthDate(), dto.getDayOff());
+    }
 
     /**
      * 회원 삭제

@@ -1,5 +1,6 @@
 package com.erp.webtoon.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +19,7 @@ public class User {
 
     private String employeeId; // 사번
 
-    private String LoginId; // 아이디
+    private String loginId; // 아이디
 
     private String password;    // 비밀번호
 
@@ -67,5 +68,22 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Qualification> qualifications = new ArrayList<>();     // 자격증들
+
+
+    public void updateInfo(String loginId, String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, String birthDate
+                            , int dayOff) {
+        this.loginId = loginId;
+        this.password = password;
+        this.name = name;
+        this.deptCode = deptCode;
+        this.deptName = deptName;
+        this.teamNum = teamNum;
+        this.position = position;
+        this.email = email;
+        this.tel = tel;
+        this.birthDate = birthDate;
+        this.dayOff = dayOff;
+
+    }
 
 }
