@@ -1,11 +1,10 @@
 package com.erp.webtoon.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -16,13 +15,15 @@ public class File {
     @Column(name = "file_id")
     private Long id;
 
-    private String fileName;
+    private String fileName; // -> 필요할까? -> 필요함 만약 저장한 파일의 이름이 같은경우 중복되기 때문에 고유 경로가 필요
 
     private String originName;
 
     private String ext; // 파일 확장자
 
-    private int fileSize;
+    private Long fileSize;
+
+    private boolean stat;   // 상태값
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notice_id")
@@ -47,4 +48,17 @@ public class File {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "qlfc_id")
     private Qualification qualification;    // 해당 파일이 첨부된 자격증
+
+    @Builder
+    public File(String fileName, String originName, String ext, Long fileSize) {
+        this.fileName = fileName;
+        this.originName = originName;
+        this.ext = ext;
+        this.fileSize = fileSize;
+        this.stat = true;
+    }
+
+    public void changeStat() {
+        this.stat = false;
+    }
 }

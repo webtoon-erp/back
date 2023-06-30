@@ -47,6 +47,7 @@ public class UserService {
     /**
      * 회원 수정
      */
+    @Transactional
     public void update(UserUpdateDto dto) {
         User updateUser = userRepository.findByEmployeeId(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
