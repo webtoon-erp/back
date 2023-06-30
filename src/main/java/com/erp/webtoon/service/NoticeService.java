@@ -108,7 +108,10 @@ public class NoticeService {
     /**
      * 공지사항 삭제
      */
-    public void delete(Notice notice) {
-        noticeRepository.delete(notice);
+    public void delete(Long noticeId) {
+        Notice findNotice = noticeRepository.findById(noticeId)
+                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 공지사항입니다."));
+
+        noticeRepository.delete(findNotice);
     }
 }
