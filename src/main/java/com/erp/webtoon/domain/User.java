@@ -1,6 +1,7 @@
 package com.erp.webtoon.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class User implements UserDetails {
 
@@ -78,9 +81,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Qualification> qualifications = new ArrayList<>();     // 자격증들
 
-
     public void updateInfo(String loginId, String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, String birthDate
-                            , int dayOff) {
+            , int dayOff) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
@@ -92,8 +94,9 @@ public class User implements UserDetails {
         this.tel = tel;
         this.birthDate = birthDate;
         this.dayOff = dayOff;
-
     }
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
