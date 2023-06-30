@@ -108,4 +108,7 @@ public class NoticeService {
     /**
      * 공지사항 삭제
      */
+    public void delete(Notice notice) {
+        noticeRepository.delete(notice);
+    }
 }
