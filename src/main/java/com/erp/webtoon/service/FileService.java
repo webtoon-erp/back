@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class FileService {
     @Value("${file.dir}")
     private String fileDir;
@@ -49,6 +49,7 @@ public class FileService {
     /**
      * 파일 조회
      */
+    @Transactional(readOnly = true)
     public File find(Long fileId) {
         File findFile = fileRepository.findById(fileId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 파일입니다."));

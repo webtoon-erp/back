@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class NoticeService {
 
     private final NoticeRepository noticeRepository;
@@ -66,6 +66,7 @@ public class NoticeService {
     /**
      * 공지사항 전체 조회(List)
      */
+    @Transactional(readOnly = true)
     public List<NoticeListDto> findAll() {
         List<Notice> noticeList = noticeRepository.findAll();
 
@@ -80,7 +81,6 @@ public class NoticeService {
     /**
      * 공지사항 수정
      */
-
     public void update(Long noticeId, NoticeUpdateDto dto) throws IOException {
         Notice findNotice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 공지사항입니다."));
@@ -108,7 +108,10 @@ public class NoticeService {
     /**
      * 공지사항 삭제
      */
-    public void delete(Notice notice) {
-        noticeRepository.delete(notice);
+    public void delete(Long noticeId) {
+        Notice findNotice = noticeRepository.findById(noticeId)
+                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 공지사항입니다."));
+
+        noticeRepository.delete(findNotice);
     }
 }
