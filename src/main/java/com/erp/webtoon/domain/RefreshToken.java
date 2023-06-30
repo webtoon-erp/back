@@ -1,5 +1,7 @@
 package com.erp.webtoon.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +9,8 @@ import javax.persistence.*;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class RefreshToken {
 
@@ -16,8 +20,7 @@ public class RefreshToken {
 
     private String refreshToken;
 
-    // 아마 필요 없지 않을까,,,,,,,,,
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    private int expiration;
+
+    private String email;
 }
