@@ -3,6 +3,7 @@ package com.erp.webtoon.controller;
 import com.erp.webtoon.domain.File;
 import com.erp.webtoon.dto.file.FileSaveDto;
 import com.erp.webtoon.repository.FileRepository;
+import com.erp.webtoon.service.FileService;
 import com.erp.webtoon.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,10 +23,8 @@ import java.nio.charset.StandardCharsets;
 @RestController
 @RequiredArgsConstructor
 public class NoticeController {
-    @Value("${file.dir}")
-    private String fileDir;
-    private final NoticeService noticeService;
-    private final FileRepository fileRepository;
+
+    private final FileService fileService;
 
     /**
      * 공지사항 등록
@@ -48,12 +47,12 @@ public class NoticeController {
      */
     @GetMapping("/download/{noticeId}/{fileId}")
     public ResponseEntity<Resource> downloadFile(@PathVariable("noticeId") Long noticeId, @PathVariable("fileId") Long fileId) throws MalformedURLException {
-        File findFile = fileRepository.findById(fileId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 파일입니다."));
+        File findFile = fileService.find(fileId);
+
         String originName = findFile.getOriginName();
         String fileName = findFile.getFileName();
 
-        UrlResource resource = new UrlResource("file:" + fileDir + fileName);
+        UrlResource resource = new UrlResource("file:" + fileService.getFullPath(fileName));
 
         String encodeFileName = UriUtils.encode(originName, StandardCharsets.UTF_8);
         String contentDisposition = "attachment; filename=\"" + encodeFileName + "\"";
