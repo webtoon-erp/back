@@ -1,19 +1,29 @@
 package com.erp.webtoon.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     @Column(name = "user_id")
     private Long id;
 
@@ -21,6 +31,7 @@ public class User {
 
     private String loginId; // 아이디
 
+    @JsonIgnore
     private String password;    // 비밀번호
 
     private String name;    // 이름
@@ -41,7 +52,8 @@ public class User {
 
     private String joinDate;    // 입사날짜
 
-    //private List<String> roles = new ArrayList<>();     // 접근 권한 (로그인 시 설정 아마도,,)
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();     // 접근 권한 (로그인 시 설정 아마도,,)
 
     private int dayOff;     // 연차개수
 
@@ -69,9 +81,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Qualification> qualifications = new ArrayList<>();     // 자격증들
 
-
     public void updateInfo(String loginId, String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, String birthDate
-                            , int dayOff) {
+            , int dayOff) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
@@ -83,7 +94,39 @@ public class User {
         this.tel = tel;
         this.birthDate = birthDate;
         this.dayOff = dayOff;
-
     }
 
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getUsername() {
+        return name;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
