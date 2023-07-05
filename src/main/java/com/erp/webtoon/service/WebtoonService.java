@@ -1,6 +1,7 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Webtoon;
+import com.erp.webtoon.dto.webtoon.WebtoonDtResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonListResponseDto;
 import com.erp.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -138,8 +141,23 @@ public class WebtoonService {
     /**
      * 등록 웹툰 개별 상세 조회
      */
+    public WebtoonDtResponseDto getOneWebtoon(Long webtoonId) {
+        Webtoon findWebtoon = webtoonRepository.findById(webtoonId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 웹툰입니다."));
 
+        List<String> episodeNum = findWebtoon.getWebtoonDts().stream()
+                .map(webtoonDt -> webtoonDt.getEpisodeNum())
+                .collect(Collectors.toList());
 
+        return WebtoonDtResponseDto.builder()
+                .title(findWebtoon.getTitle())
+                .artist(findWebtoon.getArtist())
+                .intro(findWebtoon.getIntro())
+                .category(findWebtoon.getCategory())
+                .keyword(findWebtoon.getKeyword())
+                .thumnailFile(findWebtoon.getFiles().get(-1))   // 저장된 썸네일 파일 중 가장 마지막 썸네일 파일
+                .episode(episodeNum).build();
+    }
 
 
     /**
