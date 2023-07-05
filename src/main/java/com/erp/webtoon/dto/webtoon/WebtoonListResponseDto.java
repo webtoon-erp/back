@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class WebtoonListResponseDto {
 
+    private Long id;
     private String title;
 
     private String artist;  //작가 이름

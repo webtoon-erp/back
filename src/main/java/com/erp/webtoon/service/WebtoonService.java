@@ -28,6 +28,7 @@ public class WebtoonService {
 
         for (Webtoon webtoon : webtoons) {
             dtos.add(WebtoonListResponseDto.builder()
+                    .id(webtoon.getId())
                     .title(webtoon.getTitle())
                     .artist(webtoon.getArtist())
                     .category(webtoon.getCategory())
@@ -55,6 +56,7 @@ public class WebtoonService {
 
         for (Webtoon webtoon : webtoons) {
             dtos.add(WebtoonListResponseDto.builder()
+                    .id(webtoon.getId())
                     .title(webtoon.getTitle())
                     .artist(webtoon.getArtist())
                     .category(webtoon.getCategory())
@@ -77,6 +79,7 @@ public class WebtoonService {
 
         for (Webtoon webtoon : webtoons) {
             dtos.add(WebtoonListResponseDto.builder()
+                    .id(webtoon.getId())
                     .title(webtoon.getTitle())
                     .artist(webtoon.getArtist())
                     .category(webtoon.getCategory())
@@ -99,6 +102,7 @@ public class WebtoonService {
 
         for (Webtoon webtoon : webtoons) {
             dtos.add(WebtoonListResponseDto.builder()
+                    .id(webtoon.getId())
                     .title(webtoon.getTitle())
                     .artist(webtoon.getArtist())
                     .category(webtoon.getCategory())
@@ -121,6 +125,7 @@ public class WebtoonService {
 
         for (Webtoon webtoon : webtoons) {
             dtos.add(WebtoonListResponseDto.builder()
+                    .id(webtoon.getId())
                     .title(webtoon.getTitle())
                     .artist(webtoon.getArtist())
                     .category(webtoon.getCategory())
@@ -133,6 +138,7 @@ public class WebtoonService {
     /**
      * 등록 웹툰 개별 상세 조회
      */
+
 
 
 
