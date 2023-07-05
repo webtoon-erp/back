@@ -27,7 +27,7 @@ public class Webtoon {
     private String keyword;
 
     @OneToMany(mappedBy = "webtoon", cascade = CascadeType.ALL)
-    private List<File> files = new ArrayList<>();   // 썸네일 피알들
+    private List<File> files = new ArrayList<>();   // 썸네일 파일들
 
     @OneToMany(mappedBy = "webtoon", cascade = CascadeType.ALL)
     private List<WebtoonDt> webtoonDts = new ArrayList<>();     // 해당 웹툰의 각 회차
