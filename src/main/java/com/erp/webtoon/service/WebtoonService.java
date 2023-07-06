@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,7 +50,7 @@ public class WebtoonService {
         List<Webtoon> webtoons = webtoonRepository.findByTitle(title);
 
         // 해당하는 웹툰이 없는 경우
-        if(webtoons != null && webtoons.isEmpty()) {
+        if(webtoons != null || webtoons.isEmpty()) {
             throw new EntityNotFoundException("해당하는 제목의 웹툰이 없습니다.");
         }
 
@@ -74,7 +73,7 @@ public class WebtoonService {
         List<Webtoon> webtoons = webtoonRepository.findByArtist(artist);
 
         // 해당하는 웹툰이 없는 경우
-        if(webtoons != null && webtoons.isEmpty()) {
+        if(webtoons != null || webtoons.isEmpty()) {
             throw new EntityNotFoundException("해당하는 작가의 웹툰이 없습니다.");
         }
 
@@ -97,7 +96,7 @@ public class WebtoonService {
         List<Webtoon> webtoons = webtoonRepository.findByCategory(category);
 
         // 해당하는 웹툰이 없는 경우
-        if(webtoons != null && webtoons.isEmpty()) {
+        if(webtoons != null || webtoons.isEmpty()) {
             throw new EntityNotFoundException("해당하는 카테고리의 웹툰이 없습니다.");
         }
 
@@ -120,7 +119,7 @@ public class WebtoonService {
         List<Webtoon> webtoons = webtoonRepository.findByKeyword(keyword);
 
         // 해당하는 웹툰이 없는 경우
-        if(webtoons != null && webtoons.isEmpty()) {
+        if(webtoons != null || webtoons.isEmpty()) {
             throw new EntityNotFoundException("해당하는 키워드의 웹툰이 없습니다.");
         }
 
