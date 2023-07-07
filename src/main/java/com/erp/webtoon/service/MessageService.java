@@ -2,6 +2,7 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
+import com.erp.webtoon.dto.message.FeedbackListDto;
 import com.erp.webtoon.dto.message.MessageListDto;
 import com.erp.webtoon.dto.message.MessageRequestDto;
 import com.erp.webtoon.dto.message.MessageUpdateDto;
@@ -68,6 +69,23 @@ public class MessageService {
         else {
             slackService.sendSlackChannel(message.getContent(), message.getMsgType());
         }
+    }
+
+    /*
+        피드백 조회
+        - msgType : webtoon
+        - 수신자 : null
+    */
+    @Transactional(readOnly = true)
+    public List<FeedbackListDto> findFeedbackList(Long webtoonId) {
+        List<Message> feedbackList = messageRepository.findByRefId(webtoonId);
+
+        return feedbackList.stream()
+                .map(feedback -> FeedbackListDto.builder()
+                        .content(feedback.getContent())
+                        .sendUser(feedback.getSendUser())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 
