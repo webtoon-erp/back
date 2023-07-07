@@ -1,5 +1,6 @@
 package com.erp.webtoon.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,4 +34,16 @@ public class Message {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "user_id", name = "send_user_id")
     private User sendUser;    // 발신자
+
+    @Builder
+    public Message(Long id, String msgType, String content, Long refId, char stat, Program program, User rcvUser, User sendUser) {
+        this.id = id;
+        this.msgType = msgType;
+        this.content = content;
+        this.refId = refId;
+        this.stat = stat;
+        this.program = program;
+        this.rcvUser = rcvUser;
+        this.sendUser = sendUser;
+    }
 }
