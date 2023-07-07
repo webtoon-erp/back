@@ -1,11 +1,16 @@
 package com.erp.webtoon.controller;
 
+import com.erp.webtoon.dto.token.LogOutRequestDto;
+import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.LoginRequestDto;
 import com.erp.webtoon.service.JwtService;
 import com.erp.webtoon.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,10 +29,7 @@ public class UserController {
 
     @PostMapping("/login")
     public TokenResponseDto login(@RequestBody LoginRequestDto loginDto, HttpServletResponse response) {
-        String email = loginDto.getEmail();
-        String password = loginDto.getPassword();
-        TokenResponseDto tokenDto = userService.login(email, password);
-        jwtService.login(tokenDto);
+        TokenResponseDto tokenDto = userService.login(loginDto);
 
         Cookie cookie = new Cookie("RefreshToken", String.format(tokenDto.getRefreshToken()));
         cookie.setPath("/");
@@ -37,6 +39,16 @@ public class UserController {
         response.addCookie(cookie);
 
         return tokenDto;
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<?> reissue(@Validated TokenRequestDto reissue, Errors errors) {
+        return userService.reissue(reissue);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@Validated LogOutRequestDto logout, Errors errors) {
+        return userService.logout(logout);
     }
 
     @PostMapping("/test")
