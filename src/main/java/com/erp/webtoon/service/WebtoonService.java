@@ -1,6 +1,8 @@
 package com.erp.webtoon.service;
 
+import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.Webtoon;
+import com.erp.webtoon.dto.webtoon.WebtoonRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonEpisodeDto;
 import com.erp.webtoon.dto.webtoon.WebtoonListResponseDto;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +24,22 @@ import java.util.stream.Collectors;
 public class WebtoonService {
 
     private final WebtoonRepository webtoonRepository;
+    private final FileService fileService;
 
     /**
      * 등록 웹툰 생성 필요?
      */
+    public Long save(WebtoonRequestDto dto) throws IOException {
+        Webtoon webtoon = dto.toEntity();
+
+        if(!dto.getThumbnailFile().isEmpty()) {
+            File uploadfile = fileService.save(dto.getThumbnailFile());
+            webtoon.getFiles().add(uploadfile);
+        }
+
+        webtoonRepository.save(webtoon);
+        return webtoon.getId();
+    }
 
     /**
      * 등록 웹툰 리스트 조회
