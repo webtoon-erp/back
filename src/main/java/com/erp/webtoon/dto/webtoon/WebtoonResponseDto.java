@@ -8,7 +8,7 @@ import java.util.List;
 //웹툽 개별 상세 조회 Dto
 @Data
 @Builder
-public class WebtoonDtResponseDto {
+public class WebtoonResponseDto {
     private String title;
 
     private String intro;

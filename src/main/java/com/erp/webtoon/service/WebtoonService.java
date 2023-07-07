@@ -1,7 +1,7 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Webtoon;
-import com.erp.webtoon.dto.webtoon.WebtoonDtResponseDto;
+import com.erp.webtoon.dto.webtoon.WebtoonResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonEpisodeDto;
 import com.erp.webtoon.dto.webtoon.WebtoonListResponseDto;
 import com.erp.webtoon.repository.WebtoonRepository;
@@ -21,6 +21,10 @@ import java.util.stream.Collectors;
 public class WebtoonService {
 
     private final WebtoonRepository webtoonRepository;
+
+    /**
+     * 등록 웹툰 생성 필요?
+     */
 
     /**
      * 등록 웹툰 리스트 조회
@@ -142,7 +146,7 @@ public class WebtoonService {
     /**
      * 등록 웹툰 개별 상세 조회
      */
-    public WebtoonDtResponseDto getOneWebtoon(Long webtoonId) {
+    public WebtoonResponseDto getOneWebtoon(Long webtoonId) {
         Webtoon findWebtoon = webtoonRepository.findById(webtoonId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 웹툰입니다."));
 
@@ -155,7 +159,7 @@ public class WebtoonService {
                 .collect(Collectors.toList());
 
 
-        return WebtoonDtResponseDto.builder()
+        return WebtoonResponseDto.builder()
                 .title(findWebtoon.getTitle())
                 .artist(findWebtoon.getArtist())
                 .intro(findWebtoon.getIntro())
