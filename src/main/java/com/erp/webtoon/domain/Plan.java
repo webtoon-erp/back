@@ -1,5 +1,6 @@
 package com.erp.webtoon.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,4 +30,15 @@ public class Plan {
     private LocalTime endTime;
 
     private boolean holidayYN;  // 휴일 여부
+
+    @Builder
+    public Plan(String planType, String content, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, boolean holidayYN) {
+        this.planType = planType;
+        this.content = content;
+        this.startDate = startDate;
+        this.startTime = startTime;
+        this.endDate = endDate;
+        this.endTime = endTime;
+        this.holidayYN = holidayYN;
+    }
 }
