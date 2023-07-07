@@ -2,9 +2,11 @@ package com.erp.webtoon.controller;
 
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.message.MessageListDto;
+import com.erp.webtoon.dto.message.MessageUpdateDto;
 import com.erp.webtoon.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
@@ -22,6 +24,14 @@ public class MessageController {
     @GetMapping("/message")
     public List<MessageListDto> message(Principal principal) {
         return messageService.findMessageList((User) principal);
+    }
+
+    /*
+        메시지 상태 변경
+     */
+    @GetMapping("/message/updateStat")
+    public void messageModify(@RequestBody MessageUpdateDto dto) {
+        messageService.modifyStat(dto);
     }
 
 }

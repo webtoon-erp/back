@@ -4,6 +4,7 @@ import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.message.MessageListDto;
 import com.erp.webtoon.dto.message.MessageRequestDto;
+import com.erp.webtoon.dto.message.MessageUpdateDto;
 import com.erp.webtoon.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,18 @@ public class MessageService {
                         .sendUser(message.getSendUser())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    /*
+        메시지 상태 변경
+        - 수신 -> Y
+        - 읽음 -> R
+        - 삭제 -> N
+    */
+    public void modifyStat(MessageUpdateDto dto) {
+        Message message = dto.toEntity();
+        char stat = message.getStat();
+        message.changeStat(stat);
     }
 
     /*

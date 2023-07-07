@@ -46,4 +46,8 @@ public class Message {
         this.rcvUser = rcvUser;
         this.sendUser = sendUser;
     }
+
+    public void changeStat(char stat) {
+        this.stat = stat;
+    }
 }
