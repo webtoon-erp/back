@@ -1,6 +1,5 @@
 package com.erp.webtoon.dto.webtoon;
 
-import com.erp.webtoon.domain.File;
 import lombok.Builder;
 import lombok.Data;
 
@@ -20,8 +19,8 @@ public class WebtoonDtResponseDto {
 
     private String keyword;
 
-    private File thumnailFile; // 썸네일 파일
+    private String thumbnailFileName; // 썸네일 파일명
 
-    private List<String> episode; // 각 웹툰별 회차
+    private List<WebtoonEpisodeDto> episode; // 각 웹툰별 회차
 
 }
