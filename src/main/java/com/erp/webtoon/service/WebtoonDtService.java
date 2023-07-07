@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class WebtoonDtService {
 
     private final WebtoonDtRepository webtoonDtRepository;
