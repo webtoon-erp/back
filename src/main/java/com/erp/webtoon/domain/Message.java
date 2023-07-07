@@ -18,13 +18,19 @@ public class Message {
 
     private String content;     // 메세지 내용
 
-    private int refId; // 참조 ID
+    private Long refId; // 참조 ID
+
+    private char stat; // 상태값
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pgm_id")
     private Program program;    // 참조 프로그램ID
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;  // 메세지 수신 유저
+    @JoinColumn(referencedColumnName = "user_id" , name = "rcv_user_id")
+    private User rcvUser;   // 수신자
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "user_id", name = "send_user_id")
+    private User sendUser;    // 발신자
 }
