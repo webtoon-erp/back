@@ -6,6 +6,7 @@ import com.erp.webtoon.handler.JwtAuthenticationEntryPoint;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,6 +24,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurityConfig {
 
     private TokenProvider tokenProvider;
+    private RedisTemplate redisTemplate;
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
@@ -51,7 +53,7 @@ public class WebSecurityConfig {
                 .anyRequest().permitAll()
 
                 .and()
-                .apply(new JwtSecurityConfig(tokenProvider)); // JwtFilter를 addFilterBefore로 등록했던 JwtSecurityConfig class 적용
+                .apply(new JwtSecurityConfig(tokenProvider, redisTemplate)); // JwtFilter를 addFilterBefore로 등록했던 JwtSecurityConfig class 적용
 
         return http.build();
     }
