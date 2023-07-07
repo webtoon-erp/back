@@ -2,15 +2,18 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
+import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.dto.message.FeedbackListDto;
 import com.erp.webtoon.dto.message.MessageListDto;
 import com.erp.webtoon.dto.message.MessageRequestDto;
 import com.erp.webtoon.dto.message.MessageUpdateDto;
 import com.erp.webtoon.repository.MessageRepository;
+import com.erp.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class MessageService {
 
     private final MessageRepository messageRepository;
+    private final WebtoonRepository webtoonRepository;
     private final SlackService slackService;
 
     /*
@@ -86,6 +90,27 @@ public class MessageService {
                         .sendUser(feedback.getSendUser())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    /*
+        피드백 등록
+        - msgType : webtoon
+        - 수신자 : null
+    */
+    public void addFeedbackMsg(MessageRequestDto dto) throws IOException {
+
+        //피드백 저장
+        Message feedbackMsg = dto.toEntity();
+        messageRepository.save(feedbackMsg);
+
+        //메시지 저장
+        Webtoon webtoon = webtoonRepository.findById(feedbackMsg.getRefId())
+                .orElseThrow(() -> new EntityNotFoundException("웹툰 정보가 존재하지 않습니다."));
+
+        String originContent = feedbackMsg.getContent();
+        dto.setContent(webtoon.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
+        addMsg(dto);
+
     }
 
 
