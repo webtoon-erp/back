@@ -13,6 +13,7 @@ import java.io.IOException;
 public class MessageService {
 
     private final MessageRepository messageRepository;
+    private final SlackService slackService;
 
     /*
         메시지 등록
@@ -22,6 +23,13 @@ public class MessageService {
         Message message = dto.toEntity();
         messageRepository.save(message);
 
+        if (message.getMsgType().equals("dm")) {
+            // dm일 경우 수신자의 사번을 전달
+            slackService.sendSlackChannel(message.getContent(), message.getRcvUser().getEmployeeId());
+        }
+        else {
+            slackService.sendSlackChannel(message.getContent(), message.getMsgType());
+        }
     }
 
 
