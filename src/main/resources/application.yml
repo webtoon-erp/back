@@ -25,7 +25,8 @@ spring:
         format_sql: true
       show_sql: true
 
-
+slack:
+  token: xoxb-5503708125634-5506201560196-LRbutSniUjcY7g4QmsZ7n6A1
 
 logging.level:
   org.hibernate.SQL: debug
