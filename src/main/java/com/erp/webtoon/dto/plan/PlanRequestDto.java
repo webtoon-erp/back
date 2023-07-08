@@ -33,6 +33,7 @@ public class PlanRequestDto {
         return Plan.builder()
                 .planType(planType)
                 .content(content)
+                .month(startMonth)
                 .startDate(LocalDate.of(startYear, startMonth, startDay))
                 .startTime(LocalTime.of(startHour, startMinute, 0))
                 .endDate(LocalDate.of(endYear, endMonth, endYear))

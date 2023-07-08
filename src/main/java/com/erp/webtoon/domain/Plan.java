@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
 
 @Entity
 @Getter
@@ -21,6 +22,8 @@ public class Plan {
 
     private String content; // 플랜 내용
 
+    private int month; // 해당 계획 월 정보
+
     private LocalDate startDate;
 
     private LocalTime startTime;
@@ -32,9 +35,10 @@ public class Plan {
     private boolean holidayYN;  // 휴일 여부
 
     @Builder
-    public Plan(String planType, String content, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, boolean holidayYN) {
+    public Plan(String planType, String content, int month, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, boolean holidayYN) {
         this.planType = planType;
         this.content = content;
+        this.month = month;
         this.startDate = startDate;
         this.startTime = startTime;
         this.endDate = endDate;

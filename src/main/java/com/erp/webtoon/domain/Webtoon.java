@@ -1,5 +1,6 @@
 package com.erp.webtoon.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,9 +28,17 @@ public class Webtoon {
     private String keyword;
 
     @OneToMany(mappedBy = "webtoon", cascade = CascadeType.ALL)
-    private List<File> files = new ArrayList<>();   // 썸네일 피알들
+    private List<File> files = new ArrayList<>();   // 썸네일 파일들
 
     @OneToMany(mappedBy = "webtoon", cascade = CascadeType.ALL)
     private List<WebtoonDt> webtoonDts = new ArrayList<>();     // 해당 웹툰의 각 회차
 
+    @Builder
+    public Webtoon(String title, String intro, String artist, String category, String keyword) {
+        this.title = title;
+        this.intro = intro;
+        this.artist = artist;
+        this.category = category;
+        this.keyword = keyword;
+    }
 }

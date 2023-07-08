@@ -78,8 +78,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DocumentRcv> documentRcvs = new ArrayList<>();     // 수신 문서들
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private RefreshToken refreshToken;
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+//    private RefreshToken refreshToken;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Qualification> qualifications = new ArrayList<>();     // 자격증들
