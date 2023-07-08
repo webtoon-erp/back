@@ -1,5 +1,6 @@
 package com.erp.webtoon.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,13 +19,35 @@ public class Message {
 
     private String content;     // 메세지 내용
 
-    private int refId; // 참조 ID
+    private Long refId; // 참조 ID
+
+    private char stat; // 상태값
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pgm_id")
     private Program program;    // 참조 프로그램ID
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;  // 메세지 수신 유저
+    @JoinColumn(referencedColumnName = "user_id" , name = "rcv_user_id")
+    private User rcvUser;   // 수신자
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "user_id", name = "send_user_id")
+    private User sendUser;    // 발신자
+
+    @Builder
+    public Message(Long id, String msgType, String content, Long refId, char stat, Program program, User rcvUser, User sendUser) {
+        this.id = id;
+        this.msgType = msgType;
+        this.content = content;
+        this.refId = refId;
+        this.stat = stat;
+        this.program = program;
+        this.rcvUser = rcvUser;
+        this.sendUser = sendUser;
+    }
+
+    public void changeStat(char stat) {
+        this.stat = stat;
+    }
 }

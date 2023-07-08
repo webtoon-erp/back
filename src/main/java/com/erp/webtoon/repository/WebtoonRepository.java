@@ -10,5 +10,4 @@ public interface WebtoonRepository extends JpaRepository<Webtoon, Long> {
     List<Webtoon> findByArtist(String artist);  // 작가 검색
     List<Webtoon> findByCategory(String category);  // 무슨요일 웹툰인지 카테고리 별 검색
     List<Webtoon> findByKeyword(String keyword);    // 키워드 검색
-
 }
