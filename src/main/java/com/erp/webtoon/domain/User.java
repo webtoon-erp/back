@@ -57,8 +57,11 @@ public class User implements UserDetails {
 
     private int dayOff;     // 연차개수
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Message> messages = new ArrayList<>();     // 메세지 목록
+    @OneToMany(mappedBy = "rcvUser", cascade = CascadeType.ALL)
+    private List<Message> rcvMessages = new ArrayList<>();     // 메세지 수신 목록
+
+    @OneToMany(mappedBy = "sendUser", cascade = CascadeType.ALL)
+    private List<Message> sendMessages = new ArrayList<>();     // 메세지 발신 목록
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Attendence> attendences  = new ArrayList<>();  // 근태 목록
