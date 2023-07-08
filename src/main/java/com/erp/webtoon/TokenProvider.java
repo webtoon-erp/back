@@ -95,13 +95,16 @@ public class TokenProvider implements InitializingBean {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
+        // 클레임에서 권한 정보 가져오기
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
+        // UserDetails 객체를 만들어서 Authentication 리턴
         UserDetails principal = new User(claims.getSubject(), "", authorities);
 
+        // SecurityContext를 사용하기 위한 절차(SecurityContext가 Authenticaiton 객체 저장)
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
@@ -169,5 +172,13 @@ public class TokenProvider implements InitializingBean {
         } catch (ExpiredJwtException e){
             return e.getClaims();
         }
+    }
+
+    public Long getExpiration(String accessToken){
+        // accessToken 남은 유효 시간
+        Date expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody().getExpiration();
+        // 현재 시간
+        Long now = new Date().getTime();
+        return (expiration.getTime() - now);
     }
 }
