@@ -20,10 +20,10 @@ public class MessageRequestDto {
 
     private Program program;    // 참조 프로그램ID
 
-    private User rcvUser;
+    private Long rcvUserId;
 
-    private User sendUser;
-    public Message toEntity() {
+    private Long sendUserId;
+    public Message toEntity(User rcvUser, User sendUser) {
         return Message.builder()
                 .msgType(msgType)
                 .content(content)
