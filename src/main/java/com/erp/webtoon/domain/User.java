@@ -99,7 +99,9 @@ public class User implements UserDetails {
         this.dayOff = dayOff;
     }
 
-
+    public void updatePassword(String email, String password){
+        this.password = password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
