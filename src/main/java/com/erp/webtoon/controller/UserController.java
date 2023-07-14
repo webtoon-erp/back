@@ -4,6 +4,7 @@ import com.erp.webtoon.dto.token.LogOutRequestDto;
 import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.LoginRequestDto;
+import com.erp.webtoon.dto.user.SlackRequestDto;
 import com.erp.webtoon.service.JwtService;
 import com.erp.webtoon.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
@@ -46,14 +48,16 @@ public class UserController {
         return userService.reissue(reissue);
     }
 
+    @PostMapping("/sendPassword")
+    public String sendPassword(@RequestParam("userEmail") String userEmail){
+        SlackRequestDto dto = userService.createMailAndChangePassword(userEmail);
+
+        return "/users/login";
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@Validated LogOutRequestDto logout, Errors errors) {
         return userService.logout(logout);
-    }
-
-    @PostMapping("/test")
-    public String test(){
-        return "success";
     }
 }
 
