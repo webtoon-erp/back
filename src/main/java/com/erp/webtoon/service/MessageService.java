@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,13 @@ public class MessageService {
     */
     @Transactional(readOnly = true)
     public List<MessageListDto> findMessageList(User user) {
-        List<Message> messageList = messageRepository.findByMsgTypeOrMsgTypeOrRcvUser("all", user.getDeptCode(), user);
+            List<Message> messageList1 = messageRepository.findByMsgType("all");
+            List<Message> messageList2 = messageRepository.findByMsgType(user.getDeptCode());
+            List<Message> messageList3 = messageRepository.findByRcvUser(user);
+            List<Message> messageList = new ArrayList<>();
+            messageList.addAll(messageList1);
+            messageList.addAll(messageList2);
+            messageList.addAll(messageList3);
 
         return messageList.stream()
                 .map(message -> MessageListDto.builder()
