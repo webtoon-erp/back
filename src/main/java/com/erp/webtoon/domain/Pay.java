@@ -1,5 +1,6 @@
 package com.erp.webtoon.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,7 +24,18 @@ public class Pay {
 
     private LocalDate payDate; // 지급일
 
+    private boolean payYN; // 지급 여부
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Builder
+    public Pay(int salary, int addPay, String bankAccount, LocalDate payDate, boolean payYN) {
+        this.salary = salary;
+        this.addPay = addPay;
+        this.bankAccount = bankAccount;
+        this.payDate = payDate;
+        this.payYN = payYN;
+    }
 }
