@@ -39,4 +39,11 @@ public class Pay {
         this.payYN = payYN;
         this.user = user;
     }
+
+    // 지급정보 수정
+    public void updatePayYN() {
+        if (this.payYN == false) {
+            this.payYN = true;
+        }
+    }
 }

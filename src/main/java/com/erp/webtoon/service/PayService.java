@@ -72,15 +72,16 @@ public class PayService {
                 .payList(payList).build();
     }
 
-    /**
-     * 급여 정보 수정
-     */
-    public void update() {
-
-    }
 
     /**
      * 급여 지급여부 수정
      */
+    public boolean update(Long payId) {
+        Pay findPay = payRepository.findById(payId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 급여입니다."));
+
+        findPay.updatePayYN();
+        return true;
+    }
 
 }
