@@ -21,7 +21,7 @@ public class Pay {
 
     private String bankAccount;
 
-    private LocalDate payDate; // 지급일
+    private LocalDate payDate; // 가장 최근(과거) 지급일
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
