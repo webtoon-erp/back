@@ -36,4 +36,9 @@ public class HrService {
 
         return userList;
     }
+
+    public List<UserListResponseDto> searchPosts(String keyword) {
+        List<UserListResponseDto> userList = userRepository.findAllByPositionContaining(keyword);
+        return userList;
+    }
 }
