@@ -20,7 +20,7 @@ public class HrController {
     private HrService hrService;
 
     @GetMapping("/list")
-    public List<UserListResponseDto> search(@RequestParam("keyword")String keyword){
+    public List<UserListResponseDto> search(){
         return hrService.getAllUsers();
     }
 }
