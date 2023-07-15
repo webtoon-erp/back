@@ -8,6 +8,7 @@ import com.erp.webtoon.dto.message.MessageListDto;
 import com.erp.webtoon.dto.message.MessageRequestDto;
 import com.erp.webtoon.dto.message.MessageUpdateDto;
 import com.erp.webtoon.repository.MessageRepository;
+import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class MessageService {
 
     private final MessageRepository messageRepository;
+    private final UserRepository userRepository;
     private final WebtoonRepository webtoonRepository;
     private final SlackService slackService;
 
@@ -34,7 +37,13 @@ public class MessageService {
     */
     @Transactional(readOnly = true)
     public List<MessageListDto> findMessageList(User user) {
-        List<Message> messageList = messageRepository.findByMsgTypeOrMsgTypeOrRcvUser("all", user.getDeptCode(), user);
+            List<Message> messageList1 = messageRepository.findByMsgType("all");
+            List<Message> messageList2 = messageRepository.findByMsgType(user.getDeptCode());
+            List<Message> messageList3 = messageRepository.findByRcvUser(user);
+            List<Message> messageList = new ArrayList<>();
+            messageList.addAll(messageList1);
+            messageList.addAll(messageList2);
+            messageList.addAll(messageList3);
 
         return messageList.stream()
                 .map(message -> MessageListDto.builder()
@@ -63,7 +72,12 @@ public class MessageService {
     */
     public void addMsg(MessageRequestDto dto) throws IOException {
 
-        Message message = dto.toEntity();
+        User rcvUser = userRepository.findById(dto.getRcvUserId())
+                .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
+        User sendUser = userRepository.findById(dto.getSendUserId())
+                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
+
+        Message message = dto.toEntity(rcvUser, sendUser);
         messageRepository.save(message);
 
         if (message.getMsgType().equals("dm")) {
@@ -99,8 +113,11 @@ public class MessageService {
     */
     public void addFeedbackMsg(MessageRequestDto dto) throws IOException {
 
+        User sendUser = userRepository.findById(dto.getSendUserId())
+                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
+
         //피드백 저장
-        Message feedbackMsg = dto.toEntity();
+        Message feedbackMsg = dto.toEntity(null, sendUser);
         messageRepository.save(feedbackMsg);
 
         //메시지 저장
