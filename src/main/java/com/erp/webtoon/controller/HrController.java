@@ -19,10 +19,8 @@ public class HrController {
 
     private HrService hrService;
 
-    @GetMapping("/search")
-    public String search(@RequestParam("keyword")String keyword){
-        List<UserListResponseDto> searchList = hrService.searchPosts(keyword);
-
-        return "/list";
+    @GetMapping("/list")
+    public List<UserListResponseDto> search(@RequestParam("keyword")String keyword){
+        return hrService.getAllUsers();
     }
 }
