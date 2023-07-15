@@ -14,8 +14,6 @@ import lombok.Setter;
 public class UserRequestDto {
     private String employeeId; // 사번
 
-    private String loginId; // 아이디
-
     private String password; // 비밀번호
 
     private String name;    // 이름
@@ -26,7 +24,9 @@ public class UserRequestDto {
 
     private String birthDate;   // 생년월일
 
-    private String deptName;    //부서명
+    private String deptName;    // 부서명
+
+    private String deptCode; // 부서 코드
 
     private int teamNum;    // 팀 번호
 
