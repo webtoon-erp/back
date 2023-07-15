@@ -22,7 +22,7 @@ public class Pay {
 
     private String bankAccount;
 
-    private LocalDate payDate; // 지급일
+    private LocalDate payDate; // 가장 최근(과거) 지급일
 
     private boolean payYN; // 지급 여부
 

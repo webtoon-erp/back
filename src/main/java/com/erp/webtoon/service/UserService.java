@@ -6,6 +6,8 @@ import com.erp.webtoon.dto.token.LogOutRequestDto;
 import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.LoginRequestDto;
+import com.erp.webtoon.dto.user.SlackRequestDto;
+import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.dto.user.UserResponseDto;
 import com.erp.webtoon.dto.user.UserUpdateDto;
 import com.erp.webtoon.repository.RefreshTokenRepository;
@@ -38,8 +40,27 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * 회원 가입 -> 없나?
+     * 신규 직원 추가
      */
+
+    @Transactional
+    public void addNewCome(UserRequestDto userRequestDto){
+        User user = User.builder()
+                .employeeId(userRequestDto.getEmployeeId())
+                .password(passwordEncoder.encode(userRequestDto.getPassword()))
+                .name(userRequestDto.getName())
+                .email(userRequestDto.getEmail())
+                .tel(userRequestDto.getTel())
+                .birthDate(userRequestDto.getBirthDate())
+                .deptName(userRequestDto.getDeptName())
+                .deptCode(userRequestDto.getDeptCode())
+                .teamNum(userRequestDto.getTeamNum())
+                .position(userRequestDto.getPosition())
+                .joinDate(userRequestDto.getJoinDate())
+                .dayOff(userRequestDto.getDayOff())
+                .build();
+        userRepository.save(user);
+    }
 
     /**
      * 회원 조회
@@ -62,7 +83,6 @@ public class UserService {
                 .dayOff(findUser.getDayOff())
                 .build();
     }
-
 
     /**
      * 회원 수정
@@ -134,6 +154,47 @@ public class UserService {
                 .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshExpire(), TimeUnit.MILLISECONDS);
 
         return new ResponseEntity<>(tokenInfo, HttpStatus.OK);
+    }
+
+    /**
+     * 메일 내용을 생성하고 임시 비밀번호로 회원 비밀번호를 변경
+     */
+    public SlackRequestDto createMailAndChangePassword(String userEmail){
+        String tempPassword = getTempPassword();
+        SlackRequestDto dto = new SlackRequestDto();
+        dto.setEmail(userEmail);
+        dto.setTitle("Cocolo 임시비밀번호 안내 이메일 입니다.");
+        dto.setMessage("안녕하세요. Cocolo 임시비밀번호 안내 관련 이메일 입니다." + " 회원님의 임시 비밀번호는 "
+                + tempPassword + " 입니다." + "로그인 후에 비밀번호를 변경을 해주세요");
+        updatePassword(tempPassword,userEmail);
+        return dto;
+    }
+
+    /**
+     * 임시 비밀번호로 업데이트
+     */
+    public void updatePassword(String password, String userEmail){
+        String memberPassword = password;
+        User user = userRepository.findByEmail(userEmail);
+        user.updatePassword(userEmail,memberPassword);
+    }
+
+    /**
+     * 랜덤함수로 임시 비밀번호 구문 만들기
+     */
+    public String getTempPassword(){
+        char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
+                'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+
+        String str = "";
+
+        // 문자 배열 길이의 값을 랜덤으로 10개를 뽑아 구문을 작성함
+        int idx = 0;
+        for (int i = 0; i < 10; i++) {
+            idx = (int) (charSet.length * Math.random());
+            str += charSet[idx];
+        }
+        return str;
     }
 
     public ResponseEntity<?> logout(LogOutRequestDto logout) {
