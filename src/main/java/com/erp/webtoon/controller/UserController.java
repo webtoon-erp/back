@@ -5,10 +5,13 @@ import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.LoginRequestDto;
 import com.erp.webtoon.dto.user.SlackRequestDto;
+import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.service.JwtService;
 import com.erp.webtoon.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -28,6 +32,12 @@ import javax.servlet.http.HttpServletResponse;
 public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
+
+    @PostMapping("/add")
+    public ResponseEntity add(@Valid @RequestBody UserRequestDto userRequestDto){
+        userService.addNewCome(userRequestDto);
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
 
     @PostMapping("/login")
     public TokenResponseDto login(@RequestBody LoginRequestDto loginDto, HttpServletResponse response) {
