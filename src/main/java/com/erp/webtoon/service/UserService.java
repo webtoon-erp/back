@@ -7,6 +7,7 @@ import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.LoginRequestDto;
 import com.erp.webtoon.dto.user.SlackRequestDto;
+import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.dto.user.UserResponseDto;
 import com.erp.webtoon.dto.user.UserUpdateDto;
 import com.erp.webtoon.repository.RefreshTokenRepository;
@@ -39,8 +40,27 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * 회원 가입 -> 없나?
+     * 신규 직원 추가
      */
+
+    @Transactional
+    public void addNewCome(UserRequestDto userRequestDto){
+        User user = User.builder()
+                .employeeId(userRequestDto.getEmployeeId())
+                .loginId(userRequestDto.getLoginId())
+                .password(passwordEncoder.encode(userRequestDto.getPassword()))
+                .name(userRequestDto.getName())
+                .email(userRequestDto.getEmail())
+                .tel(userRequestDto.getTel())
+                .birthDate(userRequestDto.getBirthDate())
+                .deptName(userRequestDto.getDeptName())
+                .teamNum(userRequestDto.getTeamNum())
+                .position(userRequestDto.getPosition())
+                .joinDate(userRequestDto.getJoinDate())
+                .dayOff(userRequestDto.getDayOff())
+                .build();
+        userRepository.save(user);
+    }
 
     /**
      * 회원 조회
@@ -63,7 +83,6 @@ public class UserService {
                 .dayOff(findUser.getDayOff())
                 .build();
     }
-
 
     /**
      * 회원 수정
