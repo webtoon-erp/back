@@ -13,7 +13,7 @@ public class MessageListDto {
 
     private Long refId;         // 참조 ID
 
-    private Program program;    // 참조 프로그램ID
+    private String programId;    // 참조 프로그램ID
 
     private User sendUser;      // 발신자
 

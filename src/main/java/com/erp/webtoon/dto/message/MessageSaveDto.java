@@ -18,7 +18,7 @@ public class MessageSaveDto {
 
     private Long refId; // 참조 ID
 
-    private Program program;    // 참조 프로그램ID
+    private String programId;    // 참조 프로그램ID
 
     private String rcvEmpId;
 
@@ -28,7 +28,7 @@ public class MessageSaveDto {
                 .msgType(msgType)
                 .content(content)
                 .refId(refId)
-                .program(program)
+                .programId(programId)
                 .rcvUser(rcvUser)
                 .sendUser(sendUser)
                 .build();

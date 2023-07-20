@@ -49,7 +49,7 @@ public class MessageService {
                 .map(message -> MessageListDto.builder()
                         .content(message.getContent())
                         .refId(message.getRefId())
-                        .program(message.getProgram())
+                        .programId(message.getProgramId())
                         .sendUser(message.getSendUser())
                         .build())
                 .collect(Collectors.toList());
