@@ -27,7 +27,7 @@ public class Notice {
 
     private LocalDate noticeDate;
 
-    private int readCount = 0;  // 조회수
+    private int readCount;  // 조회수
 
     @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL)
     private List<File> files = new ArrayList<>();   // 공지사항에 여러개 첨부파일 목록
@@ -37,7 +37,10 @@ public class Notice {
         this.noticeType = noticeType;
         this.title = title;
         this.content = content;
+        this.noticeDate = LocalDate.now();
+        this.readCount = 1;
     }
+
 
     public void addReadCount() {
         this.readCount++;

@@ -35,9 +35,11 @@ public class NoticeService {
         Notice notice = dto.toEntity();
 
         // 첨부파일이 1개 이상인 경우
+        // 해당 첨부파일의 타입 지정해줘야함! -> 완료
         if (!dto.getUploadFiles().isEmpty()) {
             for (MultipartFile file: dto.getUploadFiles()) {
                 File saveFile = fileService.save(file);
+                saveFile.updateFileNotice(notice);
                 notice.getFiles().add(saveFile);
             }
         }
@@ -56,10 +58,11 @@ public class NoticeService {
         findNotice.addReadCount();
 
         return NoticeResponseDto.builder()
-                .noticeType(findNotice.getNoticeType())
                 .title(findNotice.getTitle())
                 .content(findNotice.getContent())
                 .readCount(findNotice.getReadCount())
+                .noticeType(findNotice.getNoticeType())
+                .noticeDate(findNotice.getNoticeDate())
                 .originFileNames(findNotice.getFileNames())
                 .build();
     }
@@ -120,10 +123,11 @@ public class NoticeService {
     /**
      * 공지사항 삭제
      */
-    public void delete(Long noticeId) {
+    public boolean delete(Long noticeId) {
         Notice findNotice = noticeRepository.findById(noticeId)
                         .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 공지사항입니다."));
 
         noticeRepository.delete(findNotice);
+        return true;
     }
 }
