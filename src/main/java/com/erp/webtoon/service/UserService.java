@@ -12,6 +12,7 @@ import com.erp.webtoon.dto.user.UserResponseDto;
 import com.erp.webtoon.dto.user.UserUpdateDto;
 import com.erp.webtoon.repository.RefreshTokenRepository;
 import com.erp.webtoon.repository.UserRepository;
+import com.slack.api.Slack;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,7 @@ public class UserService {
     private final TokenProvider tokenProvider;
     private final RedisTemplate redisTemplate;
     private final PasswordEncoder passwordEncoder;
+    private final SlackService slackService;
 
     /**
      * 신규 직원 추가
@@ -168,6 +170,17 @@ public class UserService {
                 + tempPassword + " 입니다." + "로그인 후에 비밀번호를 변경을 해주세요");
         updatePassword(tempPassword,userEmail);
         return dto;
+    }
+
+    /**
+     * 비밀번호 초기화 & 슬랙 알림 메시지
+     */
+    public void resetPassword(String userEmail) {
+        String tempPassword = getTempPassword();
+        String msg = "안녕하세요. 피어나툰ERP 임시비밀번호 안내 관련 메시지 입니다." + " 회원님의 임시 비밀번호는 "
+                + tempPassword + " 입니다." + "로그인 후에 비밀번호를 변경을 해주세요";
+        slackService.sendSlackChannel(msg, userEmail);
+        updatePassword(tempPassword,userEmail);
     }
 
     /**
