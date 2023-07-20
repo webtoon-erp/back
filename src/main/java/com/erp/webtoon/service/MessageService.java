@@ -3,10 +3,7 @@ package com.erp.webtoon.service;
 import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.domain.Webtoon;
-import com.erp.webtoon.dto.message.FeedbackListDto;
-import com.erp.webtoon.dto.message.MessageListDto;
-import com.erp.webtoon.dto.message.MessageRequestDto;
-import com.erp.webtoon.dto.message.MessageUpdateDto;
+import com.erp.webtoon.dto.message.*;
 import com.erp.webtoon.repository.MessageRepository;
 import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
@@ -36,7 +33,10 @@ public class MessageService {
         - rcvUser == emp_id
     */
     @Transactional(readOnly = true)
-    public List<MessageListDto> findMessageList(User user) {
+    public List<MessageListDto> findMessageList(MessageFindDto dto) {
+            User user = userRepository.findByEmployeeId(dto.getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
+
             List<Message> messageList1 = messageRepository.findByMsgType("all");
             List<Message> messageList2 = messageRepository.findByMsgType(user.getDeptCode());
             List<Message> messageList3 = messageRepository.findByRcvUser(user);
@@ -70,11 +70,11 @@ public class MessageService {
     /*
         메시지 등록
     */
-    public void addMsg(MessageRequestDto dto) throws IOException {
+    public void addMsg(MessageSaveDto dto) throws IOException {
 
-        User rcvUser = userRepository.findById(dto.getRcvUserId())
+        User rcvUser = userRepository.findByEmployeeId(dto.getRcvEmpId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
-        User sendUser = userRepository.findById(dto.getSendUserId())
+        User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
         Message message = dto.toEntity(rcvUser, sendUser);
@@ -111,9 +111,9 @@ public class MessageService {
         - msgType : webtoon
         - 수신자 : null
     */
-    public void addFeedbackMsg(MessageRequestDto dto) throws IOException {
+    public void addFeedbackMsg(MessageSaveDto dto) throws IOException {
 
-        User sendUser = userRepository.findById(dto.getSendUserId())
+        User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
         //피드백 저장

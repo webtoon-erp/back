@@ -1,6 +1,7 @@
 package com.erp.webtoon.controller;
 
 import com.erp.webtoon.domain.User;
+import com.erp.webtoon.dto.message.MessageFindDto;
 import com.erp.webtoon.dto.message.MessageListDto;
 import com.erp.webtoon.dto.message.MessageUpdateDto;
 import com.erp.webtoon.service.MessageService;
@@ -22,8 +23,8 @@ public class MessageController {
         메시지 조회
      */
     @GetMapping("/message")
-    public List<MessageListDto> message(Principal principal) {
-        return messageService.findMessageList((User) principal);
+    public List<MessageListDto> message(@RequestBody MessageFindDto dto) {
+        return messageService.findMessageList(dto);
     }
 
     /*
