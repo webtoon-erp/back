@@ -24,4 +24,10 @@ public class PlasController {
         return plasService.findTemplateList();
     }
 
+    // 결재자 / 참조자 조회 기능
+    @GetMapping("/addDoc/appvLineList")
+    public List<AppvLineListDto> appvLineList() {
+        return plasService.findAppvLineList();
+    }
+
 }
