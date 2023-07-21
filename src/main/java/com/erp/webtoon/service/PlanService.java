@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +22,7 @@ public class PlanService {
     /**
      * 새로운 일정 등록
      */
+    @Transactional
     public Long save(PlanRequestDto dto) {
         Plan newPlan = dto.toEntity();
 
@@ -78,6 +78,7 @@ public class PlanService {
     /**
      * 일정 삭제
      */
+    @Transactional
     public void delete(Long planId) {
         Plan findPlan = planRepository.findById(planId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
