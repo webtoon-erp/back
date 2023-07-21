@@ -10,7 +10,6 @@ import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.service.JwtService;
 import com.erp.webtoon.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
