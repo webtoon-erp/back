@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -38,4 +39,11 @@ public class Document {
 
     @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
     private List<DocumentData> documentDataList = new ArrayList<>();   // 데이터 목록
+
+    //수신자 목록의 이름 불러오기
+    public List<String> getRcvNames() {
+        return documentRcvs.stream()
+                .map(documentRcv -> documentRcv.getUser().getName())
+                .collect(Collectors.toList());
+    }
 }

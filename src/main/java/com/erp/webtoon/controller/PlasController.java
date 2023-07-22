@@ -1,13 +1,12 @@
 package com.erp.webtoon.controller;
 
-import com.erp.webtoon.dto.message.MessageFindDto;
-import com.erp.webtoon.dto.message.MessageListDto;
 import com.erp.webtoon.dto.plas.AppvLineListDto;
+import com.erp.webtoon.dto.plas.DocListDto;
 import com.erp.webtoon.dto.plas.DocTplListDto;
 import com.erp.webtoon.service.PlasService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,6 +27,12 @@ public class PlasController {
     @GetMapping("/addDoc/appvLineList")
     public List<AppvLineListDto> appvLineList() {
         return plasService.findAppvLineList();
+    }
+
+    // 내 문서 조회
+    @GetMapping("/list/myDoc/{employeeId}")
+    public List<DocListDto> myDocList(@PathVariable("employeeId") String employeeId) {
+        return plasService.findMyDocList(employeeId);
     }
 
 }
