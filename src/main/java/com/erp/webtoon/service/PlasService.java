@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.print.Doc;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,9 +68,27 @@ public class PlasService {
         User writeUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("문서 작성 직원의 정보가 존재하지 않습니다."));
 
-        List<Document> myDocList = documentRepository.findDocumentByWriteUser(writeUser);
+        List<Document> myDocList = documentRepository.findAllByWriteUser(writeUser);
 
-        return myDocList.stream()
+        return docStreamToList(myDocList);
+
+    }
+
+    /*
+        내 부서 문서 조회
+    */
+    @Transactional(readOnly = true)
+    public List<DocListDto> findMyDeptDocList(String deptCode) {
+
+        List<User> myDeptUserList = userRepository.findAllByDeptCode(deptCode);
+
+        List<Document> myDeptDocList = documentRepository.findAllByWriteUserIn(myDeptUserList);
+
+        return docStreamToList(myDeptDocList);
+    }
+
+    public List<DocListDto> docStreamToList(List<Document> documentList) {
+        return documentList.stream()
                 .map(doc -> DocListDto.builder()
                         .templateName(doc.getDocumentTpl().getTemplateName())
                         .title(doc.getTitle())
@@ -80,7 +97,6 @@ public class PlasService {
                         .documentRcvNames(doc.getRcvNames())
                         .build())
                 .collect(Collectors.toList());
-
     }
 
 }

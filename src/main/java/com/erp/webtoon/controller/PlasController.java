@@ -35,4 +35,10 @@ public class PlasController {
         return plasService.findMyDocList(employeeId);
     }
 
+    // 내 문서 조회
+    @GetMapping("/list/myDeptDoc/{deptCode}")
+    public List<DocListDto> myDeptDocList(@PathVariable("deptCode") String deptCode) {
+        return plasService.findMyDeptDocList(deptCode);
+    }
+
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface DocumentRepository extends JpaRepository<Document, Long> {
 
-    List<Document> findDocumentByWriteUser(User user);
+    List<Document> findAllByWriteUser(User user);
+    List<Document> findAllByWriteUserIn(List<User> userList);
 
 }
