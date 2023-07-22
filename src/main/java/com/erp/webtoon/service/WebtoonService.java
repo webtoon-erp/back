@@ -27,7 +27,7 @@ public class WebtoonService {
     private final FileService fileService;
 
     /**
-     * 등록 웹툰 생성 필요?
+     * 등록 웹툰 생성
      */
     public Long save(WebtoonRequestDto dto) throws IOException {
         Webtoon webtoon = dto.toEntity();
@@ -42,7 +42,7 @@ public class WebtoonService {
     }
 
     /**
-     * 등록 웹툰 리스트 조회
+     * 등록 웹툰 리스트 조회 -> 페이징 처리
      */
     public List<WebtoonListResponseDto> getAllWebtoon() {
         List<Webtoon> webtoons = webtoonRepository.findAll();
@@ -71,22 +71,15 @@ public class WebtoonService {
         List<Webtoon> webtoons = webtoonRepository.findByTitle(title);
 
         // 해당하는 웹툰이 없는 경우
-        if(webtoons != null || webtoons.isEmpty()) {
+        if(webtoons == null || webtoons.isEmpty()) {
             throw new EntityNotFoundException("해당하는 제목의 웹툰이 없습니다.");
         }
 
-        List<WebtoonListResponseDto> dtos = new ArrayList<>();
+        List<WebtoonListResponseDto> webtoonList = webtoons.stream()
+                .map(WebtoonListResponseDto::new)
+                .collect(Collectors.toList());
 
-        for (Webtoon webtoon : webtoons) {
-            dtos.add(WebtoonListResponseDto.builder()
-                    .id(webtoon.getId())
-                    .title(webtoon.getTitle())
-                    .artist(webtoon.getArtist())
-                    .category(webtoon.getCategory())
-                    .keyword(webtoon.getKeyword())
-                    .build());
-        }
-        return dtos;
+        return webtoonList;
     }
 
     //작가 검색
@@ -94,22 +87,15 @@ public class WebtoonService {
         List<Webtoon> webtoons = webtoonRepository.findByArtist(artist);
 
         // 해당하는 웹툰이 없는 경우
-        if(webtoons != null || webtoons.isEmpty()) {
+        if(webtoons == null || webtoons.isEmpty()) {
             throw new EntityNotFoundException("해당하는 작가의 웹툰이 없습니다.");
         }
 
-        List<WebtoonListResponseDto> dtos = new ArrayList<>();
+        List<WebtoonListResponseDto> webtoonList = webtoons.stream()
+                .map(WebtoonListResponseDto::new)
+                .collect(Collectors.toList());
 
-        for (Webtoon webtoon : webtoons) {
-            dtos.add(WebtoonListResponseDto.builder()
-                    .id(webtoon.getId())
-                    .title(webtoon.getTitle())
-                    .artist(webtoon.getArtist())
-                    .category(webtoon.getCategory())
-                    .keyword(webtoon.getKeyword())
-                    .build());
-        }
-        return dtos;
+        return webtoonList;
     }
 
     //카테고리 검색
@@ -117,22 +103,15 @@ public class WebtoonService {
         List<Webtoon> webtoons = webtoonRepository.findByCategory(category);
 
         // 해당하는 웹툰이 없는 경우
-        if(webtoons != null || webtoons.isEmpty()) {
+        if(webtoons == null || webtoons.isEmpty()) {
             throw new EntityNotFoundException("해당하는 카테고리의 웹툰이 없습니다.");
         }
 
-        List<WebtoonListResponseDto> dtos = new ArrayList<>();
+        List<WebtoonListResponseDto> webtoonList = webtoons.stream()
+                .map(WebtoonListResponseDto::new)
+                .collect(Collectors.toList());
 
-        for (Webtoon webtoon : webtoons) {
-            dtos.add(WebtoonListResponseDto.builder()
-                    .id(webtoon.getId())
-                    .title(webtoon.getTitle())
-                    .artist(webtoon.getArtist())
-                    .category(webtoon.getCategory())
-                    .keyword(webtoon.getKeyword())
-                    .build());
-        }
-        return dtos;
+        return webtoonList;
     }
 
     // 키워드 검색
@@ -140,22 +119,15 @@ public class WebtoonService {
         List<Webtoon> webtoons = webtoonRepository.findByKeyword(keyword);
 
         // 해당하는 웹툰이 없는 경우
-        if(webtoons != null || webtoons.isEmpty()) {
+        if(webtoons == null || webtoons.isEmpty()) {
             throw new EntityNotFoundException("해당하는 키워드의 웹툰이 없습니다.");
         }
 
-        List<WebtoonListResponseDto> dtos = new ArrayList<>();
+        List<WebtoonListResponseDto> webtoonList = webtoons.stream()
+                .map(WebtoonListResponseDto::new)
+                .collect(Collectors.toList());
 
-        for (Webtoon webtoon : webtoons) {
-            dtos.add(WebtoonListResponseDto.builder()
-                    .id(webtoon.getId())
-                    .title(webtoon.getTitle())
-                    .artist(webtoon.getArtist())
-                    .category(webtoon.getCategory())
-                    .keyword(webtoon.getKeyword())
-                    .build());
-        }
-        return dtos;
+        return webtoonList;
     }
 
     /**
