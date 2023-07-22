@@ -1,6 +1,7 @@
 package com.erp.webtoon.controller;
 
 import com.erp.webtoon.dto.webtoon.WebtoonListResponseDto;
+import com.erp.webtoon.dto.webtoon.WebtoonRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonResponseDto;
 import com.erp.webtoon.service.FileService;
 import com.erp.webtoon.service.WebtoonService;
@@ -10,11 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
@@ -29,6 +28,20 @@ public class WebtoonController {
     /**
      * 웹툰 등록
      */
+    @PostMapping("/webtoon")
+    public Long save(@RequestBody WebtoonRequestDto dto) throws IOException {
+        return webtoonService.save(dto);
+    }
+
+    /**
+     * 등록된 모든 웹툰 조회
+     */
+    @GetMapping("/webtoon")
+    public ResponseEntity showAll(@RequestParam("page") int page) {
+        List<WebtoonListResponseDto> dtos = webtoonService.getAllWebtoon(page);
+
+        return ResponseEntity.ok(dtos);
+    }
 
 
     /**

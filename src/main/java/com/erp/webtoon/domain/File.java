@@ -65,4 +65,8 @@ public class File {
     public void updateFileNotice(Notice notice) {
         this.notice = notice;
     }
+
+    public void updateFileWebtoon(Webtoon webtoon) {
+        this.webtoon = webtoon;
+    }
 }

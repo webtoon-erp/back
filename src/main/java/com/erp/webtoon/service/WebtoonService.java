@@ -8,6 +8,9 @@ import com.erp.webtoon.dto.webtoon.WebtoonEpisodeDto;
 import com.erp.webtoon.dto.webtoon.WebtoonListResponseDto;
 import com.erp.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +37,7 @@ public class WebtoonService {
 
         if(!dto.getThumbnailFile().isEmpty()) {
             File uploadfile = fileService.save(dto.getThumbnailFile());
+            uploadfile.updateFileWebtoon(webtoon);
             webtoon.getFiles().add(uploadfile);
         }
 
@@ -44,22 +48,15 @@ public class WebtoonService {
     /**
      * 등록 웹툰 리스트 조회 -> 페이징 처리
      */
-    public List<WebtoonListResponseDto> getAllWebtoon() {
-        List<Webtoon> webtoons = webtoonRepository.findAll();
+    public List<WebtoonListResponseDto> getAllWebtoon(int page) {
 
-        List<WebtoonListResponseDto> dtos = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page, 10, Sort.Direction.DESC, "id");
 
-        for (Webtoon webtoon : webtoons) {
-            dtos.add(WebtoonListResponseDto.builder()
-                    .id(webtoon.getId())
-                    .title(webtoon.getTitle())
-                    .artist(webtoon.getArtist())
-                    .category(webtoon.getCategory())
-                    .keyword(webtoon.getKeyword())
-                    .build());
-        }
+        List<WebtoonListResponseDto> webtoonList = webtoonRepository.findAll(pageable).stream()
+                .map(WebtoonListResponseDto::new)
+                .collect(Collectors.toList());
 
-        return dtos;
+        return webtoonList;
     }
 
     /**
