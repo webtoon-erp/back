@@ -5,14 +5,13 @@ import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.token.LogOutRequestDto;
 import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
-import com.erp.webtoon.dto.user.LoginRequestDto;
-import com.erp.webtoon.dto.user.SlackRequestDto;
-import com.erp.webtoon.dto.user.UserRequestDto;
-import com.erp.webtoon.dto.user.UserResponseDto;
-import com.erp.webtoon.dto.user.UserUpdateDto;
+import com.erp.webtoon.dto.user.*;
 import com.erp.webtoon.repository.RefreshTokenRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -97,8 +98,17 @@ public class UserService {
     }
 
     /**
-     * 회원 삭제
+     * 회원 카드뷰 조회 (페이징 처리)
      */
+    public List<UserListResponseDto> getCardView(int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.Direction.ASC, "id");
+
+        List<UserListResponseDto> userList = userRepository.findAll(pageable).stream()
+                .map(UserListResponseDto::new)
+                .collect(Collectors.toList());
+
+        return userList;
+    }
 
     /**
      * 로그인

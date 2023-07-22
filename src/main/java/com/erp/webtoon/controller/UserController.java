@@ -5,6 +5,7 @@ import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.LoginRequestDto;
 import com.erp.webtoon.dto.user.SlackRequestDto;
+import com.erp.webtoon.dto.user.UserListResponseDto;
 import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.service.JwtService;
 import com.erp.webtoon.service.UserService;
@@ -15,15 +16,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -68,6 +66,16 @@ public class UserController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@Validated LogOutRequestDto logout, Errors errors) {
         return userService.logout(logout);
+    }
+
+    /**
+     * 직원조회 -> 카드뷰
+     */
+    @GetMapping("")
+    public ResponseEntity view(@RequestParam("page") int page) {
+        List<UserListResponseDto> dtos = userService.getCardView(page);
+
+        return ResponseEntity.ok(dtos);
     }
 }
 
