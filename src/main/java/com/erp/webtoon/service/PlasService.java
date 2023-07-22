@@ -1,13 +1,10 @@
 package com.erp.webtoon.service;
 
-import com.erp.webtoon.domain.Document;
-import com.erp.webtoon.domain.DocumentTpl;
-import com.erp.webtoon.domain.Notice;
-import com.erp.webtoon.domain.User;
-import com.erp.webtoon.dto.notice.NoticeResponseDto;
+import com.erp.webtoon.domain.*;
 import com.erp.webtoon.dto.plas.AppvLineListDto;
 import com.erp.webtoon.dto.plas.DocListDto;
 import com.erp.webtoon.dto.plas.DocTplListDto;
+import com.erp.webtoon.repository.DocumentRcvRepository;
 import com.erp.webtoon.repository.DocumentRepository;
 import com.erp.webtoon.repository.DocumentTplRepository;
 import com.erp.webtoon.repository.UserRepository;
@@ -25,6 +22,7 @@ public class PlasService {
 
     private final DocumentRepository documentRepository;
     private final DocumentTplRepository documentTplRepository;
+    private final DocumentRcvRepository documentRcvRepository;
     private final UserRepository userRepository;
 
     /*
@@ -85,6 +83,27 @@ public class PlasService {
         List<Document> myDeptDocList = documentRepository.findAllByWriteUserIn(myDeptUserList);
 
         return docStreamToList(myDeptDocList);
+    }
+
+    /*
+        내 결재대기 문서 조회
+    */
+    @Transactional(readOnly = true)
+    public List<DocListDto> findMyAppvDocList(String employeeId) {
+
+        User appvUser = userRepository.findByEmployeeId(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("문서 결재 직원의 정보가 존재하지 않습니다."));
+
+        String rcvType = "APPROVE";
+
+        boolean stat = true;
+
+        List<DocumentRcv> myDocumentRcvList = documentRcvRepository.findAllByUserAndReceiveTypeAndStat(appvUser, rcvType, stat);
+
+        List<Document> myAppvDocList = myDocumentRcvList.stream()
+                                            .map(DocumentRcv::getDocument).collect(Collectors.toList());
+
+        return docStreamToList(myAppvDocList);
     }
 
     public List<DocListDto> docStreamToList(List<Document> documentList) {
