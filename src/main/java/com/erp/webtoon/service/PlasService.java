@@ -86,19 +86,15 @@ public class PlasService {
     }
 
     /*
-        내 결재대기 문서 조회
+        내 결재대기 & 참조 문서 조회
     */
     @Transactional(readOnly = true)
-    public List<DocListDto> findMyAppvDocList(String employeeId) {
+    public List<DocListDto> findMyAppvOrCCDocList(String rcvType, String employeeId) {
 
         User appvUser = userRepository.findByEmployeeId(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException("문서 결재 직원의 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("사용자 정보가 존재하지 않습니다."));
 
-        String rcvType = "APPROVE";
-
-        boolean stat = true;
-
-        List<DocumentRcv> myDocumentRcvList = documentRcvRepository.findAllByUserAndReceiveTypeAndStat(appvUser, rcvType, stat);
+        List<DocumentRcv> myDocumentRcvList = documentRcvRepository.findAllByUserAndReceiveTypeAndStat(appvUser, rcvType, true);
 
         List<Document> myAppvDocList = myDocumentRcvList.stream()
                                             .map(DocumentRcv::getDocument).collect(Collectors.toList());

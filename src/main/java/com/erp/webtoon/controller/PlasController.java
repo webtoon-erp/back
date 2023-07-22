@@ -44,7 +44,13 @@ public class PlasController {
     // 내 결제 대기 문서 조회
     @GetMapping("/list/myAppvDoc/{employeeId}")
     public List<DocListDto> myAppvDocList(@PathVariable("employeeId") String employeeId) {
-        return plasService.findMyAppvDocList(employeeId);
+        return plasService.findMyAppvOrCCDocList("APPV", employeeId);
+    }
+
+    // 내 참조 문서 조회
+    @GetMapping("/list/myCCDoc/{employeeId}")
+    public List<DocListDto> myCCDocist(@PathVariable("employeeId") String employeeId) {
+        return plasService.findMyAppvOrCCDocList("CC", employeeId);
     }
 
 }
