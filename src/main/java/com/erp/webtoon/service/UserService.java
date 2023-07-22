@@ -118,7 +118,7 @@ public class UserService {
     }
 
     /**
-     * 회원 삭제
+     * 퇴사자 처리(상태값 바꿔야함)
      */
 
     /**

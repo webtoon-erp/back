@@ -52,6 +52,8 @@ public class User implements UserDetails {
 
     private String joinDate;    // 입사날짜
 
+    private String status; // 상태
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();     // 접근 권한 (로그인 시 설정 아마도,,)
 
