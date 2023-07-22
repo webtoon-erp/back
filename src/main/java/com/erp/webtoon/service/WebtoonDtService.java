@@ -25,7 +25,7 @@ public class WebtoonDtService {
     private final FileService fileService;
 
     /**
-     * 회차 임시 업로드
+     * 회차 임시 업로드 (최초 등록)
      */
     public void upload(WebtoonDtRequestDto dto) throws IOException {
         Webtoon findWebtoon = webtoonRepository.findById(dto.getWebtoonId())
@@ -36,6 +36,7 @@ public class WebtoonDtService {
         //파일 저장
         if(!dto.getUploadFile().isEmpty()) {
             File uploadFile = fileService.save(dto.getUploadFile());
+            uploadFile.updateFileWebtoonDt(newWebtoonDt);
             newWebtoonDt.getFiles().add(uploadFile);
         }
 

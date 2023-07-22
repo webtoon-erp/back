@@ -104,16 +104,6 @@ public class WebtoonController {
         return ResponseEntity.ok(dtos);
     }
 
-    /**
-     * 회차 별 조회 -> 이미지만 조회 가능하도록,,,(추후 프론트랑 논의)
-     */
-    @GetMapping("/image/{fileName}")
-    public ResponseEntity<Resource> getImage(@PathVariable("fileName") String fileName) throws MalformedURLException {
-        UrlResource resource = new UrlResource("file:" + fileService.getFullPath(fileName));
-
-        return ResponseEntity.ok(resource);
-    }
-
     @Data
     @AllArgsConstructor
     static class Result<T> {
