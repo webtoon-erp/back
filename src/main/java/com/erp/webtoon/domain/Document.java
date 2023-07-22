@@ -20,12 +20,18 @@ public class Document {
 
     private String content;
 
+    private char stat;
+
     @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
     private List<File> files = new ArrayList<>();   // 참조된 파일들
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doc_tpl_id")
     private DocumentTpl documentTpl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "user_id" , name = "write_user_id")
+    private User writeUser;   // 작성자
 
     @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
     private List<DocumentRcv> documentRcvs = new ArrayList<>();   // 수신자 목록
