@@ -80,7 +80,6 @@ public class UserService {
 
         return UserResponseDto.builder()
                 .employeeId(findUser.getEmployeeId())
-                .LoginId(findUser.getLoginId())
                 .name(findUser.getName())
                 .email(findUser.getEmail())
                 .tel(findUser.getTel())
