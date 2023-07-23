@@ -27,7 +27,7 @@ public class PlanController {
     /**
      * 일정조회(월별)
      */
-    @GetMapping("/plans/{month)")
+    @GetMapping("/plans/{month}")
     public ResponseEntity show(@PathVariable("month") int month) {
         List<PlanResponseDto> monthPlans = planService.getMonthPlans(month);
 

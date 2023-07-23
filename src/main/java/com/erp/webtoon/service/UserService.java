@@ -94,24 +94,6 @@ public class UserService {
     }
 
     /**
-     * 직원 리스트 조회
-     */
-    public List<UserListResponseDto> getAllUsers() {
-        List<User> users = userRepository.findAll();
-
-        List<UserListResponseDto> userList = new ArrayList<>();
-
-        for (User user : users) {
-            userList.add(UserListResponseDto.builder()
-                    .position(user.getPosition())
-                    .name(user.getName())
-                    .build());
-        }
-
-        return userList;
-    }
-
-    /**
      * 회원 수정
      */
     @Transactional
