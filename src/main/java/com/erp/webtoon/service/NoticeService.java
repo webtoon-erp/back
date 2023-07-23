@@ -2,12 +2,13 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.Notice;
-import com.erp.webtoon.dto.notice.NoticeListDto;
-import com.erp.webtoon.dto.notice.NoticeRequestDto;
-import com.erp.webtoon.dto.notice.NoticeResponseDto;
-import com.erp.webtoon.dto.notice.NoticeUpdateDto;
+import com.erp.webtoon.dto.notice.*;
 import com.erp.webtoon.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,8 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.domain.Sort.Direction.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +35,11 @@ public class NoticeService {
         Notice notice = dto.toEntity();
 
         // 첨부파일이 1개 이상인 경우
+        // 해당 첨부파일의 타입 지정해줘야함! -> 완료
         if (!dto.getUploadFiles().isEmpty()) {
             for (MultipartFile file: dto.getUploadFiles()) {
                 File saveFile = fileService.save(file);
+                saveFile.updateFileNotice(notice);
                 notice.getFiles().add(saveFile);
             }
         }
@@ -53,30 +58,40 @@ public class NoticeService {
         findNotice.addReadCount();
 
         return NoticeResponseDto.builder()
-                .noticeType(findNotice.getNoticeType())
                 .title(findNotice.getTitle())
                 .content(findNotice.getContent())
                 .readCount(findNotice.getReadCount())
+                .noticeType(findNotice.getNoticeType())
+                .noticeDate(findNotice.getNoticeDate())
                 .originFileNames(findNotice.getFileNames())
                 .build();
     }
 
 
-
     /**
-     * 공지사항 전체 조회(List)
+     * 공지사항 전체 조회(List) -> 페이징 처리 해야하지 않을까
      */
     @Transactional(readOnly = true)
-    public List<NoticeListDto> findAll() {
+    public List<NoticeListDto> findAllNotice() {
         List<Notice> noticeList = noticeRepository.findAll();
 
         return noticeList.stream()
-                .map(notice -> NoticeListDto.builder()
-                        .noticeType(notice.getNoticeType())
-                        .title(notice.getTitle())
-                        .build())
+                .map(NoticeListDto::new)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * 공지사항 카드뷰 -> 6개만!
+     */
+    @Transactional(readOnly = true)
+    public List<NoticeCardViewDto> findCardNotice() {
+        Pageable pageable = PageRequest.of(0, 6, DESC, "id");
+
+        return noticeRepository.findAll(pageable).stream()
+                .map(NoticeCardViewDto::new)
+                .collect(Collectors.toList());
+    }
+
 
     /**
      * 공지사항 수정
@@ -108,10 +123,11 @@ public class NoticeService {
     /**
      * 공지사항 삭제
      */
-    public void delete(Long noticeId) {
+    public boolean delete(Long noticeId) {
         Notice findNotice = noticeRepository.findById(noticeId)
                         .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 공지사항입니다."));
 
         noticeRepository.delete(findNotice);
+        return true;
     }
 }

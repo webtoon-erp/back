@@ -3,6 +3,7 @@ package com.erp.webtoon.controller;
 import com.erp.webtoon.dto.token.LogOutRequestDto;
 import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
+
 import com.erp.webtoon.dto.user.LoginRequestDto;
 import com.erp.webtoon.dto.user.SlackRequestDto;
 import com.erp.webtoon.dto.user.UserListResponseDto;
@@ -72,9 +73,31 @@ public class UserController {
         return userService.logout(logout);
     }
 
-    @GetMapping("/list")
-    public List<UserListResponseDto> search(){
-        return userService.getAllUsers();
+    /**
+     * 직원 개별 조회
+     */
+    @GetMapping("/{employeeId}")
+    public ResponseEntity singleView(@PathVariable String employeeId) {
+        UserResponseDto userResponseDto = userService.find(employeeId);
+        return ResponseEntity.ok(userResponseDto);
+    }
+
+    /**
+     * 직원조회 -> 카드뷰
+     */
+    @GetMapping("")
+    public ResponseEntity cardView(@RequestParam("page") int page) {
+        List<UserListResponseDto> dtos = userService.getCardView(page);
+
+        return ResponseEntity.ok(dtos);
+    }
+
+    /**
+     * 직원 정보 수정
+     */
+    @PutMapping("")
+    public void update(@RequestBody UserUpdateDto dto) {
+        userService.update(dto);
     }
 }
 

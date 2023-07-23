@@ -61,4 +61,16 @@ public class File {
     public void changeStat() {
         this.stat = false;
     }
+
+    public void updateFileNotice(Notice notice) {
+        this.notice = notice;
+    }
+
+    public void updateFileWebtoon(Webtoon webtoon) {
+        this.webtoon = webtoon;
+    }
+
+    public void updateFileWebtoonDt(WebtoonDt webtoonDt) {
+        this.webtoonDt = webtoonDt;
+    }
 }

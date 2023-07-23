@@ -15,6 +15,9 @@ import com.erp.webtoon.repository.RefreshTokenRepository;
 import com.erp.webtoon.repository.UserRepository;
 import com.slack.api.Slack;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +33,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -120,8 +124,17 @@ public class UserService {
     }
 
     /**
-     * 퇴사자 처리(상태값 바꿔야함)
+     * 회원 카드뷰 조회 (페이징 처리)
      */
+    public List<UserListResponseDto> getCardView(int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.Direction.ASC, "id");
+
+        List<UserListResponseDto> userList = userRepository.findAll(pageable).stream()
+                .map(UserListResponseDto::new)
+                .collect(Collectors.toList());
+
+        return userList;
+    }
 
     /**
      * 로그인
