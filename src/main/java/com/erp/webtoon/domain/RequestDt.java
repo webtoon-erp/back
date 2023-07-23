@@ -1,5 +1,7 @@
 package com.erp.webtoon.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +10,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class RequestDt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

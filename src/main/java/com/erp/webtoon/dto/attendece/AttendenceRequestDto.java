@@ -10,15 +10,15 @@ import java.time.LocalDateTime;
 public class AttendenceRequestDto {
 
     @NotBlank
-    String attendDate;  //  기준일
+    private String attendDate;  //  기준일
 
     @NotBlank
-    String attendType;  // 근태타입
+    private String attendType;  // 근태타입
 
-    LocalDateTime attendTime; // 시간
+    private LocalDateTime attendTime; // 시간
 
     @NotBlank
-    Long user_id;
+    private String employeeId;
 
     public Attendence toEntity(User user) {
         return Attendence.builder()

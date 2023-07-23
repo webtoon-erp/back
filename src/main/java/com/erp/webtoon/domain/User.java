@@ -52,6 +52,8 @@ public class User implements UserDetails {
 
     private String joinDate;    // 입사날짜
 
+    private String status; // 상태
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();     // 접근 권한 (로그인 시 설정 아마도,,)
 
@@ -74,6 +76,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "itUser", cascade = CascadeType.ALL)
     private List<Request> itRequests = new ArrayList<>();   // 담당 요청들
+
+    @OneToMany(mappedBy = "writeUser", cascade = CascadeType.ALL)
+    private List<Document> docs = new ArrayList<>();     // 작성 문서 목록
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DocumentRcv> documentRcvs = new ArrayList<>();     // 수신 문서들

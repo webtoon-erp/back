@@ -1,8 +1,12 @@
 package com.erp.webtoon.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 
+import javax.inject.Singleton;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,6 +15,8 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +36,7 @@ public class Request {
     private LocalDate doneDate;    // 완료 일자
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(referencedColumnName = "user_id" , name = "req_user_id")
+    @JoinColumn(referencedColumnName = "user_id", name = "req_user_id")
     private User reqUser;   // 요청자
 
     @ManyToOne(fetch = FetchType.LAZY)

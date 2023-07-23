@@ -5,9 +5,15 @@ import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.token.LogOutRequestDto;
 import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
-import com.erp.webtoon.dto.user.*;
+import com.erp.webtoon.dto.user.LoginRequestDto;
+import com.erp.webtoon.dto.user.SlackRequestDto;
+import com.erp.webtoon.dto.user.UserListResponseDto;
+import com.erp.webtoon.dto.user.UserRequestDto;
+import com.erp.webtoon.dto.user.UserResponseDto;
+import com.erp.webtoon.dto.user.UserUpdateDto;
 import com.erp.webtoon.repository.RefreshTokenRepository;
 import com.erp.webtoon.repository.UserRepository;
+import com.slack.api.Slack;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -39,6 +46,7 @@ public class UserService {
     private final TokenProvider tokenProvider;
     private final RedisTemplate redisTemplate;
     private final PasswordEncoder passwordEncoder;
+    private final SlackService slackService;
 
     /**
      * 신규 직원 추가
@@ -83,6 +91,24 @@ public class UserService {
                 .joinDate(findUser.getJoinDate())
                 .dayOff(findUser.getDayOff())
                 .build();
+    }
+
+    /**
+     * 직원 리스트 조회
+     */
+    public List<UserListResponseDto> getAllUsers() {
+        List<User> users = userRepository.findAll();
+
+        List<UserListResponseDto> userList = new ArrayList<>();
+
+        for (User user : users) {
+            userList.add(UserListResponseDto.builder()
+                    .position(user.getPosition())
+                    .name(user.getName())
+                    .build());
+        }
+
+        return userList;
     }
 
     /**
@@ -178,6 +204,17 @@ public class UserService {
                 + tempPassword + " 입니다." + "로그인 후에 비밀번호를 변경을 해주세요");
         updatePassword(tempPassword,userEmail);
         return dto;
+    }
+
+    /**
+     * 비밀번호 초기화 & 슬랙 알림 메시지
+     */
+    public void resetPassword(String userEmail) {
+        String tempPassword = getTempPassword();
+        String msg = "안녕하세요. 피어나툰ERP 임시비밀번호 안내 관련 메시지 입니다." + " 회원님의 임시 비밀번호는 "
+                + tempPassword + " 입니다." + "로그인 후에 비밀번호를 변경을 해주세요";
+        slackService.sendSlackChannel(msg, userEmail);
+        updatePassword(tempPassword,userEmail);
     }
 
     /**

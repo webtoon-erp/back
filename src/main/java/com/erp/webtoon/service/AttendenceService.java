@@ -1,10 +1,8 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Attendence;
-import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.attendece.AttendenceRequestDto;
-import com.erp.webtoon.dto.message.MessageRequestDto;
 import com.erp.webtoon.repository.AttendenceRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +23,7 @@ public class AttendenceService {
      */
     public void addAttendence(AttendenceRequestDto dto) throws IOException {
 
-        User user = userRepository.findById(dto.getUser_id())
+        User user = userRepository.findByEmployeeId(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 직원의 정보가 존재하지 않습니다."));
 
         Attendence attendence = dto.toEntity(user);
