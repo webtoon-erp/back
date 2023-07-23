@@ -7,6 +7,7 @@ import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.LoginRequestDto;
 import com.erp.webtoon.dto.user.SlackRequestDto;
+import com.erp.webtoon.dto.user.UserListResponseDto;
 import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.dto.user.UserResponseDto;
 import com.erp.webtoon.dto.user.UserUpdateDto;
@@ -26,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -87,6 +90,24 @@ public class UserService {
     }
 
     /**
+     * 직원 리스트 조회
+     */
+    public List<UserListResponseDto> getAllUsers() {
+        List<User> users = userRepository.findAll();
+
+        List<UserListResponseDto> userList = new ArrayList<>();
+
+        for (User user : users) {
+            userList.add(UserListResponseDto.builder()
+                    .position(user.getPosition())
+                    .name(user.getName())
+                    .build());
+        }
+
+        return userList;
+    }
+
+    /**
      * 회원 수정
      */
     @Transactional
@@ -99,7 +120,7 @@ public class UserService {
     }
 
     /**
-     * 회원 삭제
+     * 퇴사자 처리(상태값 바꿔야함)
      */
 
     /**
