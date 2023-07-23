@@ -58,7 +58,7 @@ public class WebtoonDtController {
     /**
      * 회차 삭제
      */
-    @DeleteMapping("webtoonDt/{webtoonDtId{")
+    @DeleteMapping("webtoonDt/{webtoonDtId}")
     public void delete(@PathVariable Long webtoonDtId) {
         webtoonDtService.delete(webtoonDtId);
     }

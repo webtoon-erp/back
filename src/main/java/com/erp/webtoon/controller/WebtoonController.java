@@ -61,8 +61,8 @@ public class WebtoonController {
     /**
      * 제목 웹툰 검색
      */
-    @GetMapping("/webtoon")
-    public ResponseEntity showByTitle(@RequestParam("search") String title) {
+    @GetMapping("/webtoon/{title}")
+    public ResponseEntity showByTitle(@PathVariable String title) {
 
         List<WebtoonListResponseDto> dtos = webtoonService.getTitleWebtoon(title);
 
@@ -73,8 +73,8 @@ public class WebtoonController {
     /**
      * 작가 웹툰 검색
      */
-    @GetMapping("/webtoon")
-    public ResponseEntity showByArtist(@RequestParam("search") String artist) {
+    @GetMapping("/webtoon/{artist}")
+    public ResponseEntity showByArtist(@PathVariable String artist) {
 
         List<WebtoonListResponseDto> dtos = webtoonService.getTitleWebtoon(artist);
 
@@ -84,8 +84,8 @@ public class WebtoonController {
     /**
      * 카테고리 웹툰 검색
      */
-    @GetMapping("/webtoon")
-    public ResponseEntity showByCategory(@RequestParam("search") String category) {
+    @GetMapping("/webtoon/{category}")
+    public ResponseEntity showByCategory(@PathVariable String category) {
 
         List<WebtoonListResponseDto> dtos = webtoonService.getTitleWebtoon(category);
 
@@ -96,8 +96,8 @@ public class WebtoonController {
     /**
      * 키워드 웹툰 검색
      */
-    @GetMapping("/webtoon")
-    public ResponseEntity showByKeyword(@RequestParam("search") String keyword) {
+    @GetMapping("/webtoon/{keyword}")
+    public ResponseEntity showByKeyword(@PathVariable String keyword) {
 
         List<WebtoonListResponseDto> dtos = webtoonService.getTitleWebtoon(keyword);
 
