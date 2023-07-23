@@ -18,6 +18,8 @@ public class DocumentRcv {
 
     private String receiveType;
 
+    private boolean stat;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doc_id")
     private Document document;

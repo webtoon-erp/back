@@ -8,7 +8,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class MessageRequestDto {
+public class MessageSaveDto {
 
     @NotBlank
     private String msgType;     // 메세지 타입
@@ -18,17 +18,17 @@ public class MessageRequestDto {
 
     private Long refId; // 참조 ID
 
-    private Program program;    // 참조 프로그램ID
+    private String programId;    // 참조 프로그램ID
 
-    private Long rcvUserId;
+    private String rcvEmpId;
 
-    private Long sendUserId;
+    private String sendEmpId;
     public Message toEntity(User rcvUser, User sendUser) {
         return Message.builder()
                 .msgType(msgType)
                 .content(content)
                 .refId(refId)
-                .program(program)
+                .programId(programId)
                 .rcvUser(rcvUser)
                 .sendUser(sendUser)
                 .build();

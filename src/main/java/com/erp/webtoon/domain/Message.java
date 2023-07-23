@@ -23,9 +23,7 @@ public class Message {
 
     private char stat; // 상태값
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pgm_id")
-    private Program program;    // 참조 프로그램ID
+    private String programId;    // 참조 프로그램ID
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "user_id" , name = "rcv_user_id")
@@ -36,13 +34,13 @@ public class Message {
     private User sendUser;    // 발신자
 
     @Builder
-    public Message(Long id, String msgType, String content, Long refId, char stat, Program program, User rcvUser, User sendUser) {
+    public Message(Long id, String msgType, String content, Long refId, char stat, String programId, User rcvUser, User sendUser) {
         this.id = id;
         this.msgType = msgType;
         this.content = content;
         this.refId = refId;
         this.stat = stat;
-        this.program = program;
+        this.programId = programId;
         this.rcvUser = rcvUser;
         this.sendUser = sendUser;
     }
