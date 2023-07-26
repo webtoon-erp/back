@@ -1,5 +1,6 @@
 package com.erp.webtoon.controller;
 
+import com.erp.webtoon.dto.plan.PlanListDto;
 import com.erp.webtoon.dto.plan.PlanRequestDto;
 import com.erp.webtoon.dto.plan.PlanResponseDto;
 import com.erp.webtoon.dto.plan.PlanUpdateDto;
@@ -9,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 
 @RestController
@@ -60,6 +60,17 @@ public class PlanController {
     }
 
     /**
+     * 일정 전체 조회
+     */
+    @GetMapping("/plans/list")
+    public ResponseEntity getAll() {
+        List<PlanListDto> plans = planService.getAllPlan();
+
+        return ResponseEntity.ok(plans);
+    }
+
+
+    /**
      * 일정 수정
      */
     @PutMapping("/plans/{planId}")
@@ -74,5 +85,4 @@ public class PlanController {
     public void delete(@PathVariable Long planId) {
         planService.delete(planId);
     }
-
 }

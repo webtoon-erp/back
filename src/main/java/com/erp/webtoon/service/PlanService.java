@@ -1,11 +1,13 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Plan;
+import com.erp.webtoon.dto.plan.PlanListDto;
 import com.erp.webtoon.dto.plan.PlanRequestDto;
 import com.erp.webtoon.dto.plan.PlanResponseDto;
 import com.erp.webtoon.dto.plan.PlanUpdateDto;
 import com.erp.webtoon.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +78,15 @@ public class PlanService {
                 .endTime(findPlan.getEndTime())
                 .holidayYN(findPlan.isHolidayYN())
                 .build();
+    }
+
+    /**
+     * 일정 전체 조회
+     */
+    public List<PlanListDto> getAllPlan() {
+        return planRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
+                .map(PlanListDto::new)
+                .collect(Collectors.toList());
     }
 
     /**
