@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 @RestController
@@ -25,10 +27,22 @@ public class PlanController {
     }
 
     /**
-     * 일정조회(월별)
+     * 일정조회(현재 월)
+     * today 버튼 클릭 시 + 메인화면
+     */
+    @GetMapping("/plans")
+    public ResponseEntity show() {
+        int month = LocalDate.now().getMonthValue();
+        List<PlanResponseDto> monthPlans = planService.getMonthPlans(month);
+
+        return ResponseEntity.ok(monthPlans);
+    }
+
+    /**
+     * 원하는 달 일정 조회
      */
     @GetMapping("/plans/{month}")
-    public ResponseEntity show(@PathVariable("month") int month) {
+    public ResponseEntity showByMonth(@PathVariable("month") int month) {
         List<PlanResponseDto> monthPlans = planService.getMonthPlans(month);
 
         return ResponseEntity.ok(monthPlans);
@@ -42,4 +56,5 @@ public class PlanController {
     public void delete(@PathVariable Long planId) {
         planService.delete(planId);
     }
+
 }
