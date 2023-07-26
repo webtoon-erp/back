@@ -2,6 +2,7 @@ package com.erp.webtoon.controller;
 
 import com.erp.webtoon.dto.plan.PlanRequestDto;
 import com.erp.webtoon.dto.plan.PlanResponseDto;
+import com.erp.webtoon.dto.plan.PlanUpdateDto;
 import com.erp.webtoon.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +57,14 @@ public class PlanController {
         PlanResponseDto findPlan = planService.getPlan(planId);
 
         return ResponseEntity.ok(findPlan);
+    }
+
+    /**
+     * 일정 수정
+     */
+    @PutMapping("/plans/{planId}")
+    public void update(@PathVariable("planId") Long planId, @RequestBody PlanUpdateDto dto) {
+        planService.update(planId, dto);
     }
 
     /**
