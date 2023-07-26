@@ -48,6 +48,15 @@ public class PlanController {
         return ResponseEntity.ok(monthPlans);
     }
 
+    /**
+     * 일정 개별 조회
+     */
+    @GetMapping("/plans/{planId}")
+    public ResponseEntity showOne(@PathVariable("planId") Long planId) {
+        PlanResponseDto findPlan = planService.getPlan(planId);
+
+        return ResponseEntity.ok(findPlan);
+    }
 
     /**
      * 일정삭제
