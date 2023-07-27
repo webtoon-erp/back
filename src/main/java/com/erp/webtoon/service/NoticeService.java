@@ -100,9 +100,7 @@ public class NoticeService {
         Notice findNotice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 공지사항입니다."));
 
-        dto.getNoticeType().ifPresent(findNotice::updateNoticeType);
-        dto.getTitle().ifPresent(findNotice::updateTitle);
-        dto.getContent().ifPresent(findNotice::updateContent);
+        findNotice.updateNotice(dto.getNoticeType(), dto.getTitle(), dto.getContent());
 
         //파일 부분 추가해야함
         //공지사항에 저장된 파일목록을 지워야함 + 해당 파일의 상태가 Y인 경우 N으로 만들기

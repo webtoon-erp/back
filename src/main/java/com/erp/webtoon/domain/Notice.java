@@ -53,14 +53,10 @@ public class Notice {
                 .collect(Collectors.toList());
     }
 
-    public void updateNoticeType(String noticeType) {
+    public void updateNotice(String noticeType, String title, String content) {
         this.noticeType = noticeType;
-    }
-
-    public void updateTitle(String title) {
         this.title = title;
-    }
-    public void updateContent(String content) {
         this.content = content;
+        this.noticeDate = LocalDate.now();
     }
 }

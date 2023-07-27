@@ -4,12 +4,14 @@ import com.erp.webtoon.domain.File;
 import com.erp.webtoon.dto.notice.NoticeCardViewDto;
 import com.erp.webtoon.dto.notice.NoticeRequestDto;
 import com.erp.webtoon.dto.notice.NoticeResponseDto;
+import com.erp.webtoon.dto.notice.NoticeUpdateDto;
 import com.erp.webtoon.service.FileService;
 import com.erp.webtoon.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
@@ -17,6 +19,7 @@ import org.springframework.web.util.UriUtils;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -62,13 +65,17 @@ public class NoticeController {
     public ResponseEntity getCardNotice() {
         List<NoticeCardViewDto> dtoList = noticeService.findCardNotice();
 
-        return ResponseEntity.ok(dtoList);
-
+        return new ResponseEntity(dtoList, HttpStatus.OK);
     }
 
     /**
-     * 공지사항 수정
+     * 공지사항 수정 (리다이렉트)
      */
+    @PutMapping("/notice/{noticeId}")
+    public ResponseEntity update(@PathVariable Long noticeId, @RequestBody NoticeUpdateDto dto) throws IOException {
+        noticeService.update(noticeId, dto);
+        return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
+    }
 
 
     /**
@@ -97,5 +104,11 @@ public class NoticeController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(resource);
+    }
+
+    private HttpHeaders redirect() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("/notice"));
+        return headers;
     }
 }
