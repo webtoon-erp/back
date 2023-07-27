@@ -82,8 +82,9 @@ public class NoticeController {
      * 공지사항 삭제
      */
     @DeleteMapping("/notice/{noticeId}")
-    public boolean delete(@PathVariable Long noticeId) {
-        return noticeService.delete(noticeId);
+    public ResponseEntity delete(@PathVariable Long noticeId) {
+        noticeService.delete(noticeId);
+        return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
     }
 
 
