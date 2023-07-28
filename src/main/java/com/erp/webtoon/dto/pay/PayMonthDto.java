@@ -18,8 +18,8 @@ public class PayMonthDto {
 
     public PayMonthDto(Pay pay) {
         this.bankAccount = pay.getBankAccount();
-        this.yearSalary = (pay.getSalary() * 12);
-        this.monthSalary = pay.getSalary();
+        this.yearSalary = pay.getSalary();
+        this.monthSalary = (pay.getSalary() / 12);
         this.addSalary = pay.getAddPay() - qualSalary;
         this.qualSalary = 0;
     }
