@@ -45,6 +45,7 @@ public class WebtoonDtController {
         webtoonDtService.finalUpload(webtoonDtId);
     }
 
+
     /**
      * 회차 별 조회 -> 이미지만 조회 가능하도록,,,(추후 프론트랑 논의)
      */
@@ -59,15 +60,24 @@ public class WebtoonDtController {
      * 회차 수정
      */
     @PutMapping("/webtoonDt/{webtoonDtId}")
-    public void update(@PathVariable Long webtoonDtId, @RequestBody WebtoonDtUpdateDto dto) throws IOException {
+    public ResponseEntity update(@PathVariable Long webtoonDtId, @RequestBody WebtoonDtUpdateDto dto) throws IOException {
         webtoonDtService.update(webtoonDtId, dto);
+
+        return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
     }
 
     /**
      * 회차 삭제
      */
     @DeleteMapping("webtoonDt/{webtoonDtId}")
-    public void delete(@PathVariable Long webtoonDtId) {
+    public ResponseEntity delete(@PathVariable Long webtoonDtId) {
         webtoonDtService.delete(webtoonDtId);
+        return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
+    }
+
+    private HttpHeaders redirect() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("/webtoonDt/{webtoonDtId}"));
+        return headers;
     }
 }

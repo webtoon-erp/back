@@ -72,18 +72,23 @@ public class WebtoonDtService {
         WebtoonDt findWebtoonDt = webtoonDtRepository.findById(webtoonDtId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회차입니다."));
 
+        User findUser = userRepository.findByEmployeeId(dto.getManagerId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
+
         //임시 업로드의 경우만 업데이트
         if(findWebtoonDt.isFinalUploadYN() == false) {
-            findWebtoonDt.updateInfo(dto.getEpisodeNum(), dto.getSubTitle());
+
+            findWebtoonDt.updateInfo(dto.getSubTitle(), dto.getContent(), findUser.getName());
 
             //파일 업데이트
-            for (File file : findWebtoonDt.getFiles()) {
-                fileService.changeStat(file);
-            }
-            findWebtoonDt.getFiles().clear();
-
+            //만약 파일을 업데이트 하는 경우
             if (!dto.getUploadFile().isEmpty()) {
+                // 기존의 저장된 가장 최근의 파일 상태 변경
+                File file = findWebtoonDt.getFiles().get(-1);
+                fileService.changeStat(file);
+
                 File uploadFile = fileService.save(dto.getUploadFile());
+                uploadFile.updateFileWebtoonDt(findWebtoonDt);
                 findWebtoonDt.getFiles().add(uploadFile);
             }
         }

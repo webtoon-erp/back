@@ -52,7 +52,9 @@ public class WebtoonDt {
 
     public void updateInfo(String subTitle, String content, String manager) {
         this.subTitle = subTitle;
-
+        this.content = content;
+        this.manager = manager;
+        this.uploadDate = LocalDate.now();
     }
 
     //연관관계 메서드
