@@ -1,16 +1,19 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.TokenProvider;
+import com.erp.webtoon.domain.Qualification;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.token.LogOutRequestDto;
 import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.LoginRequestDto;
+import com.erp.webtoon.dto.user.QualificaitonRequestDto;
 import com.erp.webtoon.dto.user.SlackRequestDto;
 import com.erp.webtoon.dto.user.UserListResponseDto;
 import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.dto.user.UserResponseDto;
 import com.erp.webtoon.dto.user.UserUpdateDto;
+import com.erp.webtoon.repository.QualificationRepository;
 import com.erp.webtoon.repository.RefreshTokenRepository;
 import com.erp.webtoon.repository.UserRepository;
 import com.slack.api.Slack;
@@ -41,7 +44,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final QualificationRepository qualificationRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenProvider tokenProvider;
     private final RedisTemplate redisTemplate;
@@ -115,6 +118,20 @@ public class UserService {
                 .collect(Collectors.toList());
 
         return userList;
+    }
+
+    /**
+     * 자격증 추가 (사원 입장에서)
+     */
+    public List<Qualification> getQualification(QualificaitonRequestDto qualificaitonRequestDto){
+        List<Qualification> qualificationList = new ArrayList<>();
+        qualificationList.add(qualificationRepository.save(Qualification.builder()
+                .qlfcDate(qualificaitonRequestDto.getQlfcDate())
+                .content(qualificaitonRequestDto.getContent())
+                .qlfcDate(qualificaitonRequestDto.getQlfcDate())
+                .files(qualificaitonRequestDto.getFiles())
+                .build()));
+        return qualificationList;
     }
 
     /**
