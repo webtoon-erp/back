@@ -44,7 +44,7 @@ public class NoticeController {
      */
     @GetMapping("/notice")
     public void getAllNotice() {
-
+        noticeService.findAllNotice();
     }
 
     /**

@@ -29,6 +29,11 @@ public class Notice {
 
     private int readCount;  // 조회수
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+
     @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL)
     private List<File> files = new ArrayList<>();   // 공지사항에 여러개 첨부파일 목록
 
@@ -58,5 +63,11 @@ public class Notice {
         this.title = title;
         this.content = content;
         this.noticeDate = LocalDate.now();
+    }
+
+    //연관관계 메소드
+    public void setWriteUser(User user) {
+        this.user = user;
+        user.getNotices().add(this);
     }
 }

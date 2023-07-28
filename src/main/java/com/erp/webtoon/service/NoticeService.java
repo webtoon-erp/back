@@ -2,8 +2,10 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.Notice;
+import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.notice.*;
 import com.erp.webtoon.repository.NoticeRepository;
+import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +27,7 @@ import static org.springframework.data.domain.Sort.Direction.*;
 @Transactional
 public class NoticeService {
 
+    private final UserRepository userRepository;
     private final NoticeRepository noticeRepository;
     private final FileService fileService;
 
@@ -33,6 +36,11 @@ public class NoticeService {
      */
     public void save(NoticeRequestDto dto) throws IOException {
         Notice notice = dto.toEntity();
+
+        User writeUser = userRepository.findByEmployeeId(dto.getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
+
+        notice.setWriteUser(writeUser);
 
         // 첨부파일이 1개 이상인 경우
         // 해당 첨부파일의 타입 지정해줘야함! -> 완료
@@ -69,7 +77,7 @@ public class NoticeService {
 
 
     /**
-     * 공지사항 전체 조회(List) -> 페이징 처리 해야하지 않을까
+     * 공지사항 전체 조회(List)
      */
     @Transactional(readOnly = true)
     public List<NoticeListDto> findAllNotice() {
