@@ -103,7 +103,7 @@ public class MessageService {
         return feedbackList.stream()
                 .map(feedback -> FeedbackListDto.builder()
                         .content(feedback.getContent())
-                        .sendUser(feedback.getSendUser())
+                        .sendUserName(feedback.getSendUser().getName())
                         .build())
                 .collect(Collectors.toList());
     }

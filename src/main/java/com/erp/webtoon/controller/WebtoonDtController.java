@@ -1,11 +1,13 @@
 package com.erp.webtoon.controller;
 
 import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
+import com.erp.webtoon.dto.webtoon.WebtoonDtResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtUpdateDto;
 import com.erp.webtoon.service.FileService;
 import com.erp.webtoon.service.WebtoonDtService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -47,13 +49,15 @@ public class WebtoonDtController {
 
 
     /**
-     * 회차 별 조회 -> 이미지만 조회 가능하도록,,,(추후 프론트랑 논의)
+     * 회차 별 조회
      */
-    @GetMapping("/image/{fileName}")
-    public ResponseEntity<Resource> getImage(@PathVariable("fileName") String fileName) throws MalformedURLException {
-        UrlResource resource = new UrlResource("file:" + fileService.getFullPath(fileName));
+    @GetMapping("/webtoonDt/{webtoonDtId}")
+    public ResponseEntity<Result> getImage(@PathVariable("webtoonDtId") Long webtoonDtId) throws MalformedURLException {
+        WebtoonDtResponseDto dto = webtoonDtService.showOne(webtoonDtId);
 
-        return ResponseEntity.ok(resource);
+        UrlResource resource = new UrlResource("file:" + fileService.getFullPath(dto.getFileName()));
+
+        return ResponseEntity.ok(new Result(resource, dto));
     }
 
     /**
@@ -79,5 +83,12 @@ public class WebtoonDtController {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/webtoonDt/{webtoonDtId}"));
         return headers;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private T Resource;
+        private T info;
     }
 }
