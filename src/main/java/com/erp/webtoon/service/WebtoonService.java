@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +31,7 @@ public class WebtoonService {
     /**
      * 등록 웹툰 생성
      */
+    @Transactional
     public Long save(WebtoonRequestDto dto) throws IOException {
         Webtoon webtoon = dto.toEntity();
 

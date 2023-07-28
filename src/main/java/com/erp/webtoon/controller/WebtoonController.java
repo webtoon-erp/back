@@ -8,13 +8,15 @@ import com.erp.webtoon.service.WebtoonService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -22,15 +24,19 @@ import java.util.List;
 public class WebtoonController {
 
     private final WebtoonService webtoonService;
-
     private final FileService fileService;
 
     /**
      * 웹툰 등록
      */
     @PostMapping("/webtoon")
-    public Long save(@RequestBody WebtoonRequestDto dto) throws IOException {
-        return webtoonService.save(dto);
+    public ResponseEntity save(@RequestBody WebtoonRequestDto dto) throws IOException {
+        Long id = webtoonService.save(dto);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("/webtoon"));
+
+        return new ResponseEntity(id, headers, HttpStatus.MOVED_PERMANENTLY);
     }
 
     /**
