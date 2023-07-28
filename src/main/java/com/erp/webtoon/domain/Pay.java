@@ -46,4 +46,10 @@ public class Pay {
             this.payYN = true;
         }
     }
+
+    // 연관관계 메소드
+    public void setUserPay(User user) {
+        this.user = user;
+        user.getPays().add(this);
+    }
 }

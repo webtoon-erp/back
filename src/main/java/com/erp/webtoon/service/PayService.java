@@ -26,17 +26,16 @@ public class PayService {
     /**
      * 월 급여 등록
      */
-    public Long save(PayRequestDto dto) {
+    public void save(PayRequestDto dto) {
 
         User findUser = userRepository.findByEmployeeId(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
-        Pay newPay = dto.toEntity(findUser);
+        Pay newPay = dto.toEntity();
 
-        findUser.getPays().add(newPay);
+        newPay.setUserPay(findUser);
 
         payRepository.save(newPay);
-        return newPay.getId();
     }
 
     /**
@@ -74,6 +73,8 @@ public class PayService {
                 .qualificationList(null)
                 .build();
     }
+
+
 
 
     /**
