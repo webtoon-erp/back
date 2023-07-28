@@ -2,9 +2,7 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Pay;
 import com.erp.webtoon.domain.User;
-import com.erp.webtoon.dto.pay.PayListResponseDto;
-import com.erp.webtoon.dto.pay.PayRequestDto;
-import com.erp.webtoon.dto.pay.PayResponseDto;
+import com.erp.webtoon.dto.pay.*;
 import com.erp.webtoon.repository.PayRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +20,11 @@ import java.util.stream.Collectors;
 public class PayService {
 
     private final PayRepository payRepository;
-
     private final UserRepository userRepository;
 
+
     /**
-     * 급여 등록
+     * 월 급여 등록
      */
     public Long save(PayRequestDto dto) {
 
@@ -48,28 +46,33 @@ public class PayService {
         User findUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
+        //유저 정보
+        PayUserResponseDto userInfoDto = new PayUserResponseDto(findUser);
+
+        //이번달 급여 정보
+        if (findUser.getPays().isEmpty()) {
+            return PayResponseDto.builder()
+                    .userInfo(userInfoDto)
+                    .payList(null)
+                    .payList(null)
+                    .qualificationList(null)
+                    .build();
+        }
+
+        PayMonthDto payMonthDto = new PayMonthDto(findUser.getPays().get(-1));
 
         List<PayListResponseDto> payList = findUser.getPays().stream()
-                .map(pay -> PayListResponseDto.builder()
-                        .totalMonthSalary((pay.getSalary() / 12) + pay.getAddPay())
-                        .addSalary(pay.getAddPay())
-                        .payDate(pay.getPayDate())
-                        .payYN(pay.isPayYN()).build())
+                .map(PayListResponseDto::new)
                 .collect(Collectors.toList());
 
-        // 가장 최근의 급여정보
-        Pay recentPay = findUser.getPays().get(-1);
+        //자격 수당 리스트
 
         return PayResponseDto.builder()
-                .employeeId(findUser.getEmployeeId())
-                .name(findUser.getName())
-                .email(findUser.getEmail())
-                .deptName(findUser.getDeptName())
-                .position(findUser.getPosition())
-                .bankAccount(recentPay.getBankAccount())
-                .yearSalary(recentPay.getSalary())
-                .monthSalary(recentPay.getSalary() / 12)
-                .payList(payList).build();
+                .userInfo(userInfoDto)
+                .monthPay(payMonthDto)
+                .payList(payList)
+                .qualificationList(null)
+                .build();
     }
 
 
