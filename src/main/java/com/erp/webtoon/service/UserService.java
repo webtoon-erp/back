@@ -92,6 +92,7 @@ public class UserService {
                 .position(findUser.getPosition())
                 .joinDate(findUser.getJoinDate())
                 .dayOff(findUser.getDayOff())
+                .qualifications(findUser.getQualifications())
                 .build();
     }
 
