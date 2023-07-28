@@ -1,10 +1,14 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.File;
+import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.Request;
 import com.erp.webtoon.domain.RequestDt;
 import com.erp.webtoon.domain.User;
+import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.dto.itsm.RequestDto;
+import com.erp.webtoon.dto.message.MessageSaveDto;
+import com.erp.webtoon.repository.MessageRepository;
 import com.erp.webtoon.repository.RequestRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +28,7 @@ public class RequestService {
 
      private final UserRepository userRepository;
      private final RequestRepository requestRepository;
+     private final MessageRepository messageRepository;
      private final SlackService slackService;
      private final FileService fileService;
 
@@ -86,6 +92,27 @@ public class RequestService {
         requestRepository.save(request);
         return request;
     }
+
+    /**
+     * 코멘트 등록 기능
+     */
+    public void registerComment(MessageSaveDto dto) throws IOException{
+        User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
+                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
+
+        //피드백 저장
+        Message feedbackMsg = dto.toEntity(null, sendUser);
+        messageRepository.save(feedbackMsg);
+
+        //메시지 저장
+        Request request = requestRepository.findById(feedbackMsg.getRefId())
+                .orElseThrow(() -> new EntityNotFoundException("요청 정보가 존재하지 않습니다."));
+
+        String originContent = feedbackMsg.getContent();
+        dto.setContent(request.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
+        registerComment(dto);
+    }
+
 
     /**
      * 코멘트 등록 알림 기능
