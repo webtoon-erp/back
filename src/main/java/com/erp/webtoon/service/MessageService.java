@@ -61,6 +61,7 @@ public class MessageService {
         - 읽음 -> R
         - 삭제 -> N
     */
+    @Transactional
     public void modifyStat(MessageUpdateDto dto) {
         Message message = dto.toEntity();
         char stat = message.getStat();
@@ -70,6 +71,7 @@ public class MessageService {
     /*
         메시지 등록
     */
+    @Transactional
     public void addMsg(MessageSaveDto dto) throws IOException {
 
         User rcvUser = userRepository.findByEmployeeId(dto.getRcvEmpId())
