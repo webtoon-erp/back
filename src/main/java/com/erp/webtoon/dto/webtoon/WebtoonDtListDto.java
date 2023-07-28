@@ -2,13 +2,12 @@ package com.erp.webtoon.dto.webtoon;
 
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.context.annotation.Primary;
 
 import java.time.LocalDate;
 
 @Data
 @Builder
-public class WebtoonEpisodeDto {
+public class WebtoonDtListDto {
     private int episodeNum;  // 회차번호
 
     private String subTitle; // 소제목

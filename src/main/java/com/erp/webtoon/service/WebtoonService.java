@@ -4,12 +4,10 @@ import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.dto.webtoon.WebtoonRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonResponseDto;
-import com.erp.webtoon.dto.webtoon.WebtoonEpisodeDto;
+import com.erp.webtoon.dto.webtoon.WebtoonDtListDto;
 import com.erp.webtoon.dto.webtoon.WebtoonListResponseDto;
 import com.erp.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +54,12 @@ public class WebtoonService {
 
         return webtoonList;
     }
+
+    /**
+     * 웹툰 카드뷰 조회 -> 임시와 최종 나눠서 각각 6개씩
+     * 주차별로 나눠야 함...주차를 뭘로 판단하지..
+     */
+
 
     /**
      * 등록 웹툰 검색 조회 -> 제목 / 작가 / 카테고리 / 키워드 별
@@ -132,8 +136,8 @@ public class WebtoonService {
         Webtoon findWebtoon = webtoonRepository.findById(webtoonId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 웹툰입니다."));
 
-        List<WebtoonEpisodeDto> episodeDtos = findWebtoon.getWebtoonDts().stream()
-                .map(webtoonDt -> WebtoonEpisodeDto.builder()
+        List<WebtoonDtListDto> episodeDtos = findWebtoon.getWebtoonDts().stream()
+                .map(webtoonDt -> WebtoonDtListDto.builder()
                         .episodeNum(webtoonDt.getEpisodeNum())
                         .subTitle(webtoonDt.getSubTitle())
                         .uploadDate(LocalDate.now())

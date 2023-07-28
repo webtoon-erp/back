@@ -23,6 +23,6 @@ public class WebtoonResponseDto {
 
     private String thumbnailFileName; // 썸네일 파일명
 
-    private List<WebtoonEpisodeDto> episode; // 각 웹툰별 회차
+    private List<WebtoonDtListDto> episode; // 각 웹툰별 회차
 
 }
