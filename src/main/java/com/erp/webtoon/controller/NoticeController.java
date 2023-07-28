@@ -34,13 +34,14 @@ public class NoticeController {
      * 공지사항 등록 -> 등록 후 어디로?
      */
     @PostMapping("/notice")
-    public void save(@RequestBody NoticeRequestDto dto) throws IOException {
+    public ResponseEntity save(@RequestBody NoticeRequestDto dto) throws IOException {
         noticeService.save(dto);
+
+        return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
     }
 
-
     /**
-     * 공지사항 전체 조회
+     * 공지사항 전체 조회 (List)
      */
     @GetMapping("/notice")
     public void getAllNotice() {
