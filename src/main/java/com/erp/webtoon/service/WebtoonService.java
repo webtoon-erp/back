@@ -46,13 +46,11 @@ public class WebtoonService {
     }
 
     /**
-     * 등록 웹툰 리스트 조회 -> 페이징 처리
+     * 등록 웹툰 전체 조회 (List)
      */
-    public List<WebtoonListResponseDto> getAllWebtoon(int page) {
+    public List<WebtoonListResponseDto> getAllWebtoon() {
 
-        Pageable pageable = PageRequest.of(page, 10, Sort.Direction.DESC, "id");
-
-        List<WebtoonListResponseDto> webtoonList = webtoonRepository.findAll(pageable).stream()
+        List<WebtoonListResponseDto> webtoonList = webtoonRepository.findAll(Sort.by("category")).stream()
                 .map(WebtoonListResponseDto::new)
                 .collect(Collectors.toList());
 

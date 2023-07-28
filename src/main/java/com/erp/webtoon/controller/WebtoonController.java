@@ -43,8 +43,8 @@ public class WebtoonController {
      * 등록된 모든 웹툰 조회
      */
     @GetMapping("/webtoon")
-    public ResponseEntity showAll(@RequestParam("page") int page) {
-        List<WebtoonListResponseDto> dtos = webtoonService.getAllWebtoon(page);
+    public ResponseEntity showAll() {
+        List<WebtoonListResponseDto> dtos = webtoonService.getAllWebtoon();
 
         return ResponseEntity.ok(dtos);
     }
