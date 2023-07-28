@@ -2,6 +2,7 @@ package com.erp.webtoon.controller;
 
 import com.erp.webtoon.dto.pay.PayRequestDto;
 import com.erp.webtoon.dto.pay.PayResponseDto;
+import com.erp.webtoon.dto.pay.PayUpdateDto;
 import com.erp.webtoon.service.PayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -36,9 +37,19 @@ public class PayController {
         return new ResponseEntity(redirect(), HttpStatus.MOVED_PERMANENTLY);
     }
 
+    /**
+     * 월 급여 수정
+     */
+    @PutMapping("/pays/{employeeId}")
+    public ResponseEntity update(@PathVariable String employeeId, @RequestBody PayUpdateDto dto) {
+        payService.update(employeeId, dto);
+        return new ResponseEntity(redirect(), HttpStatus.MOVED_PERMANENTLY);
+    }
+
     private HttpHeaders redirect() {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/pays/{employeeId}"));
         return headers;
     }
+
 }

@@ -40,11 +40,19 @@ public class Pay {
         this.user = user;
     }
 
-    // 지급정보 수정
+    // 지급여부 수정
     public void updatePayYN() {
         if (this.payYN == false) {
             this.payYN = true;
         }
+    }
+
+    //지급 수정
+    public void updatePay(int salary, int addPay, String bankAccount, LocalDate payDate) {
+        this.salary = salary;
+        this.addPay = addPay;
+        this.bankAccount = bankAccount;
+        this.payDate = payDate;
     }
 
     // 연관관계 메소드

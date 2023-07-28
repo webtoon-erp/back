@@ -74,7 +74,15 @@ public class PayService {
                 .build();
     }
 
+    /**
+     * 월 급여 수정
+     */
+    public void update(String employeeId, PayUpdateDto dto) {
+        User findUser = userRepository.findByEmployeeId(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
 
+        findUser.getPays().get(-1).updatePay(dto.getYearSalary(), dto.getAddSalary(), dto.getBankAccount(), dto.getPayDate());
+    }
 
 
     /**
