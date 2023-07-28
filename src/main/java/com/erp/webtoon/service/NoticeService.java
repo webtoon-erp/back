@@ -71,6 +71,7 @@ public class NoticeService {
                 .readCount(findNotice.getReadCount())
                 .noticeType(findNotice.getNoticeType())
                 .noticeDate(findNotice.getNoticeDate())
+                .name(findNotice.getUser().getName())
                 .originFileNames(findNotice.getFileNames())
                 .build();
     }

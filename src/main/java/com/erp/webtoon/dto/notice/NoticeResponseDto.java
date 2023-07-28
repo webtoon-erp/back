@@ -20,6 +20,8 @@ public class NoticeResponseDto {
 
     private LocalDate noticeDate;
 
+    private String name; // 작성자
+
     private List<String> originFileNames; // 오리지널 파일명
 
 }
