@@ -22,6 +22,8 @@ public class WebtoonDt {
 
     private String subTitle; // 소제목
 
+    private String content; // 작가의 말
+
     private String manager; // 담당자 이름
 
     private LocalDate uploadDate; // 업로드 날짜
@@ -36,8 +38,9 @@ public class WebtoonDt {
     private List<File> files = new ArrayList<>();   // 참조하는 첨부파일들
 
     @Builder
-    public WebtoonDt(String subTitle) {
+    public WebtoonDt(String subTitle, String content) {
         this.subTitle = subTitle;
+        this.content = content;
         this.uploadDate = LocalDate.now();
         this.finalUploadYN = false;
     }
@@ -47,9 +50,9 @@ public class WebtoonDt {
         this.uploadDate = LocalDate.now();
     }
 
-    public void updateInfo(int episodeNum, String subTitle) {
-        this.episodeNum = episodeNum;
+    public void updateInfo(String subTitle, String content, String manager) {
         this.subTitle = subTitle;
+
     }
 
     //연관관계 메서드

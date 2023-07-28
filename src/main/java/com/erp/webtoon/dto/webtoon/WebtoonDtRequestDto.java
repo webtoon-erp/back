@@ -24,6 +24,7 @@ public class WebtoonDtRequestDto {
     public WebtoonDt toEntity() {
         return WebtoonDt.builder()
                 .subTitle(subTitle)
+                .content(content)
                 .build();
     }
 }
