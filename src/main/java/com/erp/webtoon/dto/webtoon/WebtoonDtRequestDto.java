@@ -17,7 +17,7 @@ public class WebtoonDtRequestDto {
 
     private String content; // 작가의 말
 
-    private String employeeId; // 등록자
+    private String employeeId; // 담당자
 
     private MultipartFile uploadFile;   // 업로드 파일;
 
