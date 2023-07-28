@@ -1,5 +1,8 @@
 package com.erp.webtoon.controller;
 
+import com.erp.webtoon.dto.message.MessageSaveDto;
+import com.erp.webtoon.dto.webtoon.FeedbackListDto;
+import com.erp.webtoon.dto.webtoon.FeedbackSaveDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtUpdateDto;
 import com.erp.webtoon.service.FileService;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,4 +66,14 @@ public class WebtoonDtController {
     public void delete(@PathVariable Long webtoonDtId) {
         webtoonDtService.delete(webtoonDtId);
     }
+
+    /**
+     * 피드백 조회
+     */
+    @GetMapping("/webtoonDt/feedback/{webtoonDtId}")
+    public List<FeedbackListDto> feedbackList(@PathVariable Long webtoonDtId) {
+        return webtoonDtService.findFeedbackList(webtoonDtId);
+    }
+
+
 }

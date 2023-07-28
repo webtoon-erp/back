@@ -4,6 +4,7 @@ import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.dto.message.*;
+import com.erp.webtoon.dto.webtoon.FeedbackListDto;
 import com.erp.webtoon.repository.MessageRepository;
 import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
@@ -90,23 +91,6 @@ public class MessageService {
     }
 
     /*
-        피드백 조회
-        - msgType : webtoon
-        - 수신자 : null
-    */
-    @Transactional(readOnly = true)
-    public List<FeedbackListDto> findFeedbackList(Long webtoonId) {
-        List<Message> feedbackList = messageRepository.findByRefId(webtoonId);
-
-        return feedbackList.stream()
-                .map(feedback -> FeedbackListDto.builder()
-                        .content(feedback.getContent())
-                        .sendUser(feedback.getSendUser())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    /*
         피드백 등록
         - msgType : webtoon
         - 수신자 : null
@@ -126,6 +110,7 @@ public class MessageService {
 
         String originContent = feedbackMsg.getContent();
         dto.setContent(webtoon.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
+
         addMsg(dto);
 
     }

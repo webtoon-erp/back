@@ -1,4 +1,4 @@
-package com.erp.webtoon.dto.message;
+package com.erp.webtoon.dto.webtoon;
 
 import com.erp.webtoon.domain.User;
 import lombok.Builder;

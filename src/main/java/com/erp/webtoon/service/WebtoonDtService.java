@@ -1,10 +1,13 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.File;
+import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.domain.WebtoonDt;
+import com.erp.webtoon.dto.webtoon.FeedbackListDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtUpdateDto;
+import com.erp.webtoon.repository.MessageRepository;
 import com.erp.webtoon.repository.WebtoonDtRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +28,7 @@ public class WebtoonDtService {
 
     private final WebtoonRepository webtoonRepository;
     private final FileService fileService;
+    private final MessageRepository messageRepository;
 
     /**
      * 회차 임시 업로드 (최초 등록)
@@ -89,6 +95,23 @@ public class WebtoonDtService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회차입니다."));
 
         webtoonDtRepository.delete(findWebtoonDt);
+    }
+
+    /*
+        피드백 조회
+        - msgType : webtoon
+        - 수신자 : null
+    */
+    @Transactional(readOnly = true)
+    public List<FeedbackListDto> findFeedbackList(Long webtoonDtId) {
+        List<Message> feedbackList = messageRepository.findByRefId(webtoonDtId);
+
+        return feedbackList.stream()
+                .map(feedback -> FeedbackListDto.builder()
+                        .content(feedback.getContent())
+                        .sendUser(feedback.getSendUser())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }
