@@ -7,7 +7,6 @@ import com.erp.webtoon.dto.notice.*;
 import com.erp.webtoon.repository.NoticeRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -82,7 +81,7 @@ public class NoticeService {
      */
     @Transactional(readOnly = true)
     public List<NoticeListDto> findAllNotice() {
-        List<Notice> noticeList = noticeRepository.findAll();
+        List<Notice> noticeList = noticeRepository.findAll(Sort.by(DESC, "id"));
 
         return noticeList.stream()
                 .map(NoticeListDto::new)
