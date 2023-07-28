@@ -13,18 +13,17 @@ public class WebtoonDtRequestDto {
 
     private Long webtoonId; // 해당하는 웹툰의 아이디 (조회 용)
 
-    private String episodeNum;
-
     private String subTitle;
+
+    private String content; // 작가의 말
+
+    private String employeeId; // 등록자
 
     private MultipartFile uploadFile;   // 업로드 파일;
 
-    public WebtoonDt toEntity(Webtoon webtoon) {
+    public WebtoonDt toEntity() {
         return WebtoonDt.builder()
-                .episodeNum(episodeNum)
                 .subTitle(subTitle)
-                .webtoon(webtoon)
                 .build();
     }
-
 }

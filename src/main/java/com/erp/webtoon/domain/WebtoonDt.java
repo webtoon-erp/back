@@ -18,9 +18,11 @@ public class WebtoonDt {
     @Column(name = "webtoon_dt_id")
     private Long id;
 
-    private String episodeNum;  // 회차번호
+    private int episodeNum;  // 회차번호
 
     private String subTitle; // 소제목
+
+    private String manager; // 담당자 이름
 
     private LocalDate uploadDate; // 업로드 날짜
 
@@ -34,12 +36,10 @@ public class WebtoonDt {
     private List<File> files = new ArrayList<>();   // 참조하는 첨부파일들
 
     @Builder
-    public WebtoonDt(String episodeNum, String subTitle, Webtoon webtoon) {
-        this.episodeNum = episodeNum;
+    public WebtoonDt(String subTitle) {
         this.subTitle = subTitle;
         this.uploadDate = LocalDate.now();
         this.finalUploadYN = false;
-        this.webtoon = webtoon;
     }
 
     public void changeUploadState() {
@@ -47,8 +47,24 @@ public class WebtoonDt {
         this.uploadDate = LocalDate.now();
     }
 
-    public void updateInfo(String episodeNum, String subTitle) {
+    public void updateInfo(int episodeNum, String subTitle) {
         this.episodeNum = episodeNum;
         this.subTitle = subTitle;
+    }
+
+    //연관관계 메서드
+    public void setWebtoon(Webtoon webtoon) {
+        this.webtoon = webtoon;
+        webtoon.getWebtoonDts().add(this);
+    }
+
+    // 회차번호 자동 증가
+    public void setEpisodeNum(int num) {
+        this.episodeNum = num + 1;
+    }
+
+    // 담당자 등록
+    public void setManager(String name) {
+        this.manager = name;
     }
 }

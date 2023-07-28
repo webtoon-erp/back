@@ -7,11 +7,14 @@ import com.erp.webtoon.service.WebtoonDtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,8 +28,13 @@ public class WebtoonDtController {
      * 개별 웹툰 에피소드 등록
      */
     @PostMapping("/webtoonDt")
-    public void upload(@RequestBody WebtoonDtRequestDto dto) throws IOException {
+    public ResponseEntity upload(@RequestBody WebtoonDtRequestDto dto) throws IOException {
         webtoonDtService.upload(dto);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("/webtoon/{webtoonId}"));
+
+        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 
     /**

@@ -15,6 +15,8 @@ public class WebtoonResponseDto {
 
     private String artist;
 
+    private String illustrator;
+
     private String category;
 
     private String keyword;

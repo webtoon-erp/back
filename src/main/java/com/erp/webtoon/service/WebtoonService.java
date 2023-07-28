@@ -137,6 +137,7 @@ public class WebtoonService {
                         .episodeNum(webtoonDt.getEpisodeNum())
                         .subTitle(webtoonDt.getSubTitle())
                         .uploadDate(LocalDate.now())
+                        .manager(webtoonDt.getManager())
                         .finalUploadYN(false).build())
                 .collect(Collectors.toList());
 
@@ -144,6 +145,7 @@ public class WebtoonService {
         return WebtoonResponseDto.builder()
                 .title(findWebtoon.getTitle())
                 .artist(findWebtoon.getArtist())
+                .illustrator(findWebtoon.getIllustrator())
                 .intro(findWebtoon.getIntro())
                 .category(findWebtoon.getCategory())
                 .keyword(findWebtoon.getKeyword())

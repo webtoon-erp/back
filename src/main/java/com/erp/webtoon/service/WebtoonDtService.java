@@ -1,10 +1,12 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.File;
+import com.erp.webtoon.domain.User;
 import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.domain.WebtoonDt;
 import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtUpdateDto;
+import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.repository.WebtoonDtRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +22,10 @@ import java.io.IOException;
 public class WebtoonDtService {
 
     private final WebtoonDtRepository webtoonDtRepository;
-
     private final WebtoonRepository webtoonRepository;
+    private final UserRepository userRepository;
     private final FileService fileService;
+
 
     /**
      * 회차 임시 업로드 (최초 등록)
@@ -31,7 +34,15 @@ public class WebtoonDtService {
         Webtoon findWebtoon = webtoonRepository.findById(dto.getWebtoonId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 웹툰입니다."));
 
-        WebtoonDt newWebtoonDt = dto.toEntity(findWebtoon);
+        User findUser = userRepository.findByEmployeeId(dto.getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
+
+        //새로운 회차 생성
+        WebtoonDt newWebtoonDt = dto.toEntity();
+
+        newWebtoonDt.setEpisodeNum(findWebtoon.getWebtoonDts().size());
+        newWebtoonDt.setManager(findUser.getName());
+        newWebtoonDt.setWebtoon(findWebtoon);
 
         //파일 저장
         if(!dto.getUploadFile().isEmpty()) {
@@ -39,9 +50,7 @@ public class WebtoonDtService {
             uploadFile.updateFileWebtoonDt(newWebtoonDt);
             newWebtoonDt.getFiles().add(uploadFile);
         }
-
         webtoonDtRepository.save(newWebtoonDt);
-
     }
 
     /**
