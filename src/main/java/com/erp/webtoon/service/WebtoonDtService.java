@@ -1,13 +1,13 @@
 package com.erp.webtoon.service;
 
-import com.erp.webtoon.domain.File;
-import com.erp.webtoon.domain.Message;
-import com.erp.webtoon.domain.Webtoon;
-import com.erp.webtoon.domain.WebtoonDt;
+import com.erp.webtoon.domain.*;
+import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.dto.webtoon.FeedbackListDto;
+import com.erp.webtoon.dto.webtoon.FeedbackSaveDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtUpdateDto;
 import com.erp.webtoon.repository.MessageRepository;
+import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.repository.WebtoonDtRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +29,8 @@ public class WebtoonDtService {
     private final WebtoonRepository webtoonRepository;
     private final FileService fileService;
     private final MessageRepository messageRepository;
+    private final UserRepository userRepository;
+    private final MessageService messageService;
 
     /**
      * 회차 임시 업로드 (최초 등록)
@@ -112,6 +114,39 @@ public class WebtoonDtService {
                         .sendUser(feedback.getSendUser())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    /*
+        피드백 등록
+        - msgType : webtoon
+        - 수신자 : null
+    */
+    public void addFeedback(FeedbackSaveDto dto) throws IOException {
+
+        User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
+                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
+
+        //피드백 저장
+        Message feedbackMsg = dto.toEntity(sendUser);
+        messageRepository.save(feedbackMsg);
+
+        //메시지 저장
+        Webtoon webtoon = webtoonRepository.findById(feedbackMsg.getRefId())
+                .orElseThrow(() -> new EntityNotFoundException("웹툰 정보가 존재하지 않습니다."));
+
+        String originContent = feedbackMsg.getContent();
+        dto.setContent(webtoon.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
+
+        MessageSaveDto msgDto = new MessageSaveDto();
+        msgDto.setMsgType(dto.getMsgType());
+        msgDto.setContent(dto.getContent());
+        msgDto.setRefId(dto.getRefId());
+        msgDto.setProgramId(dto.getProgramId());
+        msgDto.setSendEmpId(dto.getSendEmpId());
+        msgDto.setRcvEmpId(null);
+
+        messageService.addMsg(msgDto);
+
     }
 
 }

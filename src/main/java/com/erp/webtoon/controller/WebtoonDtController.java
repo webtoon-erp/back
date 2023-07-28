@@ -75,5 +75,13 @@ public class WebtoonDtController {
         return webtoonDtService.findFeedbackList(webtoonDtId);
     }
 
+    /**
+     * 피드백 저장
+     */
+    @PostMapping("/webttonDt/feedback")
+    public void feedbackSave(@RequestBody FeedbackSaveDto dto) throws IOException {
+        webtoonDtService.addFeedback(dto);
+    }
+
 
 }
