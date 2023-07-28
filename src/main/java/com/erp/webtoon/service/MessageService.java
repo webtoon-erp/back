@@ -113,6 +113,7 @@ public class MessageService {
         - msgType : webtoon
         - 수신자 : null
     */
+    @Transactional
     public void addFeedbackMsg(MessageSaveDto dto) throws IOException {
 
         User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
