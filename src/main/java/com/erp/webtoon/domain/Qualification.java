@@ -21,11 +21,11 @@ public class Qualification {
     @Column(name = "qlfc_id")
     private Long id;
 
-    private int sortSequence; // 정렬번호
+    private Integer sortSequence; // 정렬번호
 
-    private String qlfcType;    // 자격증 타입
+    private String qlfcType;    // 자격증 타입 (자격증 이름)
 
-    private String content;     // 내용
+    private String content;     // 내용 (자격증 상세)
 
     private LocalDate qlfcDate;    // 만료일자
 
