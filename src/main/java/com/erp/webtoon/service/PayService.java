@@ -65,12 +65,15 @@ public class PayService {
                 .collect(Collectors.toList());
 
         //자격 수당 리스트
+        List<PayQualificationDto> qualificationDtos = findUser.getQualifications().stream()
+                .map(PayQualificationDto::new)
+                .collect(Collectors.toList());
 
         return PayResponseDto.builder()
                 .userInfo(userInfoDto)
                 .monthPay(payMonthDto)
                 .payList(payList)
-                .qualificationList(null)
+                .qualificationList(qualificationDtos)
                 .build();
     }
 
