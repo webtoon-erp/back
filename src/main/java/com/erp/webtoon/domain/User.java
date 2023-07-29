@@ -108,6 +108,10 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public void registerQualification(List<Qualification> qualificationList){
+        this.qualifications = qualificationList;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
