@@ -133,5 +133,29 @@ public class MessageService {
 
     }
 
+    /**
+     * 요청 등록시 알림 발송
+     */
+    @Transactional
+    public void addRequestMsg(String rcvEmployeeId, String sendEmployeeId, Long requestId) throws IOException {
+
+        User rcvUser = userRepository.findByEmployeeId(rcvEmployeeId)
+                .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
+        User sendUser = userRepository.findByEmployeeId(sendEmployeeId)
+                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
+
+        MessageSaveDto dto = MessageSaveDto.builder()
+                .msgType("it")
+                .content("새로운 요청이 접수되었습니다.")
+                .rcvEmpId(rcvEmployeeId)
+                .sendEmpId(sendEmployeeId)
+                .refId(requestId)
+                .programId(null)
+                .build();
+
+        Message message = dto.toEntity(rcvUser, sendUser);
+        messageRepository.save(message);
+        addMsg(dto);
+    }
 
 }
