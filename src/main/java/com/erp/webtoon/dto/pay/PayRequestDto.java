@@ -19,18 +19,14 @@ public class PayRequestDto {
 
     private String bankAccount; // 지급계좌
 
-    private int payDateYear; // 지급 년도
+    private LocalDate payDate; // 지급일
 
-    private int payDateMonth; // 지급 월
-
-    private int payDateDay; // 지급 일
-
-    public Pay toEntity(User user) {
+    public Pay toEntity() {
         return Pay.builder()
                 .salary(yearSalary)
                 .addPay(addSalary)
                 .bankAccount(bankAccount)
-                .payDate(LocalDate.of(payDateYear, payDateMonth, payDateDay))
+                .payDate(payDate)
                 .payYN(false).build();
     }
 }

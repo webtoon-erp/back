@@ -10,21 +10,11 @@ import java.util.List;
 @Builder
 public class PayResponseDto {
 
-    private String employeeId; // 사번
+    private PayUserResponseDto userInfo; // 개인 정보
 
-    private String name;    // 이름
-
-    private String email;   // 이메일
-
-    private String deptName;    //부서명
-
-    private String position;    // 직급
-
-    private String bankAccount; // 지급계좌
-
-    private int yearSalary;   // 연봉
-
-    private int monthSalary; // 월급
+    private PayMonthDto monthPay; // 월 지급액
 
     private List<PayListResponseDto> payList; //지급 목록
+
+    private List<PayQualificationDto> qualificationList; // 자격 수당 리스트
 }

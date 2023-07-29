@@ -1,16 +1,22 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Plan;
+import com.erp.webtoon.dto.plan.PlanListDto;
 import com.erp.webtoon.dto.plan.PlanRequestDto;
 import com.erp.webtoon.dto.plan.PlanResponseDto;
+import com.erp.webtoon.dto.plan.PlanUpdateDto;
 import com.erp.webtoon.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +80,28 @@ public class PlanService {
                 .build();
     }
 
+    /**
+     * 일정 전체 조회
+     */
+    public List<PlanListDto> getAllPlan() {
+        return planRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
+                .map(PlanListDto::new)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 일정 수정
+     */
+    @Transactional
+    public void update(Long planId, PlanUpdateDto dto) {
+        Plan findPlan = planRepository.findById(planId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 일정입니다."));
+
+        findPlan.updatePlan(dto.getPlanType(), dto.getContent(), LocalDate.of(dto.getStartYear(), dto.getStartMonth(), dto.getStartDay()),
+                LocalTime.of(dto.getStartHour(), dto.getStartMinute()), LocalDate.of(dto.getEndYear(), dto.getEndMonth(), dto.getEndDay()),
+                LocalTime.of(dto.getEndHour(), dto.getEndMinute()));
+
+    }
 
     /**
      * 일정 삭제

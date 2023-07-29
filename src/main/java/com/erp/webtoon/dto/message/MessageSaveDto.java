@@ -3,11 +3,13 @@ package com.erp.webtoon.dto.message;
 import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.Program;
 import com.erp.webtoon.domain.User;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
 @Data
+@Builder
 public class MessageSaveDto {
 
     @NotBlank

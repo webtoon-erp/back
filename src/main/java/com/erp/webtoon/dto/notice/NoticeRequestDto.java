@@ -9,6 +9,8 @@ import java.util.List;
 @Data
 public class NoticeRequestDto {
 
+    private String employeeId;
+
     private String noticeType;
 
     private String title;

@@ -29,6 +29,11 @@ public class Notice {
 
     private int readCount;  // 조회수
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+
     @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL)
     private List<File> files = new ArrayList<>();   // 공지사항에 여러개 첨부파일 목록
 
@@ -53,14 +58,16 @@ public class Notice {
                 .collect(Collectors.toList());
     }
 
-    public void updateNoticeType(String noticeType) {
+    public void updateNotice(String noticeType, String title, String content) {
         this.noticeType = noticeType;
+        this.title = title;
+        this.content = content;
+        this.noticeDate = LocalDate.now();
     }
 
-    public void updateTitle(String title) {
-        this.title = title;
-    }
-    public void updateContent(String content) {
-        this.content = content;
+    //연관관계 메소드
+    public void setWriteUser(User user) {
+        this.user = user;
+        user.getNotices().add(this);
     }
 }

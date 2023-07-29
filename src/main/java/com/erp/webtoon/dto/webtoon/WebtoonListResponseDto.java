@@ -7,12 +7,15 @@ import lombok.Data;
 @Data
 public class WebtoonListResponseDto {
 
-    private Long id;
+    private Long id;    //프론트 검색용
+
     private String title;
 
     private String artist;  //작가 이름
 
-    private String category;
+    private String illustrator; // 그림 작가
+
+    private String category; // 요일
 
     private String keyword;
 
@@ -20,6 +23,7 @@ public class WebtoonListResponseDto {
         this.id = webtoon.getId();
         this.title = webtoon.getTitle();
         this.artist = webtoon.getArtist();
+        this.illustrator = webtoon.getIllustrator();
         this.category = webtoon.getCategory();
         this.keyword = webtoon.getKeyword();
     }
