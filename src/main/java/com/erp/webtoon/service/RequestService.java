@@ -125,6 +125,14 @@ public class RequestService {
         return messageService.findFeedbackList(requestId);
     }
 
+    /**
+     * 코멘트 삭제 기능
+     */
+    public void deleteComment(Long messageId){
+        Message message = messageRepository.findById(messageId).orElseThrow(() -> new EntityNotFoundException("No Such Message"));
+        message.changeStat('0');
+    }
+
 
     /**
      * 코멘트 등록 알림 기능
