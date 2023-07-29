@@ -127,6 +127,7 @@ public class UserService {
     public void registerQualification(QualificaitonRequestDto qualificaitonRequestDto){
         List<Qualification> qualificationList = new ArrayList<>();
         qualificationList.add(qualificationRepository.save(Qualification.builder()
+                .sortSequence(qualificaitonRequestDto.getSortSequence())
                 .qlfcDate(qualificaitonRequestDto.getQlfcDate())
                 .content(qualificaitonRequestDto.getContent())
                 .qlfcType(qualificaitonRequestDto.getQlfcType())
