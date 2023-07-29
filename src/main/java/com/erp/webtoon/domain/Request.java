@@ -29,7 +29,7 @@ public class Request {
 
     private String content;
 
-    private int step;
+    private int step; // 1: 요청 2: 접수 3: 진행 4: 완료 5: 반려
 
     private LocalDate dueDate;     // 기한 일자
 

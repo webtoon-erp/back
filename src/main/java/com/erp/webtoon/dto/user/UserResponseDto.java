@@ -1,7 +1,11 @@
 package com.erp.webtoon.dto.user;
 
+import com.erp.webtoon.domain.Qualification;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -27,4 +31,6 @@ public class UserResponseDto {
     private String joinDate;    // 입사날짜
 
     private int dayOff;     // 연차개수
+
+    private List<Qualification> qualifications;     // 자격증들
 }
