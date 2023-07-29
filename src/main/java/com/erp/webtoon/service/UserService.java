@@ -122,17 +122,19 @@ public class UserService {
     }
 
     /**
-     * 자격증 추가 (사원 입장에서)
+     * 자격증 추가 (인사팀에서 진행)
      */
-    public List<Qualification> getQualification(QualificaitonRequestDto qualificaitonRequestDto){
+    public void registerQualification(QualificaitonRequestDto qualificaitonRequestDto){
         List<Qualification> qualificationList = new ArrayList<>();
         qualificationList.add(qualificationRepository.save(Qualification.builder()
                 .qlfcDate(qualificaitonRequestDto.getQlfcDate())
                 .content(qualificaitonRequestDto.getContent())
-                .qlfcDate(qualificaitonRequestDto.getQlfcDate())
-                .files(qualificaitonRequestDto.getFiles())
+                .qlfcType(qualificaitonRequestDto.getQlfcType())
+                .qlfcPay(qualificaitonRequestDto.getQlfcPay())
                 .build()));
-        return qualificationList;
+        User user = userRepository.findByEmployeeId(qualificaitonRequestDto.getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("No Such User"));
+        user.registerQualification(qualificationList);
     }
 
     /**
