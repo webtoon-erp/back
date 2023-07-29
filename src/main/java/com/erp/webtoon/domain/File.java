@@ -44,7 +44,7 @@ public class File {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doc_id")
     private Document document;    // 해당 파일이 첨부된 문서
-    
+
     @Builder
     public File(String fileName, String originName, String ext, Long fileSize) {
         this.fileName = fileName;

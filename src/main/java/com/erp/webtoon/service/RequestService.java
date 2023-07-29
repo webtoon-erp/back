@@ -115,7 +115,7 @@ public class RequestService {
 
         String originContent = feedbackMsg.getContent();
         dto.setContent(request.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
-        registerComment(dto);
+        messageService.addMsg(dto);
     }
 
     /**
@@ -131,16 +131,6 @@ public class RequestService {
     public void deleteComment(Long messageId){
         Message message = messageRepository.findById(messageId).orElseThrow(() -> new EntityNotFoundException("No Such Message"));
         message.changeStat('D');
-    }
-
-
-    /**
-     * 코멘트 등록 알림 기능
-     */
-    public void sendCommentAlarm(Long requestId, String employeeId){
-        Request request = requestRepository.findById(requestId).orElseThrow(() -> new EntityNotFoundException("No such Request"));
-        String msg = request.getTitle() + "의 코멘트가 등록되었습니다.";
-        slackService.sendSlackChannel(msg, employeeId);
     }
 
 
