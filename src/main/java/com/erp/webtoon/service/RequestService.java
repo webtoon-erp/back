@@ -130,7 +130,7 @@ public class RequestService {
      */
     public void deleteComment(Long messageId){
         Message message = messageRepository.findById(messageId).orElseThrow(() -> new EntityNotFoundException("No Such Message"));
-        message.changeStat('0');
+        message.changeStat('D');
     }
 
 
