@@ -44,11 +44,7 @@ public class File {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doc_id")
     private Document document;    // 해당 파일이 첨부된 문서
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "qlfc_id")
-    private Qualification qualification;    // 해당 파일이 첨부된 자격증
-
+    
     @Builder
     public File(String fileName, String originName, String ext, Long fileSize) {
         this.fileName = fileName;

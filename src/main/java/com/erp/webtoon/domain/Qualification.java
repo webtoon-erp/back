@@ -34,7 +34,4 @@ public class Qualification {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;      // 해당 자격증 가지고 있는 유저
-
-    @OneToMany(mappedBy = "qualification", cascade = CascadeType.ALL)
-    private List<File> files = new ArrayList<>();      // 첨부한 파일목록
 }
