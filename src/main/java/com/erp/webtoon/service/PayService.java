@@ -1,16 +1,17 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Pay;
+import com.erp.webtoon.domain.Qualification;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.pay.*;
 import com.erp.webtoon.repository.PayRepository;
+import com.erp.webtoon.repository.QualificationRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,7 @@ public class PayService {
 
     private final PayRepository payRepository;
     private final UserRepository userRepository;
+    private final QualificationRepository qualificationRepository;
 
 
     /**
@@ -37,6 +39,7 @@ public class PayService {
 
         payRepository.save(newPay);
     }
+
 
     /**
      * 급여 조회 -> 이때 직원 정보도 같이 조회해야함 + 급여 list
@@ -80,13 +83,22 @@ public class PayService {
     /**
      * 월 급여 수정
      */
-    public void update(String employeeId, PayUpdateDto dto) {
+    public void updateMonthPay(String employeeId, PayUpdateDto dto) {
         User findUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
 
         findUser.getPays().get(-1).updatePay(dto.getYearSalary(), dto.getAddSalary(), dto.getBankAccount(), dto.getPayDate());
     }
 
+    /**
+     * 자격 수당 수정
+     */
+    public void saveQualPay(Long qualId, QualificationPayRequestDto dto) {
+        Qualification findQual = qualificationRepository.findById(qualId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 자격증입니다."));
+
+        findQual.updateQlfcPay(dto.getQualPay());
+    }
 
     /**
      * 급여 지급여부 수정
