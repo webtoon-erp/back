@@ -51,25 +51,28 @@ public class PayService {
         //유저 정보
         PayUserResponseDto userInfoDto = new PayUserResponseDto(findUser);
 
+        //자격 수당 리스트
+        List<PayQualificationDto> qualificationDtos = findUser.getQualifications().stream()
+                .map(PayQualificationDto::new)
+                .collect(Collectors.toList());
+
         //이번달 급여 정보
         if (findUser.getPays().isEmpty()) {
             return PayResponseDto.builder()
                     .userInfo(userInfoDto)
+                    .monthPay(null)
                     .payList(null)
-                    .payList(null)
-                    .qualificationList(null)
+                    .qualificationList(qualificationDtos)
                     .build();
         }
 
+        // 가장 최근의 급여 정보
         PayMonthDto payMonthDto = new PayMonthDto(findUser.getPays().get(-1));
+        payMonthDto.setQualSalary(findUser.getQualifications());
 
+        //해당 유저의 지금까지 받았던 지급 정보
         List<PayListResponseDto> payList = findUser.getPays().stream()
                 .map(PayListResponseDto::new)
-                .collect(Collectors.toList());
-
-        //자격 수당 리스트
-        List<PayQualificationDto> qualificationDtos = findUser.getQualifications().stream()
-                .map(PayQualificationDto::new)
                 .collect(Collectors.toList());
 
         return PayResponseDto.builder()
@@ -83,11 +86,21 @@ public class PayService {
     /**
      * 월 급여 수정
      */
-    public void updateMonthPay(String employeeId, PayUpdateDto dto) {
+    public void updateMonthPay(String employeeId, PayMonthUpdateDto dto) {
         User findUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
 
-        findUser.getPays().get(-1).updatePay(dto.getYearSalary(), dto.getAddSalary(), dto.getBankAccount(), dto.getPayDate());
+        findUser.getPays().get(-1).updatePay(dto.getYearSalary(), dto.getAddSalary(), dto.getPayDate());
+    }
+
+    /**
+     * 계좌 수정
+     */
+    public void updateAccount(String employeeId, PayAccountUpdateDto dto) {
+        User findUser = userRepository.findByEmployeeId(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
+
+        findUser.getPays().get(-1).updateAccount(dto.getBankAccount());
     }
 
     /**
