@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,6 +83,26 @@ public class PayService {
                 .payList(payList)
                 .qualificationList(qualificationDtos)
                 .build();
+    }
+
+    /**
+     * 전체 급여 리스트
+     */
+    public List<PayAllListResponseDto> allPayList() {
+        List<PayAllListResponseDto> payList = new ArrayList<>();
+
+        List<User> allUser = userRepository.findAll();
+
+        for (User user : allUser) {
+
+            PayAllListResponseDto dto = new PayAllListResponseDto(user);
+
+            if(!user.getPays().isEmpty()) {
+                dto.addPayInfo(user.getPays().get(-1));
+            }
+            payList.add(dto);
+        }
+        return payList;
     }
 
     /**

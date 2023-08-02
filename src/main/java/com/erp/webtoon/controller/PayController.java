@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +25,15 @@ public class PayController {
         PayResponseDto dto = payService.search(employeeId);
 
         return ResponseEntity.ok(dto);
+    }
+
+    /**
+     * 전체 급여 조회
+     */
+    @GetMapping("/pays/all")
+    public ResponseEntity showAll(){
+        List<PayAllListResponseDto> dtos = payService.allPayList();
+        return ResponseEntity.ok(dtos);
     }
 
     /**
