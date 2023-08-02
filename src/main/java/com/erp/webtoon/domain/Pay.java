@@ -59,6 +59,11 @@ public class Pay {
         this.bankAccount = bankAccount;
     }
 
+    //지급날짜 수정
+    public void updatePayDate(LocalDate payDate) {
+        this.payDate = payDate;
+    }
+
     // 연관관계 메소드
     public void setUserPay(User user) {
         this.user = user;

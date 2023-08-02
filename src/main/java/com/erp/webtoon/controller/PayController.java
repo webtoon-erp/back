@@ -64,6 +64,15 @@ public class PayController {
     }
 
     /**
+     * 지급일 여러명 수정
+     */
+    @PutMapping("/pays/payDate")
+    public ResponseEntity updatePayDate(@RequestBody List<PayDateUpdateListDto> dtos) {
+        payService.updateAllPayDate(dtos);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    /**
      * 자격 수당 등록
      */
     @PutMapping("/pays/{qualId}")

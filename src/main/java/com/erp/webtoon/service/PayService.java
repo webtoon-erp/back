@@ -128,6 +128,20 @@ public class PayService {
     }
 
     /**
+     * 지급일 여러명 수정
+     */
+    @Transactional
+    public void updateAllPayDate(List<PayDateUpdateListDto> dtos) {
+        for (PayDateUpdateListDto dto : dtos) {
+            User findUser = userRepository.findByEmployeeId(dto.getEmployeeId())
+                    .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사원입니다."));
+
+            findUser.getPays().get(-1).updatePayDate(dto.getPayDate());
+        }
+    }
+
+
+    /**
      * 자격 수당 수정
      */
     @Transactional
