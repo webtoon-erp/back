@@ -28,6 +28,7 @@ public class PayService {
     /**
      * 월 급여 등록
      */
+    @Transactional
     public void save(PayRequestDto dto) {
 
         User findUser = userRepository.findByEmployeeId(dto.getEmployeeId())
@@ -86,6 +87,7 @@ public class PayService {
     /**
      * 월 급여 수정
      */
+    @Transactional
     public void updateMonthPay(String employeeId, PayMonthUpdateDto dto) {
         User findUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
@@ -96,6 +98,7 @@ public class PayService {
     /**
      * 계좌 수정
      */
+    @Transactional
     public void updateAccount(String employeeId, PayAccountUpdateDto dto) {
         User findUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
@@ -106,6 +109,7 @@ public class PayService {
     /**
      * 자격 수당 수정
      */
+    @Transactional
     public void saveQualPay(Long qualId, QualificationPayRequestDto dto) {
         Qualification findQual = qualificationRepository.findById(qualId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 자격증입니다."));
@@ -116,6 +120,7 @@ public class PayService {
     /**
      * 급여 지급여부 수정
      */
+    @Transactional
     public boolean update(Long payId) {
         Pay findPay = payRepository.findById(payId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 급여입니다."));
