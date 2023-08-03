@@ -7,16 +7,14 @@ import com.erp.webtoon.dto.token.LogOutRequestDto;
 import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.LoginRequestDto;
-import com.erp.webtoon.dto.user.QualificaitonRequestDto;
+import com.erp.webtoon.dto.user.QualificationRequestDto;
 import com.erp.webtoon.dto.user.SlackRequestDto;
 import com.erp.webtoon.dto.user.UserListResponseDto;
 import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.dto.user.UserResponseDto;
 import com.erp.webtoon.dto.user.UserUpdateDto;
 import com.erp.webtoon.repository.QualificationRepository;
-import com.erp.webtoon.repository.RefreshTokenRepository;
 import com.erp.webtoon.repository.UserRepository;
-import com.slack.api.Slack;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -124,16 +122,16 @@ public class UserService {
     /**
      * 자격증 추가 (인사팀에서 진행)
      */
-    public void registerQualification(QualificaitonRequestDto qualificaitonRequestDto){
+    public void registerQualification(QualificationRequestDto qualificationRequestDto){
         List<Qualification> qualificationList = new ArrayList<>();
         qualificationList.add(qualificationRepository.save(Qualification.builder()
-                .sortSequence(qualificaitonRequestDto.getSortSequence())
-                .qlfcDate(qualificaitonRequestDto.getQlfcDate())
-                .content(qualificaitonRequestDto.getContent())
-                .qlfcType(qualificaitonRequestDto.getQlfcType())
-                .qlfcPay(qualificaitonRequestDto.getQlfcPay())
+                .sortSequence(qualificationRequestDto.getSortSequence())
+                .qlfcDate(qualificationRequestDto.getQlfcDate())
+                .content(qualificationRequestDto.getContent())
+                .qlfcType(qualificationRequestDto.getQlfcType())
+                .qlfcPay(qualificationRequestDto.getQlfcPay())
                 .build()));
-        User user = userRepository.findByEmployeeId(qualificaitonRequestDto.getEmployeeId())
+        User user = userRepository.findByEmployeeId(qualificationRequestDto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("No Such User"));
         user.registerQualification(qualificationList);
     }
