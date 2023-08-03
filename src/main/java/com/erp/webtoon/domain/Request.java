@@ -48,4 +48,10 @@ public class Request {
 
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL)
     private List<RequestDt> requestDts = new ArrayList<>();   // 요청에 여러가지 다테일내용들
+
+
+    //단계 변경 메소드
+    public void changeStep(int step) {
+        this.step = step;
+    }
 }

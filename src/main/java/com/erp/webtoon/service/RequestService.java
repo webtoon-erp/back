@@ -9,6 +9,7 @@ import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.dto.itsm.RequestDtResponseDto;
 import com.erp.webtoon.dto.itsm.RequestDto;
 import com.erp.webtoon.dto.itsm.RequestResponseDto;
+import com.erp.webtoon.dto.itsm.RequestStepDto;
 import com.erp.webtoon.dto.message.FeedbackListDto;
 import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.repository.MessageRepository;
@@ -130,6 +131,20 @@ public class RequestService {
                 .requestDtList(requestDtList)
                 .build();
     }
+
+    /**
+     * 단계 변경 기능
+     */
+    @Transactional
+    public void changeStep(Long requestId, RequestStepDto dto) {
+        Request findRequest = requestRepository.findById(requestId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 서비스 요청입니다."));
+
+        if(dto.getStep() > findRequest.getStep() && dto.getStep() < 6) {
+            findRequest.changeStep(dto.getStep());
+        }
+    }
+
 
     /**
      * 코멘트 등록 기능

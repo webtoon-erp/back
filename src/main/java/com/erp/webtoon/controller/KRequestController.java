@@ -1,12 +1,12 @@
 package com.erp.webtoon.controller;
 
 import com.erp.webtoon.dto.itsm.RequestResponseDto;
+import com.erp.webtoon.dto.itsm.RequestStepDto;
 import com.erp.webtoon.service.RequestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +22,15 @@ public class KRequestController {
         RequestResponseDto request = requestService.search(requestId);
 
         return ResponseEntity.ok(request);
+    }
+
+    /**
+     * 단계 변경
+     */
+    @PostMapping("/request/step/requestId}")
+    public ResponseEntity changeStep(@PathVariable Long requestId, @RequestBody RequestStepDto dto) {
+        requestService.changeStep(requestId, dto);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }
