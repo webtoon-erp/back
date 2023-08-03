@@ -6,7 +6,9 @@ import com.erp.webtoon.domain.Request;
 import com.erp.webtoon.domain.RequestDt;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.domain.Webtoon;
+import com.erp.webtoon.dto.itsm.RequestDtResponseDto;
 import com.erp.webtoon.dto.itsm.RequestDto;
+import com.erp.webtoon.dto.itsm.RequestResponseDto;
 import com.erp.webtoon.dto.message.FeedbackListDto;
 import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.repository.MessageRepository;
@@ -21,6 +23,7 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -95,6 +98,37 @@ public class RequestService {
 
         requestRepository.save(request);
         return request;
+    }
+
+    /**
+     * 요청 조회 기능
+     */
+    public RequestResponseDto search(Long requestId) {
+        Request findRequest = requestRepository.findById(requestId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 서비스 요청입니다."));
+
+        // 상세요청 리스트
+        List<RequestDtResponseDto> requestDtList = findRequest.getRequestDts().stream()
+                .map(RequestDtResponseDto::new)
+                .collect(Collectors.toList());
+
+        // 첨부파일 리스트
+        List<String> files = findRequest.getFiles().stream()
+                .map(file -> file.getOriginName())
+                .collect(Collectors.toList());
+
+        return RequestResponseDto.builder()
+                .reqType(findRequest.getReqType())
+                .title(findRequest.getTitle())
+                .content(findRequest.getContent())
+                .step(findRequest.getStep())
+                .dueDate(findRequest.getDueDate())
+                .doneDate(findRequest.getDoneDate())
+                .reqUserId(findRequest.getReqUser().getEmployeeId())
+                .itUserId(findRequest.getItUser().getEmployeeId())
+                .fileOriginName(files)
+                .requestDtList(requestDtList)
+                .build();
     }
 
     /**
