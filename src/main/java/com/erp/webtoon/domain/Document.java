@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,8 @@ public class Document {
     private String content;
 
     private char stat;
+
+    private LocalDateTime regDate; // 작성일시
 
     @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
     private List<File> files = new ArrayList<>();   // 참조된 파일들
