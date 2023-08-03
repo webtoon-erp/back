@@ -107,9 +107,11 @@ public class PlasService {
                 .map(doc -> DocListDto.builder()
                         .templateName(doc.getDocumentTpl().getTemplateName())
                         .title(doc.getTitle())
-                        .stat(doc.getStat())
+                        .reg_date(doc.getRegDate())
+                        .writeDeptName(doc.getWriteUser().getDeptName())
                         .writeUsername(doc.getWriteUser().getUsername())
                         .documentRcvNames(doc.getRcvNames())
+                        .stat(doc.getStat())
                         .build())
                 .collect(Collectors.toList());
     }
