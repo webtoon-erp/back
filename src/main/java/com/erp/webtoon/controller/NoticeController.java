@@ -1,10 +1,7 @@
 package com.erp.webtoon.controller;
 
 import com.erp.webtoon.domain.File;
-import com.erp.webtoon.dto.notice.NoticeCardViewDto;
-import com.erp.webtoon.dto.notice.NoticeRequestDto;
-import com.erp.webtoon.dto.notice.NoticeResponseDto;
-import com.erp.webtoon.dto.notice.NoticeUpdateDto;
+import com.erp.webtoon.dto.notice.*;
 import com.erp.webtoon.service.FileService;
 import com.erp.webtoon.service.NoticeService;
 import lombok.RequiredArgsConstructor;
@@ -44,8 +41,10 @@ public class NoticeController {
      * 공지사항 전체 조회 (List)
      */
     @GetMapping("/notice")
-    public void getAllNotice() {
-        noticeService.findAllNotice();
+    public ResponseEntity getAllNotice() {
+
+        List<NoticeListDto> allNotice = noticeService.findAllNotice();
+        return ResponseEntity.ok(allNotice);
     }
 
     /**
