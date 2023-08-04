@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Builder
@@ -22,7 +24,7 @@ public class UserRequestDto {
 
     private String tel; // 전화번호
 
-    private String birthDate;   // 생년월일
+    private LocalDate birthDate;   // 생년월일
 
     private String deptName;    // 부서명
 
@@ -32,7 +34,7 @@ public class UserRequestDto {
 
     private String position;    // 직급
 
-    private String joinDate;    // 입사날짜
+    private LocalDate joinDate;    // 입사날짜
 
     private int dayOff;     // 연차개수
 }
