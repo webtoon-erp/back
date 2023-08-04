@@ -6,10 +6,7 @@ import com.erp.webtoon.domain.Request;
 import com.erp.webtoon.domain.RequestDt;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.domain.Webtoon;
-import com.erp.webtoon.dto.itsm.RequestDtResponseDto;
-import com.erp.webtoon.dto.itsm.RequestDto;
-import com.erp.webtoon.dto.itsm.RequestResponseDto;
-import com.erp.webtoon.dto.itsm.RequestStepDto;
+import com.erp.webtoon.dto.itsm.*;
 import com.erp.webtoon.dto.message.FeedbackListDto;
 import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.repository.MessageRepository;
@@ -23,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -130,6 +128,19 @@ public class RequestService {
                 .fileOriginName(files)
                 .requestDtList(requestDtList)
                 .build();
+    }
+
+    /**
+     * 사원별 개인 요청 리스트 조회 기능
+     */
+    public List<RequestMyResponseDto> searchUserList(String employeeId) {
+        User findUser = userRepository.findByEmployeeId(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
+
+        return findUser.getRequests().stream()
+                .sorted(Comparator.comparing(Request::getStep))
+                .map(RequestMyResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     /**

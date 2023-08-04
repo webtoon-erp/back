@@ -1,5 +1,6 @@
 package com.erp.webtoon.controller;
 
+import com.erp.webtoon.dto.itsm.RequestMyResponseDto;
 import com.erp.webtoon.dto.itsm.RequestResponseDto;
 import com.erp.webtoon.dto.itsm.RequestStepDto;
 import com.erp.webtoon.service.RequestService;
@@ -7,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +26,16 @@ public class KRequestController {
 
         return ResponseEntity.ok(request);
     }
+
+    /**
+     * 사원 별 과거 요청 리스트 조회
+     */
+    @GetMapping("/request/{employeeId}")
+    public ResponseEntity showUserReqList(@PathVariable String employeeId) {
+        List<RequestMyResponseDto> requestList = requestService.searchUserList(employeeId);
+        return ResponseEntity.ok(requestList);
+    }
+
 
     /**
      * 단계 변경
