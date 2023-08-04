@@ -71,6 +71,10 @@ public class RequestService {
                 .build();
 
         requestRepository.save(request);
+
+        //알림 발송
+        addRequestMsg(request);
+
         return request;
     }
 
@@ -96,6 +100,10 @@ public class RequestService {
                 .build();
 
         requestRepository.save(request);
+
+        //알림 발송
+        addRequestMsg(request);
+
         return request;
     }
 
@@ -170,20 +178,21 @@ public class RequestService {
         if(dto.getStep() > findRequest.getStep() && dto.getStep() < 6) {
             findRequest.changeStep(dto.getStep());
         }
+
+        //알림 발송
+        addRequestStepMsg(findRequest);
     }
 
 
     /**
      * 코멘트 등록 기능
      */
-    @Transactional
     public void registerComment(MessageSaveDto dto) throws IOException{
         User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
         //피드백 저장
         Message feedbackMsg = dto.toEntity(null, sendUser);
-        messageRepository.save(feedbackMsg);
 
         //메시지 저장
         Request request = requestRepository.findById(feedbackMsg.getRefId())
@@ -191,7 +200,7 @@ public class RequestService {
 
         String originContent = feedbackMsg.getContent();
         dto.setContent(request.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
-        messageService.addMsg(dto);
+        messageService.addMsg(feedbackMsg);
     }
 
     /**
@@ -209,6 +218,54 @@ public class RequestService {
         message.changeStat('D');
     }
 
+    /**
+     * 요청 등록시 알림 발송
+     */
+    public void addRequestMsg(Request request) {
+
+        User rcvUser = userRepository.findByEmployeeId(request.getItUser().getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
+        User sendUser = userRepository.findByEmployeeId(request.getReqUser().getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
+
+        MessageSaveDto dto = MessageSaveDto.builder()
+                .msgType("it")
+                .content("새로운 요청이 접수되었습니다.")
+                .rcvEmpId(rcvUser.getEmployeeId())
+                .sendEmpId(sendUser.getEmployeeId())
+                .refId(request.getId())
+                .programId(null)
+                .build();
+
+        Message newMessage = dto.toEntity(rcvUser, sendUser);
+        messageService.addMsg(newMessage);
+    }
+
+    /**
+     * 요청 단계 변경 시 알림
+     * 발신자 : 단계 변경한 사람
+     * 수신자 : 요청을 요청한 사함
+     */
+    public void addRequestStepMsg(Request request) {
+
+        User rcvUser = userRepository.findByEmployeeId(request.getReqUser().getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
+
+        User sendUser = userRepository.findByEmployeeId(request.getItUser().getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
+
+        MessageSaveDto dto = MessageSaveDto.builder()
+                .msgType("dm")
+                .content("서비스 요청의 진행 단계가 변경 되었습니다.")
+                .rcvEmpId(rcvUser.getEmployeeId())
+                .sendEmpId(sendUser.getEmployeeId())
+                .refId(request.getId())
+                .programId(null)
+                .build();
+
+        Message newMessage = dto.toEntity(rcvUser, sendUser);
+        messageService.addMsg(newMessage);
+    }
 
     /**
      * 파일 업로드 기능
