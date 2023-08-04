@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class RequestMyResponseDto {
+public class RequestListResponseDto {
 
     private String reqType;
 
@@ -22,7 +22,7 @@ public class RequestMyResponseDto {
 
     private String itUser;  // 담당자 사번
 
-    public RequestMyResponseDto(Request request) {
+    public RequestListResponseDto(Request request) {
         this.reqType = request.getReqType();
         this.title = request.getTitle();
         this.step = request.getStep();

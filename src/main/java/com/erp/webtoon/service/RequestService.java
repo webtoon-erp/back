@@ -5,7 +5,6 @@ import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.Request;
 import com.erp.webtoon.domain.RequestDt;
 import com.erp.webtoon.domain.User;
-import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.dto.itsm.*;
 import com.erp.webtoon.dto.message.FeedbackListDto;
 import com.erp.webtoon.dto.message.MessageSaveDto;
@@ -134,27 +133,27 @@ public class RequestService {
     /**
      * 사원별 개인 요청 리스트 조회 기능
      */
-    public List<RequestMyResponseDto> searchUserList(String employeeId) {
+    public List<RequestListResponseDto> searchUserList(String employeeId) {
         User findUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
         return findUser.getRequests().stream()
                 .sorted(Comparator.comparing(Request::getStep))
-                .map(RequestMyResponseDto::new)
+                .map(RequestListResponseDto::new)
                 .collect(Collectors.toList());
     }
 
     /**
      * IT팀 과거 요청 전체 리스트 조회
      */
-    public List<RequestMyResponseDto> searchAllList(String employeeId) throws IllegalAccessException {
+    public List<RequestListResponseDto> searchAllList(String employeeId) throws IllegalAccessException {
         User findUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
         //IT팀인 경우에만
         if(findUser.getDeptName().contains("IT")) {
             return requestRepository.findAll(Sort.by("step")).stream()
-                    .map(RequestMyResponseDto::new)
+                    .map(RequestListResponseDto::new)
                     .collect(Collectors.toList());
         }
         throw new IllegalAccessException("IT팀이 아닙니다.");

@@ -1,6 +1,6 @@
 package com.erp.webtoon.controller;
 
-import com.erp.webtoon.dto.itsm.RequestMyResponseDto;
+import com.erp.webtoon.dto.itsm.RequestListResponseDto;
 import com.erp.webtoon.dto.itsm.RequestResponseDto;
 import com.erp.webtoon.dto.itsm.RequestStepDto;
 import com.erp.webtoon.service.RequestService;
@@ -32,7 +32,7 @@ public class KRequestController {
      */
     @GetMapping("/request/{employeeId}")
     public ResponseEntity showUserReqList(@PathVariable String employeeId) {
-        List<RequestMyResponseDto> requestList = requestService.searchUserList(employeeId);
+        List<RequestListResponseDto> requestList = requestService.searchUserList(employeeId);
         return ResponseEntity.ok(requestList);
     }
 
@@ -41,7 +41,7 @@ public class KRequestController {
      */
     @GetMapping("/request/all/{employeeId}")
     public ResponseEntity showAllList(@PathVariable String employeeId) throws IllegalAccessException {
-        List<RequestMyResponseDto> requestList = requestService.searchAllList(employeeId);
+        List<RequestListResponseDto> requestList = requestService.searchAllList(employeeId);
         return ResponseEntity.ok(requestList);
     }
 
