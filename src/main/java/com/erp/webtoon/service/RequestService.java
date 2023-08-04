@@ -5,6 +5,7 @@ import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.Request;
 import com.erp.webtoon.domain.RequestDt;
 import com.erp.webtoon.domain.User;
+import com.erp.webtoon.dto.itsm.CommentResponseDto;
 import com.erp.webtoon.dto.itsm.RequestDto;
 import com.erp.webtoon.dto.itsm.RequestResponseDto;
 import com.erp.webtoon.dto.message.FeedbackListDto;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +103,7 @@ public class RequestService {
      * 코멘트 등록 기능
      */
     @Transactional
-    public void registerComment(MessageSaveDto dto) throws IOException{
+    public CommentResponseDto registerComment(MessageSaveDto dto) throws IOException{
         User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
@@ -116,6 +118,8 @@ public class RequestService {
         String originContent = feedbackMsg.getContent();
         dto.setContent(request.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
         messageService.addMsg(dto);
+
+        return CommentResponseDto.builder().requestId(request.getId()).createdAt(LocalDate.now()).build();
     }
 
     /**

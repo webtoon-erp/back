@@ -1,5 +1,6 @@
 package com.erp.webtoon.controller;
 
+import com.erp.webtoon.dto.itsm.CommentResponseDto;
 import com.erp.webtoon.dto.itsm.RequestDto;
 import com.erp.webtoon.dto.itsm.RequestResponseDto;
 import com.erp.webtoon.dto.message.FeedbackListDto;
@@ -34,8 +35,8 @@ public class RequestController {
     }
 
     @PostMapping ("/comment")
-    public void registerComment(@RequestBody MessageSaveDto messageSaveDto) throws IOException {
-        requestService.registerComment(messageSaveDto);
+    public CommentResponseDto registerComment(@RequestBody MessageSaveDto messageSaveDto) throws IOException {
+        return requestService.registerComment(messageSaveDto);
     }
 
     @GetMapping("/comment")
