@@ -20,4 +20,9 @@ public class RequestController {
     public RequestResponseDto purchaseRequest(@RequestBody RequestDto requestDto) throws Exception {
         return requestService.purchaseRequest(requestDto);
     }
+
+    @PostMapping("request")
+    public RequestResponseDto Request(@RequestBody RequestDto requestDto) throws Exception {
+        return requestService.assistRequest(requestDto);
+    }
 }
