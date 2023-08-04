@@ -48,6 +48,18 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
 
     String findIndividualdWeeklyOverTime(@Param("user") User user);
 
+    @Query("SELECT FUNCTION('SEC_TO_TIME', SUM(FUNCTION('TIMESTAMPDIFF', 'SECOND', a.attendTime, a2.attendTime))) " +
+            "FROM Attendence a " +
+            "JOIN Attendence a2 ON a.attendDate = a2.attendDate AND a.user = a2.user " +
+            "WHERE a.attendType = 'START' " +
+            "AND a2.attendType = 'END' " +
+            "AND FUNCTION('MONTH', CURRENT_DATE) = FUNCTION('MONTH', a.attendDate) " +
+            "AND a.user = :user " +
+            "GROUP BY FUNCTION('MONTH', a.attendDate)")
+
+    String findIndividualdMonthlyTotalTime(@Param("user") User user);
+
+
 
 
 }
