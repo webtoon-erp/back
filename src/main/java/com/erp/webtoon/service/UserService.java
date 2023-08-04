@@ -8,6 +8,7 @@ import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.LoginRequestDto;
 import com.erp.webtoon.dto.user.QualificaitonRequestDto;
+import com.erp.webtoon.dto.user.QualificationResponseDto;
 import com.erp.webtoon.dto.user.SlackRequestDto;
 import com.erp.webtoon.dto.user.UserListResponseDto;
 import com.erp.webtoon.dto.user.UserRequestDto;
@@ -81,6 +82,17 @@ public class UserService {
         User findUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
+        List<Qualification> qualifications = findUser.getQualifications();
+        List<QualificationResponseDto> qualificationList = new ArrayList<>();
+        for (Qualification qualification: qualifications) {
+            QualificationResponseDto qfresponse = QualificationResponseDto.builder()
+                    .qlfcType(qualification.getQlfcType())
+                    .content(qualification.getContent())
+                    .qlfcDate(qualification.getQlfcDate())
+                    .build();
+            qualificationList.add(qfresponse);
+        }
+
         return UserResponseDto.builder()
                 .employeeId(findUser.getEmployeeId())
                 .name(findUser.getName())
@@ -92,7 +104,7 @@ public class UserService {
                 .position(findUser.getPosition())
                 .joinDate(findUser.getJoinDate())
                 .dayOff(findUser.getDayOff())
-                .qualifications(findUser.getQualifications())
+                .qualifications(qualificationList)
                 .build();
     }
 
