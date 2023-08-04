@@ -7,6 +7,7 @@ import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,5 +40,10 @@ public class RequestController {
     @GetMapping("/comment")
     public List<FeedbackListDto> getAllComments(@RequestBody Long requestId){
         return requestService.getAllComments(requestId);
+    }
+
+    @DeleteMapping("/comment")
+    public void deleteComment(@RequestBody Long messageId){
+        requestService.deleteComment(messageId);
     }
 }
