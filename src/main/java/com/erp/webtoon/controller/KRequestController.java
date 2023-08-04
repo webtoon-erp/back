@@ -36,6 +36,15 @@ public class KRequestController {
         return ResponseEntity.ok(requestList);
     }
 
+    /**
+     * IT팀 서비스 요청 전체 리스트 조회
+     */
+    @GetMapping("/request/all/{employeeId}")
+    public ResponseEntity showAllList(@PathVariable String employeeId) throws IllegalAccessException {
+        List<RequestMyResponseDto> requestList = requestService.searchAllList(employeeId);
+        return ResponseEntity.ok(requestList);
+    }
+
 
     /**
      * 단계 변경

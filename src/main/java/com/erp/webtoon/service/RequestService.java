@@ -13,6 +13,7 @@ import com.erp.webtoon.repository.MessageRepository;
 import com.erp.webtoon.repository.RequestRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -141,6 +142,22 @@ public class RequestService {
                 .sorted(Comparator.comparing(Request::getStep))
                 .map(RequestMyResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * IT팀 과거 요청 전체 리스트 조회
+     */
+    public List<RequestMyResponseDto> searchAllList(String employeeId) throws IllegalAccessException {
+        User findUser = userRepository.findByEmployeeId(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
+
+        //IT팀인 경우에만
+        if(findUser.getDeptName().contains("IT")) {
+            return requestRepository.findAll(Sort.by("step")).stream()
+                    .map(RequestMyResponseDto::new)
+                    .collect(Collectors.toList());
+        }
+        throw new IllegalAccessException("IT팀이 아닙니다.");
     }
 
     /**
