@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -38,12 +39,12 @@ public class RequestController {
     }
 
     @GetMapping("/comment")
-    public List<FeedbackListDto> getAllComments(@RequestBody Long requestId){
+    public List<FeedbackListDto> getAllComments(@RequestParam Long requestId){
         return requestService.getAllComments(requestId);
     }
 
     @DeleteMapping("/comment")
-    public void deleteComment(@RequestBody Long messageId){
+    public void deleteComment(@RequestParam Long messageId){
         requestService.deleteComment(messageId);
     }
 }
