@@ -119,7 +119,7 @@ public class RequestService {
         dto.setContent(request.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
         messageService.addMsg(dto);
 
-        return CommentResponseDto.builder().requestId(request.getId()).createdAt(LocalDate.now()).build();
+        return CommentResponseDto.builder().messageId(feedbackMsg.getId()).createdAt(LocalDate.now()).build();
     }
 
     /**

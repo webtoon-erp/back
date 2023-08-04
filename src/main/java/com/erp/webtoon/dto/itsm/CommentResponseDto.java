@@ -8,6 +8,6 @@ import java.time.LocalDate;
 @Builder
 @Data
 public class CommentResponseDto {
-    private Long requestId;
+    private Long messageId;
     private LocalDate createdAt;
 }
