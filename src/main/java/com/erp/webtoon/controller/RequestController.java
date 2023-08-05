@@ -3,7 +3,7 @@ package com.erp.webtoon.controller;
 import com.erp.webtoon.dto.itsm.CommentResponseDto;
 import com.erp.webtoon.dto.itsm.RequestDto;
 import com.erp.webtoon.dto.itsm.RequestRegisterResponseDto;
-import com.erp.webtoon.dto.message.FeedbackListDto;
+import com.erp.webtoon.dto.webtoon.FeedbackListDto;
 import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.service.RequestService;
 import lombok.RequiredArgsConstructor;

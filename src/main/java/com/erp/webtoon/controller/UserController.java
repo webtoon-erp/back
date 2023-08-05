@@ -6,7 +6,7 @@ import com.erp.webtoon.dto.token.TokenResponseDto;
 
 
 import com.erp.webtoon.dto.user.LoginRequestDto;
-import com.erp.webtoon.dto.user.QualificaitonRequestDto;
+import com.erp.webtoon.dto.user.QualificationRequestDto;
 import com.erp.webtoon.dto.user.RegisterQualificationResponse;
 import com.erp.webtoon.dto.user.SlackRequestDto;
 import com.erp.webtoon.dto.user.UserListResponseDto;
@@ -110,8 +110,8 @@ public class UserController {
      * 자격증 추가(인사팀)
      */
     @PostMapping("/qualification")
-    public List<RegisterQualificationResponse> registerQualification(@RequestBody List<QualificaitonRequestDto> qualificaitonRequestDtoList) {
-        return userService.registerQualification(qualificaitonRequestDtoList);
+    public List<RegisterQualificationResponse> registerQualification(@RequestBody List<QualificationRequestDto> qualificationRequestDtoList) {
+        return userService.registerQualification(qualificationRequestDtoList);
     }
 }
 

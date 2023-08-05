@@ -1,6 +1,6 @@
 package com.erp.webtoon.dto.webtoon;
 
-import com.erp.webtoon.dto.message.FeedbackListDto;
+import com.erp.webtoon.dto.webtoon.FeedbackListDto;
 import lombok.Builder;
 import lombok.Data;
 
