@@ -6,6 +6,8 @@ import com.erp.webtoon.dto.token.TokenResponseDto;
 
 
 import com.erp.webtoon.dto.user.LoginRequestDto;
+import com.erp.webtoon.dto.user.QualificaitonRequestDto;
+import com.erp.webtoon.dto.user.RegisterQualificationResponse;
 import com.erp.webtoon.dto.user.SlackRequestDto;
 import com.erp.webtoon.dto.user.UserListResponseDto;
 import com.erp.webtoon.dto.user.UserRequestDto;
@@ -102,6 +104,14 @@ public class UserController {
     @PatchMapping("")
     public void update(@RequestBody UserUpdateDto dto) {
         userService.update(dto);
+    }
+
+    /**
+     * 자격증 추가(인사팀)
+     */
+    @PostMapping("/qualification")
+    public List<RegisterQualificationResponse> registerQualification(@RequestBody List<QualificaitonRequestDto> qualificaitonRequestDtoList) {
+        return userService.registerQualification(qualificaitonRequestDtoList);
     }
 }
 
