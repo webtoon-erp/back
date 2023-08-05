@@ -68,6 +68,14 @@ public class MessageService {
         message.changeStat(stat);
     }
 
+    /**
+     * 메세지 저장
+     */
+    @Transactional
+    public void save(Message message) {
+        messageRepository.save(message);
+    }
+
     /*
         메시지 등록
     */

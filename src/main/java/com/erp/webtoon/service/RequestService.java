@@ -193,6 +193,7 @@ public class RequestService {
 
         //피드백 저장
         Message feedbackMsg = dto.toEntity(null, sendUser);
+        messageService.save(feedbackMsg);
 
         //메시지 저장
         Request request = requestRepository.findById(feedbackMsg.getRefId())
@@ -200,6 +201,8 @@ public class RequestService {
 
         String originContent = feedbackMsg.getContent();
         dto.setContent(request.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
+
+
         messageService.addMsg(feedbackMsg);
     }
 
