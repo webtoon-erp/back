@@ -2,7 +2,7 @@ package com.erp.webtoon.controller;
 
 import com.erp.webtoon.dto.itsm.CommentResponseDto;
 import com.erp.webtoon.dto.itsm.RequestDto;
-import com.erp.webtoon.dto.itsm.RequestResponseDto;
+import com.erp.webtoon.dto.itsm.RequestRegisterResponseDto;
 import com.erp.webtoon.dto.message.FeedbackListDto;
 import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.service.RequestService;
@@ -25,12 +25,12 @@ public class RequestController {
     private final RequestService requestService;
 
     @PostMapping("/purchase-request")
-    public RequestResponseDto purchaseRequest(@RequestBody RequestDto requestDto) throws Exception {
+    public RequestRegisterResponseDto purchaseRequest(@RequestBody RequestDto requestDto) throws Exception {
         return requestService.purchaseRequest(requestDto);
     }
 
     @PostMapping("/request")
-    public RequestResponseDto Request(@RequestBody RequestDto requestDto) throws Exception {
+    public RequestRegisterResponseDto Request(@RequestBody RequestDto requestDto) throws Exception {
         return requestService.assistRequest(requestDto);
     }
 

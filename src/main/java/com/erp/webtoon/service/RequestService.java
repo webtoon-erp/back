@@ -7,7 +7,7 @@ import com.erp.webtoon.domain.RequestDt;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.itsm.CommentResponseDto;
 import com.erp.webtoon.dto.itsm.RequestDto;
-import com.erp.webtoon.dto.itsm.RequestResponseDto;
+import com.erp.webtoon.dto.itsm.RequestRegisterResponseDto;
 import com.erp.webtoon.dto.message.FeedbackListDto;
 import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.repository.MessageRepository;
@@ -40,7 +40,7 @@ public class RequestService {
      * 구매 요청 기능
      */
     @Transactional
-    public RequestResponseDto purchaseRequest(RequestDto requestDto) throws Exception {
+    public RequestRegisterResponseDto purchaseRequest(RequestDto requestDto) throws Exception {
 
         User reqUser = userRepository.findByEmployeeId(requestDto.getReqUserId()).get();
         User itUser = userRepository.findByEmployeeId(requestDto.getItUserId()).get();
@@ -71,14 +71,14 @@ public class RequestService {
                 .build();
 
         requestRepository.save(request);
-        return RequestResponseDto.builder().requestId(request.getId()).createdAt(LocalDateTime.now()).build();
+        return RequestRegisterResponseDto.builder().requestId(request.getId()).createdAt(LocalDateTime.now()).build();
     }
 
     /**
      * 업무 지원 요청 기능
      */
     @Transactional
-    public RequestResponseDto assistRequest(RequestDto requestDto) throws Exception {
+    public RequestRegisterResponseDto assistRequest(RequestDto requestDto) throws Exception {
         User reqUser = userRepository.findByEmployeeId(requestDto.getReqUserId()).get();
         User itUser = userRepository.findByEmployeeId(requestDto.getItUserId()).get();
         List<File> fileList = saveFile(requestDto);
@@ -96,7 +96,7 @@ public class RequestService {
                 .build();
 
         requestRepository.save(request);
-        return RequestResponseDto.builder().requestId(request.getId()).createdAt(LocalDateTime.now()).build();
+        return RequestRegisterResponseDto.builder().requestId(request.getId()).createdAt(LocalDateTime.now()).build();
     }
 
     /**

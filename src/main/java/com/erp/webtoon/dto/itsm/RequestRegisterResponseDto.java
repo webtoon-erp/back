@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Builder
 @Data
-public class RequestResponseDto {
+public class RequestRegisterResponseDto {
     private Long requestId;
 
     private LocalDateTime createdAt;
