@@ -4,16 +4,10 @@ import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.domain.WebtoonDt;
-import com.erp.webtoon.dto.message.FeedbackListDto;
-import com.erp.webtoon.domain.*;
-import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.dto.webtoon.FeedbackListDto;
-import com.erp.webtoon.dto.webtoon.FeedbackSaveDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtUpdateDto;
-import com.erp.webtoon.repository.UserRepository;
-import com.erp.webtoon.repository.MessageRepository;
 import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.repository.WebtoonDtRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
@@ -37,9 +31,6 @@ public class WebtoonDtService {
     private final UserRepository userRepository;
     private final MessageService messageService;
     private final FileService fileService;
-    private final MessageRepository messageRepository;
-    private final UserRepository userRepository;
-    private final MessageService messageService;
 
 
     /**
