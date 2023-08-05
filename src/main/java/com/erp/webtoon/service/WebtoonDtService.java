@@ -4,7 +4,7 @@ import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.domain.WebtoonDt;
-import com.erp.webtoon.dto.message.FeedbackListDto;
+import com.erp.webtoon.dto.webtoon.FeedbackListDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtUpdateDto;
@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

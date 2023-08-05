@@ -238,12 +238,12 @@ public class UserService {
     /**
      * 비밀번호 초기화 & 슬랙 알림 메시지
      */
-    public void resetPassword(String userEmail) {
+    public void resetPassword(String employeeId) {
         String tempPassword = getTempPassword();
         String msg = "안녕하세요. 피어나툰ERP 임시비밀번호 안내 관련 메시지 입니다." + " 회원님의 임시 비밀번호는 "
                 + tempPassword + " 입니다." + "로그인 후에 비밀번호를 변경을 해주세요";
-        slackService.sendSlackChannel(msg, userEmail);
-        updatePassword(tempPassword,userEmail);
+        slackService.sendSlackChannel(msg, employeeId);
+        updatePassword(tempPassword,employeeId);
     }
 
     /**

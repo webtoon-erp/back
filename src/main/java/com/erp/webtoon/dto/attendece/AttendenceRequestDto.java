@@ -3,6 +3,7 @@ package com.erp.webtoon.dto.attendece;
 import com.erp.webtoon.domain.Attendence;
 import com.erp.webtoon.domain.User;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public class AttendenceRequestDto {
     @NotBlank
     private String attendType;  // 근태타입
 
+    @CreationTimestamp
     private LocalDateTime attendTime; // 시간
 
     @NotBlank

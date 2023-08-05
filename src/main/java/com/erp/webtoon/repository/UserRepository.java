@@ -15,4 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
     List<User> findAllByDeptCode(String deptCode);
 //    List<UserListResponseDto> findAllByPositionContaining(String keyword);
+
+    // 전체 직원 수 조회
+    Long countAllBy();
 }

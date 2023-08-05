@@ -4,6 +4,7 @@ import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.dto.message.*;
+import com.erp.webtoon.dto.webtoon.FeedbackListDto;
 import com.erp.webtoon.repository.MessageRepository;
 import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
