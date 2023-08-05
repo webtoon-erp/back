@@ -7,6 +7,7 @@ import com.erp.webtoon.dto.token.LogOutRequestDto;
 import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.LoginRequestDto;
+import com.erp.webtoon.dto.user.QualificationRequestDto;
 import com.erp.webtoon.dto.user.QualificationResponseDto;
 import com.erp.webtoon.dto.user.RegisterQualificationResponse;
 import com.erp.webtoon.dto.user.SlackRequestDto;
@@ -135,11 +136,11 @@ public class UserService {
     /**
      * 자격증 추가 (인사팀에서 진행)
      */
-    public List<RegisterQualificationResponse> registerQualification(List<QualificaitonRequestDto> qualificaitonRequestDtoList){
+    public List<RegisterQualificationResponse> registerQualification(List<QualificationRequestDto> qualificaitonRequestDtoList){
         List<RegisterQualificationResponse> registerqualificationList = new ArrayList<>();
         List<Qualification> qualificationList = new ArrayList<>();
 
-        for (QualificaitonRequestDto qualificationRequestDto : qualificaitonRequestDtoList) {
+        for (QualificationRequestDto qualificationRequestDto : qualificaitonRequestDtoList) {
             Qualification qualification = qualificationRepository.save(Qualification.builder()
                     .sortSequence(qualificationRequestDto.getSortSequence())
                     .qlfcDate(qualificationRequestDto.getQlfcDate())
