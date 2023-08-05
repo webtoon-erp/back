@@ -25,9 +25,9 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
 
     List<IndividualAttenedenceListDto> findIndividualAttendence(@Param("user") User user);
 
-    @Query("SELECT FUNCTION('SEC_TO_TIME', SUM(FUNCTION('TIMESTAMPDIFF', SECOND, a.attendTime, a2.attendTime))) " +
+    @Query("SELECT FUNCTION('SEC_TO_TIME', SUM(FUNCTION('TIMESTAMPDIFF', 'SECOND', a.attendTime, a2.attendTime))) " +
             "FROM Attendence a " +
-            "JOIN Attendence a2 ON a.attendDate = a2.attendDate AND a.userId = a2.userId " +
+            "JOIN Attendence a2 ON a.attendDate = a2.attendDate AND a.user = a2.user " +
             "WHERE a.attendType = 'START' " +
             "AND a2.attendType = 'END' " +
             "AND FUNCTION('WEEK', CURRENT_DATE) = FUNCTION('WEEK', a.attendDate, 3) " +
@@ -70,6 +70,8 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
             "GROUP BY FUNCTION('MONTH', a.attendDate)")
 
     String findIndividualMonthlyOverTime(@Param("user") User user);
+
+
 
 
 }
