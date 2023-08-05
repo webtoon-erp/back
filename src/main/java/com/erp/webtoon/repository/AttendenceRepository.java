@@ -34,7 +34,7 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
             "AND a.user = :user " +
             "GROUP BY FUNCTION('WEEK', a.attendDate, 3)")
 
-    String finIndividualWeeklyTotalTime(@Param("user") User user);
+    String findIndividualWeeklyTotalTime(@Param("user") User user);
 
     @Query("SELECT FUNCTION('SEC_TO_TIME', SUM(FUNCTION('TIMESTAMPDIFF', 'SECOND', " +
             "CONCAT(FUNCTION('DATE_FORMAT', a2.attendDate, '%Y-%m-%d'), ' 18:00:00'), a2.attendTime))) " +
@@ -70,8 +70,6 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
             "GROUP BY FUNCTION('MONTH', a.attendDate)")
 
     String findIndividualMonthlyOverTime(@Param("user") User user);
-
-
 
 
 }

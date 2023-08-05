@@ -42,7 +42,7 @@ public class AttendenceService {
 
         AttendenceResponseDto dto = new AttendenceResponseDto();
 
-        dto.setWeeklyTotalTime(attendenceRepository.finIndividualWeeklyTotalTime(user));
+        dto.setWeeklyTotalTime(attendenceRepository.findIndividualWeeklyTotalTime(user));
         dto.setWeeklyOverTime(attendenceRepository.findIndividualWeeklyOverTime(user));
         dto.setMonthlyTotalTime(attendenceRepository.findIndividualMonthlyTotalTime(user));
         dto.setMonthlyOverTime(attendenceRepository.findIndividualMonthlyOverTime(user));
