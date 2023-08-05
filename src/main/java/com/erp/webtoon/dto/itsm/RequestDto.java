@@ -1,25 +1,15 @@
 package com.erp.webtoon.dto.itsm;
 
-import com.erp.webtoon.domain.File;
-import com.erp.webtoon.domain.Request;
 import com.erp.webtoon.domain.RequestDt;
-import com.erp.webtoon.domain.User;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class RequestDto {
     private String reqType;
 
