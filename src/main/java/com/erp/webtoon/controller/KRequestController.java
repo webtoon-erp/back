@@ -49,7 +49,7 @@ public class KRequestController {
     /**
      * 단계 변경
      */
-    @PostMapping("/request/step/requestId}")
+    @PostMapping("/request/step/{requestId}")
     public ResponseEntity changeStep(@PathVariable Long requestId, @RequestBody RequestStepDto dto) {
         requestService.changeStep(requestId, dto);
         return new ResponseEntity(HttpStatus.OK);
