@@ -4,6 +4,8 @@ import com.erp.webtoon.domain.User;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class PayUserResponseDto {
     private String employeeId; // 사번
@@ -16,7 +18,7 @@ public class PayUserResponseDto {
 
     private String position;    // 직급
 
-    private String joinDate; // 입사
+    private LocalDate joinDate; // 입사
 
     private String tel; // 전화번호
 
