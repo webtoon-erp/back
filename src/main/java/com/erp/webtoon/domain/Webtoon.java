@@ -44,4 +44,14 @@ public class Webtoon {
         this.category = category;
         this.keyword = keyword;
     }
+
+    //웹툰 정보 업데이트
+    public void updateInfo(String title, String intro, String artist, String illustrator, String category, String keyword) {
+        this.title = title;
+        this.intro = intro;
+        this.artist = artist;
+        this.illustrator = illustrator;
+        this.category = category;
+        this.keyword = keyword;
+    }
 }

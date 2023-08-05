@@ -68,18 +68,27 @@ public class MessageService {
         message.changeStat(stat);
     }
 
+    /**
+     * 메세지 저장
+     */
+    @Transactional
+    public void save(Message message) {
+        messageRepository.save(message);
+    }
+
     /*
         메시지 등록
     */
     @Transactional
-    public void addMsg(MessageSaveDto dto) throws IOException {
+    public void addMsg(Message message) {
+//    public void addMsg(MessageSaveDto dto) throws IOException {
 
-        User rcvUser = userRepository.findByEmployeeId(dto.getRcvEmpId())
-                .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
-        User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
-                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
-
-        Message message = dto.toEntity(rcvUser, sendUser);
+//        User rcvUser = userRepository.findByEmployeeId(dto.getRcvEmpId())
+//                .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
+//        User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
+//                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
+//
+//        Message message = dto.toEntity(rcvUser, sendUser);
         messageRepository.save(message);
 
         if (message.getMsgType().equals("dm")) {
@@ -129,33 +138,7 @@ public class MessageService {
 
         String originContent = feedbackMsg.getContent();
         dto.setContent(webtoon.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
-        addMsg(dto);
-
-    }
-
-    /**
-     * 요청 등록시 알림 발송
-     */
-    @Transactional
-    public void addRequestMsg(String rcvEmployeeId, String sendEmployeeId, Long requestId) throws IOException {
-
-        User rcvUser = userRepository.findByEmployeeId(rcvEmployeeId)
-                .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
-        User sendUser = userRepository.findByEmployeeId(sendEmployeeId)
-                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
-
-        MessageSaveDto dto = MessageSaveDto.builder()
-                .msgType("it")
-                .content("새로운 요청이 접수되었습니다.")
-                .rcvEmpId(rcvEmployeeId)
-                .sendEmpId(sendEmployeeId)
-                .refId(requestId)
-                .programId(null)
-                .build();
-
-        Message message = dto.toEntity(rcvUser, sendUser);
-        messageRepository.save(message);
-        addMsg(dto);
+        addMsg(feedbackMsg);
     }
 
 }

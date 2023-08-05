@@ -1,8 +1,11 @@
 package com.erp.webtoon.dto.pay;
 
 import com.erp.webtoon.domain.Pay;
+import com.erp.webtoon.domain.Qualification;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class PayMonthDto {
@@ -21,6 +24,10 @@ public class PayMonthDto {
         this.yearSalary = pay.getSalary();
         this.monthSalary = (pay.getSalary() / 12);
         this.addSalary = pay.getAddPay();
-        this.qualSalary = 0;
+    }
+
+    public void setQualSalary(List<Qualification> qualifications) {
+        qualifications.stream()
+                .map(qualification -> this.qualSalary += qualification.getQlfcPay());
     }
 }

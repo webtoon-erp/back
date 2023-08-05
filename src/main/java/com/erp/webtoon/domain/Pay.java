@@ -16,7 +16,7 @@ public class Pay {
     @Column(name = "pay_id")
     private Long id;
 
-    private int salary;
+    private int salary; //얀봉
 
     private int addPay; //추가 수당
 
@@ -48,10 +48,19 @@ public class Pay {
     }
 
     //지급 수정
-    public void updatePay(int salary, int addPay, String bankAccount, LocalDate payDate) {
+    public void updatePay(int salary, int addPay, LocalDate payDate) {
         this.salary = salary;
         this.addPay = addPay;
+        this.payDate = payDate;
+    }
+
+    //계좌 수정
+    public void updateAccount(String bankAccount) {
         this.bankAccount = bankAccount;
+    }
+
+    //지급날짜 수정
+    public void updatePayDate(LocalDate payDate) {
         this.payDate = payDate;
     }
 

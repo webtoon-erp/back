@@ -1,11 +1,10 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.File;
+import com.erp.webtoon.domain.User;
 import com.erp.webtoon.domain.Webtoon;
-import com.erp.webtoon.dto.webtoon.WebtoonRequestDto;
-import com.erp.webtoon.dto.webtoon.WebtoonResponseDto;
-import com.erp.webtoon.dto.webtoon.WebtoonDtListDto;
-import com.erp.webtoon.dto.webtoon.WebtoonListResponseDto;
+import com.erp.webtoon.domain.WebtoonDt;
+import com.erp.webtoon.dto.webtoon.*;
 import com.erp.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -159,6 +158,25 @@ public class WebtoonService {
 
 
     /**
-     * 등록 웹툰 삭제?
+     * 등록 웹툰 수정
      */
+    public void update(Long webtoonId, WebtoonUpdaateDto dto) throws IOException {
+        Webtoon findWebtoon = webtoonRepository.findById(webtoonId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 웹툰입니다."));
+
+
+        findWebtoon.updateInfo(dto.getTitle(), dto.getIntro(), dto.getArtist(), dto.getIllustrator(), dto.getCategory(), dto.getKeyword());
+
+        //파일 업데이트
+        //만약 파일을 업데이트 하는 경우
+        if (!dto.getUploadFile().isEmpty()) {
+            // 기존의 저장된 가장 최근의 파일 상태 변경
+            File file = findWebtoon.getFiles().get(-1);
+            fileService.changeStat(file);
+
+            File uploadFile = fileService.save(dto.getUploadFile());
+            uploadFile.updateFileWebtoon(findWebtoon);
+            findWebtoon.getFiles().add(uploadFile);
+        }
+    }
 }

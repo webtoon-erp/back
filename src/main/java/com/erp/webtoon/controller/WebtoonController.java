@@ -3,6 +3,7 @@ package com.erp.webtoon.controller;
 import com.erp.webtoon.dto.webtoon.WebtoonListResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonResponseDto;
+import com.erp.webtoon.dto.webtoon.WebtoonUpdaateDto;
 import com.erp.webtoon.service.FileService;
 import com.erp.webtoon.service.WebtoonService;
 import lombok.AllArgsConstructor;
@@ -108,6 +109,19 @@ public class WebtoonController {
         List<WebtoonListResponseDto> dtos = webtoonService.getTitleWebtoon(keyword);
 
         return ResponseEntity.ok(dtos);
+    }
+
+    /**
+     * 웹툰 수정
+     */
+    @PutMapping("/webtoon/{webtoonId}")
+    public ResponseEntity update(@PathVariable Long webtoonId, @RequestBody WebtoonUpdaateDto dto) throws IOException {
+        webtoonService.update(webtoonId, dto);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("/webtoon/{webtoonId}"));
+
+        return new ResponseEntity(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 
     @Data
