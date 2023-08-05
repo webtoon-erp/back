@@ -4,6 +4,7 @@ import com.erp.webtoon.domain.Qualification;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class UserResponseDto {
 
     private String tel; // 전화번호
 
-    private String birthDate;   // 생년월일
+    private LocalDate birthDate;   // 생년월일
 
     private String deptName;    //부서명
 
@@ -28,9 +29,9 @@ public class UserResponseDto {
 
     private String position;    // 직급
 
-    private String joinDate;    // 입사날짜
+    private LocalDate joinDate;    // 입사날짜
 
     private int dayOff;     // 연차개수
 
-    private List<Qualification> qualifications;     // 자격증들
+    private List<QualificationResponseDto> qualifications;     // 자격증들
 }

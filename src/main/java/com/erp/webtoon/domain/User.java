@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -48,9 +49,9 @@ public class User implements UserDetails {
 
     private String tel; // 전화번호
 
-    private String birthDate;   // 생년월일
+    private LocalDate birthDate;   // 생년월일
 
-    private String joinDate;    // 입사날짜
+    private LocalDate joinDate;    // 입사날짜
 
     private String status; // 상태
 
@@ -92,7 +93,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notice> notices = new ArrayList<>();   // 작성한 공지사항 목록
 
-    public void updateInfo(String loginId, String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, String birthDate
+    public void updateInfo(String loginId, String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, LocalDate birthDate
             , int dayOff) {
         this.loginId = loginId;
         this.password = password;

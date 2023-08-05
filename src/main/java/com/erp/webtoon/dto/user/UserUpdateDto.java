@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -43,7 +44,7 @@ public class UserUpdateDto {
     private String tel; // 전화번호
 
     @NotBlank
-    private String birthDate;   // 생년월일
+    private LocalDate birthDate;   // 생년월일
 
     @NotNull
     private int dayOff;     // 연차개수

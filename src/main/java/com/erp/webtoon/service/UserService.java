@@ -7,7 +7,8 @@ import com.erp.webtoon.dto.token.LogOutRequestDto;
 import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.LoginRequestDto;
-import com.erp.webtoon.dto.user.QualificationRequestDto;
+import com.erp.webtoon.dto.user.QualificationResponseDto;
+import com.erp.webtoon.dto.user.RegisterQualificationResponse;
 import com.erp.webtoon.dto.user.SlackRequestDto;
 import com.erp.webtoon.dto.user.UserListResponseDto;
 import com.erp.webtoon.dto.user.UserRequestDto;
@@ -31,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -79,6 +81,17 @@ public class UserService {
         User findUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
+        List<Qualification> qualifications = findUser.getQualifications();
+        List<QualificationResponseDto> qualificationList = new ArrayList<>();
+        for (Qualification qualification: qualifications) {
+            QualificationResponseDto qfresponse = QualificationResponseDto.builder()
+                    .qlfcType(qualification.getQlfcType())
+                    .content(qualification.getContent())
+                    .qlfcDate(qualification.getQlfcDate())
+                    .build();
+            qualificationList.add(qfresponse);
+        }
+
         return UserResponseDto.builder()
                 .employeeId(findUser.getEmployeeId())
                 .name(findUser.getName())
@@ -90,7 +103,7 @@ public class UserService {
                 .position(findUser.getPosition())
                 .joinDate(findUser.getJoinDate())
                 .dayOff(findUser.getDayOff())
-                .qualifications(findUser.getQualifications())
+                .qualifications(qualificationList)
                 .build();
     }
 
@@ -122,18 +135,34 @@ public class UserService {
     /**
      * 자격증 추가 (인사팀에서 진행)
      */
-    public void registerQualification(QualificationRequestDto qualificationRequestDto){
+    public List<RegisterQualificationResponse> registerQualification(List<QualificaitonRequestDto> qualificaitonRequestDtoList){
+        List<RegisterQualificationResponse> registerqualificationList = new ArrayList<>();
         List<Qualification> qualificationList = new ArrayList<>();
-        qualificationList.add(qualificationRepository.save(Qualification.builder()
-                .sortSequence(qualificationRequestDto.getSortSequence())
-                .qlfcDate(qualificationRequestDto.getQlfcDate())
-                .content(qualificationRequestDto.getContent())
-                .qlfcType(qualificationRequestDto.getQlfcType())
-                .qlfcPay(qualificationRequestDto.getQlfcPay())
-                .build()));
-        User user = userRepository.findByEmployeeId(qualificationRequestDto.getEmployeeId())
-                .orElseThrow(() -> new EntityNotFoundException("No Such User"));
-        user.registerQualification(qualificationList);
+
+        for (QualificaitonRequestDto qualificationRequestDto : qualificaitonRequestDtoList) {
+            Qualification qualification = qualificationRepository.save(Qualification.builder()
+                    .sortSequence(qualificationRequestDto.getSortSequence())
+                    .qlfcDate(qualificationRequestDto.getQlfcDate())
+                    .content(qualificationRequestDto.getContent())
+                    .qlfcType(qualificationRequestDto.getQlfcType())
+                    .qlfcPay(qualificationRequestDto.getQlfcPay())
+                    .build());
+            qualificationList.add(qualification);
+
+            User user = userRepository.findByEmployeeId(qualificationRequestDto.getEmployeeId())
+                    .orElseThrow(() -> new EntityNotFoundException("No Such User"));
+            user.registerQualification(qualificationList);
+        }
+
+        for (Qualification qualification : qualificationList) {
+            RegisterQualificationResponse register = RegisterQualificationResponse.builder()
+                    .QualificationId(qualification.getId())
+                    .createdAt(LocalDate.now())
+                    .build();
+            registerqualificationList.add(register);
+        }
+
+        return registerqualificationList;
     }
 
     /**

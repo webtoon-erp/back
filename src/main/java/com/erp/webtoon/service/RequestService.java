@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -33,14 +35,13 @@ public class RequestService {
      private final RequestRepository requestRepository;
      private final MessageRepository messageRepository;
      private final MessageService messageService;
-     private final SlackService slackService;
      private final FileService fileService;
 
     /**
      * 구매 요청 기능
      */
     @Transactional
-    public Request purchaseRequest(RequestDto requestDto) throws Exception {
+    public RequestRegisterResponseDto purchaseRequest(RequestDto requestDto) throws Exception {
 
         User reqUser = userRepository.findByEmployeeId(requestDto.getReqUserId()).get();
         User itUser = userRepository.findByEmployeeId(requestDto.getItUserId()).get();
@@ -75,14 +76,14 @@ public class RequestService {
         //알림 발송
         addRequestMsg(request);
 
-        return request;
+        return RequestRegisterResponseDto.builder().requestId(request.getId()).createdAt(LocalDateTime.now()).build();
     }
 
     /**
      * 업무 지원 요청 기능
      */
     @Transactional
-    public Request assistRequest(RequestDto requestDto) throws Exception {
+    public RequestRegisterResponseDto assistRequest(RequestDto requestDto) throws Exception {
         User reqUser = userRepository.findByEmployeeId(requestDto.getReqUserId()).get();
         User itUser = userRepository.findByEmployeeId(requestDto.getItUserId()).get();
         List<File> fileList = saveFile(requestDto);
@@ -104,7 +105,7 @@ public class RequestService {
         //알림 발송
         addRequestMsg(request);
 
-        return request;
+        return RequestRegisterResponseDto.builder().requestId(request.getId()).createdAt(LocalDateTime.now()).build();
     }
 
     /**
@@ -171,6 +172,7 @@ public class RequestService {
      * 단계 변경 기능
      */
     @Transactional
+
     public void changeStep(Long requestId, RequestStepDto dto) {
         Request findRequest = requestRepository.findById(requestId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 서비스 요청입니다."));
@@ -187,7 +189,7 @@ public class RequestService {
     /**
      * 코멘트 등록 기능
      */
-    public void registerComment(MessageSaveDto dto) throws IOException{
+    public CommentResponseDto registerComment(MessageSaveDto dto) throws IOException{
         User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
@@ -201,9 +203,9 @@ public class RequestService {
 
         String originContent = feedbackMsg.getContent();
         dto.setContent(request.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
-
-
         messageService.addMsg(feedbackMsg);
+
+        return CommentResponseDto.builder().messageId(feedbackMsg.getId()).createdAt(LocalDate.now()).build();
     }
 
     /**
