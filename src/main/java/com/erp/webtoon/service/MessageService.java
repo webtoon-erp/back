@@ -62,6 +62,7 @@ public class MessageService {
         - 읽음 -> R
         - 삭제 -> N
     */
+    @Transactional
     public void modifyStat(MessageUpdateDto dto) {
         Message message = dto.toEntity();
         char stat = message.getStat();
@@ -71,6 +72,7 @@ public class MessageService {
     /*
         메시지 등록
     */
+    @Transactional
     public void addMsg(MessageSaveDto dto) throws IOException {
 
         User rcvUser = userRepository.findByEmployeeId(dto.getRcvEmpId())
@@ -90,5 +92,71 @@ public class MessageService {
         }
     }
 
+    /*
+        피드백 조회
+        - msgType : webtoon
+        - 수신자 : null
+    */
+    @Transactional(readOnly = true)
+    public List<FeedbackListDto> findFeedbackList(Long webtoonId) {
+        List<Message> feedbackList = messageRepository.findByRefId(webtoonId);
+
+        return feedbackList.stream()
+                .map(feedback -> FeedbackListDto.builder()
+                        .content(feedback.getContent())
+                        .sendUserName(feedback.getSendUser().getName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    /*
+        피드백 등록
+        - msgType : webtoon
+        - 수신자 : null
+    */
+    @Transactional
+    public void addFeedbackMsg(MessageSaveDto dto) throws IOException {
+
+        User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
+                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
+
+        //피드백 저장
+        Message feedbackMsg = dto.toEntity(null, sendUser);
+        messageRepository.save(feedbackMsg);
+
+        //메시지 저장
+        Webtoon webtoon = webtoonRepository.findById(feedbackMsg.getRefId())
+                .orElseThrow(() -> new EntityNotFoundException("웹툰 정보가 존재하지 않습니다."));
+
+        String originContent = feedbackMsg.getContent();
+        dto.setContent(webtoon.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
+        addMsg(dto);
+
+    }
+
+    /**
+     * 요청 등록시 알림 발송
+     */
+    @Transactional
+    public void addRequestMsg(String rcvEmployeeId, String sendEmployeeId, Long requestId) throws IOException {
+
+        User rcvUser = userRepository.findByEmployeeId(rcvEmployeeId)
+                .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
+        User sendUser = userRepository.findByEmployeeId(sendEmployeeId)
+                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
+
+        MessageSaveDto dto = MessageSaveDto.builder()
+                .msgType("it")
+                .content("새로운 요청이 접수되었습니다.")
+                .rcvEmpId(rcvEmployeeId)
+                .sendEmpId(sendEmployeeId)
+                .refId(requestId)
+                .programId(null)
+                .build();
+
+        Message message = dto.toEntity(rcvUser, sendUser);
+        messageRepository.save(message);
+        addMsg(dto);
+    }
 
 }

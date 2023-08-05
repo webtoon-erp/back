@@ -45,4 +45,13 @@ public class Plan {
         this.endTime = endTime;
         this.holidayYN = holidayYN;
     }
+
+    public void updatePlan(String planType, String content, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
+        this.planType = planType;
+        this.content = content;
+        this.startDate = startDate;
+        this.startTime = startTime;
+        this.endDate = endDate;
+        this.endTime = endTime;
+    }
 }

@@ -89,6 +89,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Qualification> qualifications = new ArrayList<>();     // 자격증들
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Notice> notices = new ArrayList<>();   // 작성한 공지사항 목록
+
     public void updateInfo(String loginId, String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, String birthDate
             , int dayOff) {
         this.loginId = loginId;
@@ -106,6 +109,10 @@ public class User implements UserDetails {
 
     public void updatePassword(String email, String password){
         this.password = password;
+    }
+
+    public void registerQualification(List<Qualification> qualificationList){
+        this.qualifications = qualificationList;
     }
 
     @Override

@@ -2,10 +2,11 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.Notice;
+import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.notice.*;
 import com.erp.webtoon.repository.NoticeRepository;
+import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,7 @@ import static org.springframework.data.domain.Sort.Direction.*;
 @Transactional
 public class NoticeService {
 
+    private final UserRepository userRepository;
     private final NoticeRepository noticeRepository;
     private final FileService fileService;
 
@@ -33,6 +35,11 @@ public class NoticeService {
      */
     public void save(NoticeRequestDto dto) throws IOException {
         Notice notice = dto.toEntity();
+
+        User writeUser = userRepository.findByEmployeeId(dto.getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
+
+        notice.setWriteUser(writeUser);
 
         // 첨부파일이 1개 이상인 경우
         // 해당 첨부파일의 타입 지정해줘야함! -> 완료
@@ -63,17 +70,18 @@ public class NoticeService {
                 .readCount(findNotice.getReadCount())
                 .noticeType(findNotice.getNoticeType())
                 .noticeDate(findNotice.getNoticeDate())
+                .name(findNotice.getUser().getName())
                 .originFileNames(findNotice.getFileNames())
                 .build();
     }
 
 
     /**
-     * 공지사항 전체 조회(List) -> 페이징 처리 해야하지 않을까
+     * 공지사항 전체 조회(List)
      */
     @Transactional(readOnly = true)
     public List<NoticeListDto> findAllNotice() {
-        List<Notice> noticeList = noticeRepository.findAll();
+        List<Notice> noticeList = noticeRepository.findAll(Sort.by(DESC, "id"));
 
         return noticeList.stream()
                 .map(NoticeListDto::new)
@@ -100,9 +108,7 @@ public class NoticeService {
         Notice findNotice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 공지사항입니다."));
 
-        dto.getNoticeType().ifPresent(findNotice::updateNoticeType);
-        dto.getTitle().ifPresent(findNotice::updateTitle);
-        dto.getContent().ifPresent(findNotice::updateContent);
+        findNotice.updateNotice(dto.getNoticeType(), dto.getTitle(), dto.getContent());
 
         //파일 부분 추가해야함
         //공지사항에 저장된 파일목록을 지워야함 + 해당 파일의 상태가 Y인 경우 N으로 만들기
@@ -123,11 +129,10 @@ public class NoticeService {
     /**
      * 공지사항 삭제
      */
-    public boolean delete(Long noticeId) {
+    public void delete(Long noticeId) {
         Notice findNotice = noticeRepository.findById(noticeId)
                         .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 공지사항입니다."));
 
         noticeRepository.delete(findNotice);
-        return true;
     }
 }

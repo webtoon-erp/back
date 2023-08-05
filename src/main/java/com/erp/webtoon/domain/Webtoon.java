@@ -23,6 +23,8 @@ public class Webtoon {
 
     private String artist;  //작가 이름
 
+    private String illustrator; // 그림 작가 이름
+
     private String category;
 
     private String keyword;
@@ -34,10 +36,11 @@ public class Webtoon {
     private List<WebtoonDt> webtoonDts = new ArrayList<>();     // 해당 웹툰의 각 회차
 
     @Builder
-    public Webtoon(String title, String intro, String artist, String category, String keyword) {
+    public Webtoon(String title, String intro, String artist, String illustrator, String category, String keyword) {
         this.title = title;
         this.intro = intro;
         this.artist = artist;
+        this.illustrator = illustrator;
         this.category = category;
         this.keyword = keyword;
     }

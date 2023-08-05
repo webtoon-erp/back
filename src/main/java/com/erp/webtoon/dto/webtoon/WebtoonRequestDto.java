@@ -13,6 +13,8 @@ public class WebtoonRequestDto {
 
     private String artist;  //작가 이름
 
+    private String illustrator; //그림 작가 이름
+
     private String category;
 
     private String keyword;
@@ -24,6 +26,7 @@ public class WebtoonRequestDto {
                 .title(title)
                 .intro(intro)
                 .artist(artist)
+                .illustrator(illustrator)
                 .category(category)
                 .keyword(keyword).build();
     }
