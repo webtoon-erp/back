@@ -27,7 +27,7 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
 
     // 개인 이번주 누적 근무시간
     @Query(value = "SELECT SEC_TO_TIME(TIMESTAMPDIFF(SECOND, START.attend_time, END.attend_time)) " +
-            "FROM ATTENDENCE START, ATTENDENCE END " +
+            "FROM attendence START, attendence END " +
             "WHERE START.attend_date = END.attend_date " +
             "AND START.user_id = END.user_id " +
             "AND START.attend_type = 'START' " +
@@ -40,7 +40,7 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
 
     // 개인 이번주 초과 근무시간
     @Query(value = "SELECT SEC_TO_TIME(SUM(TIMESTAMPDIFF(SECOND, CONCAT(END.attend_date, ' 18:00:00'), END.attend_time))) " +
-            "FROM ATTENDENCE START, ATTENDENCE END " +
+            "FROM attendence START, attendence END " +
             "WHERE START.attend_date = END.attend_date " +
             "AND START.user_id = END.user_id " +
             "AND START.attend_type = 'START' " +
@@ -53,7 +53,7 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
 
     // 개인 이번달 누적 근무시간
     @Query(value = "SELECT SEC_TO_TIME(SUM(TIMESTAMPDIFF(SECOND, START.attend_time, END.attend_time))) " +
-            "FROM ATTENDENCE START, ATTENDENCE END " +
+            "FROM attendence START, attendence END " +
             "WHERE START.attend_date = END.attend_date " +
             "AND START.user_id = END.user_id " +
             "AND START.attend_type = 'START' " +
@@ -66,7 +66,7 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
 
     // 개인 이번달 초과 근무시간
     @Query(value = "SELECT SEC_TO_TIME(SUM(TIMESTAMPDIFF(SECOND, CONCAT(END.attend_date, ' 18:00:00'), END.attend_time))) " +
-            "FROM ATTENDENCE START, ATTENDENCE END " +
+            "FROM attendence START, attendence END " +
             "WHERE START.attend_date = END.attend_date " +
             "AND START.user_id = END.user_id " +
             "AND START.attend_type = 'START' " +
