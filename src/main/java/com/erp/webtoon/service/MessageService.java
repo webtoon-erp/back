@@ -109,30 +109,4 @@ public class MessageService {
         return messageRepository.findByRefId(refID);
     }
 
-
-
-    /*
-        피드백 등록
-        - msgType : webtoon
-        - 수신자 : null
-    */
-    @Transactional
-    public void addFeedbackMsg(MessageSaveDto dto) throws IOException {
-
-        User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
-                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
-
-        //피드백 저장
-        Message feedbackMsg = dto.toEntity(null, sendUser);
-        messageRepository.save(feedbackMsg);
-
-        //메시지 저장
-        Webtoon webtoon = webtoonRepository.findById(feedbackMsg.getRefId())
-                .orElseThrow(() -> new EntityNotFoundException("웹툰 정보가 존재하지 않습니다."));
-
-        String originContent = feedbackMsg.getContent();
-        dto.setContent(webtoon.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
-        addMsg(feedbackMsg);
-    }
-
 }

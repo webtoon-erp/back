@@ -1,10 +1,7 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.*;
-import com.erp.webtoon.dto.webtoon.FeedbackListDto;
-import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
-import com.erp.webtoon.dto.webtoon.WebtoonDtResponseDto;
-import com.erp.webtoon.dto.webtoon.WebtoonDtUpdateDto;
+import com.erp.webtoon.dto.webtoon.*;
 import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.repository.WebtoonDtRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
@@ -141,6 +138,30 @@ public class WebtoonDtService {
                         .sendUserEmployeeId(feedback.getSendUser().getEmployeeId())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    /*
+       피드백 등록
+       - msgType : webtoon
+       - 수신자 : null
+   */
+    @Transactional
+    public void addFeedbackMsg(FeedbackSaveDto dto) throws IOException {
+
+        User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
+                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
+
+        //피드백 저장
+        Message feedbackMsg = dto.toEntity(sendUser);
+        messageService.save(feedbackMsg);
+
+        //메시지 저장
+        Webtoon webtoon = webtoonRepository.findById(feedbackMsg.getRefId())
+                .orElseThrow(() -> new EntityNotFoundException("웹툰 정보가 존재하지 않습니다."));
+
+        String originContent = feedbackMsg.getContent();
+        dto.setContent(webtoon.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
+        messageService.addMsg(feedbackMsg);
     }
 
 }
