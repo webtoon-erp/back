@@ -30,7 +30,7 @@ public class AttendenceController {
      */
     @PostMapping("/attendence/individual/{employeeId}")
     public AttendenceResponseDto individualAttendence(@PathVariable("employeeId") String employeeId){
-        return attendenceService.findIndividualAttendence(employeeId);
+        return attendenceService.getIndividualAttendence(employeeId);
     }
 
 }

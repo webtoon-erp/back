@@ -35,7 +35,7 @@ public class AttendenceService {
     /*
         개인 근태 조회
      */
-    public AttendenceResponseDto findIndividualAttendence(String employeeId) {
+    public AttendenceResponseDto getIndividualAttendence(String employeeId) {
 
         User user = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 직원의 정보가 존재하지 않습니다."));
