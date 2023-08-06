@@ -1,5 +1,6 @@
 package com.erp.webtoon.controller;
 
+import com.erp.webtoon.dto.itsm.CommentListDto;
 import com.erp.webtoon.dto.itsm.CommentResponseDto;
 import com.erp.webtoon.dto.itsm.RequestDto;
 import com.erp.webtoon.dto.itsm.RequestRegisterResponseDto;
@@ -40,7 +41,7 @@ public class RequestController {
     }
 
     @GetMapping("/comment")
-    public List<FeedbackListDto> getAllComments(@RequestParam Long requestId){
+    public List<CommentListDto> getAllComments(@RequestParam Long requestId){
         return requestService.getAllComments(requestId);
     }
 
