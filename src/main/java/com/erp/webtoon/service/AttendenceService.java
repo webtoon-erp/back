@@ -8,6 +8,7 @@ import com.erp.webtoon.repository.AttendenceRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
@@ -22,6 +23,7 @@ public class AttendenceService {
     /*
         출근 & 퇴근
      */
+    @Transactional
     public void addAttendence(AttendenceRequestDto dto) throws IOException {
 
         User user = userRepository.findByEmployeeId(dto.getEmployeeId())

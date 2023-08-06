@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MessageService {
 
     private final MessageRepository messageRepository;
@@ -62,7 +63,6 @@ public class MessageService {
         - 읽음 -> R
         - 삭제 -> N
     */
-    @Transactional
     public void modifyStat(MessageUpdateDto dto) {
         Message message = dto.toEntity();
         char stat = message.getStat();
@@ -72,7 +72,6 @@ public class MessageService {
     /**
      * 메세지 저장
      */
-    @Transactional
     public void save(Message message) {
         messageRepository.save(message);
     }
@@ -80,7 +79,6 @@ public class MessageService {
     /*
         메시지 등록
     */
-    @Transactional
     public void addMsg(Message message) {
 //    public void addMsg(MessageSaveDto dto) throws IOException {
 

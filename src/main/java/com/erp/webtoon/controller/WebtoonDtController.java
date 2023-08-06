@@ -74,7 +74,7 @@ public class WebtoonDtController {
     /**
      * 회차 삭제
      */
-    @DeleteMapping("webtoonDt/{webtoonDtId}")
+    @DeleteMapping("/webtoonDt/{webtoonDtId}")
     public ResponseEntity delete(@PathVariable Long webtoonDtId) {
         webtoonDtService.delete(webtoonDtId);
         return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
@@ -83,7 +83,7 @@ public class WebtoonDtController {
     /*
         피드백 등록
      */
-    @PostMapping ("webtoonDt/feedBack")
+    @PostMapping ("/webtoonDt/feedBack")
     public List<FeedbackListDto> registerFeedBack(@RequestBody FeedbackSaveDto dto) throws IOException {
         webtoonDtService.addFeedbackMsg(dto);
 
