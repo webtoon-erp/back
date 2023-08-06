@@ -102,21 +102,14 @@ public class MessageService {
     }
 
     /*
-        피드백 조회
-        - msgType : webtoon
-        - 수신자 : null
-    */
+         참조 ID로 메시지 찾기
+     */
     @Transactional(readOnly = true)
-    public List<FeedbackListDto> findFeedbackList(Long webtoonId) {
-        List<Message> feedbackList = messageRepository.findByRefId(webtoonId);
-
-        return feedbackList.stream()
-                .map(feedback -> FeedbackListDto.builder()
-                        .content(feedback.getContent())
-                        .sendUserName(feedback.getSendUser().getName())
-                        .build())
-                .collect(Collectors.toList());
+    public List<Message> findMessageListByRefId (Long refID) {
+        return messageRepository.findByRefId(refID);
     }
+
+
 
     /*
         피드백 등록

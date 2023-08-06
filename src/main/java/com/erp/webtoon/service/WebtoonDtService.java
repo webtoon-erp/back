@@ -1,9 +1,6 @@
 package com.erp.webtoon.service;
 
-import com.erp.webtoon.domain.File;
-import com.erp.webtoon.domain.User;
-import com.erp.webtoon.domain.Webtoon;
-import com.erp.webtoon.domain.WebtoonDt;
+import com.erp.webtoon.domain.*;
 import com.erp.webtoon.dto.webtoon.FeedbackListDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtResponseDto;
@@ -78,7 +75,7 @@ public class WebtoonDtService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회차입니다."));
 
         //해당 회차 피드백들
-        List<FeedbackListDto> feedbackList = messageService.findFeedbackList(webtoonDtId);
+        List<FeedbackListDto> feedbackList = findFeedbackList(webtoonDtId);
 
         return WebtoonDtResponseDto.builder()
                 .episodeNum(findWebtoonDt.getEpisodeNum())
@@ -87,7 +84,6 @@ public class WebtoonDtService {
                 .feedbackList(feedbackList)
                 .build();
     }
-
 
     /**
      * 회차 수정
@@ -127,6 +123,24 @@ public class WebtoonDtService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회차입니다."));
 
         webtoonDtRepository.delete(findWebtoonDt);
+    }
+
+    /*
+       피드백 조회
+       - msgType : webtoon
+       - 수신자 : null
+   */
+    @Transactional(readOnly = true)
+    public List<FeedbackListDto> findFeedbackList(Long webtoonDtId) {
+        List<Message> feedbackList = messageService.findMessageListByRefId(webtoonDtId);
+
+        return feedbackList.stream()
+                .map(feedback -> FeedbackListDto.builder()
+                        .content(feedback.getContent())
+                        .sendUserName(feedback.getSendUser().getName())
+                        .sendUserEmployeeId(feedback.getSendUser().getEmployeeId())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }
