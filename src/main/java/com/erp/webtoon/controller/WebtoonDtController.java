@@ -1,8 +1,8 @@
 package com.erp.webtoon.controller;
 
-import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
-import com.erp.webtoon.dto.webtoon.WebtoonDtResponseDto;
-import com.erp.webtoon.dto.webtoon.WebtoonDtUpdateDto;
+import com.erp.webtoon.dto.itsm.CommentResponseDto;
+import com.erp.webtoon.dto.message.MessageSaveDto;
+import com.erp.webtoon.dto.webtoon.*;
 import com.erp.webtoon.service.FileService;
 import com.erp.webtoon.service.WebtoonDtService;
 import lombok.AllArgsConstructor;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -73,10 +74,20 @@ public class WebtoonDtController {
     /**
      * 회차 삭제
      */
-    @DeleteMapping("webtoonDt/{webtoonDtId}")
+    @DeleteMapping("/webtoonDt/{webtoonDtId}")
     public ResponseEntity delete(@PathVariable Long webtoonDtId) {
         webtoonDtService.delete(webtoonDtId);
         return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
+    }
+
+    /*
+        피드백 등록
+     */
+    @PostMapping ("/webtoonDt/feedBack")
+    public List<FeedbackListDto> registerFeedBack(@RequestBody FeedbackSaveDto dto) throws IOException {
+        webtoonDtService.addFeedbackMsg(dto);
+
+        return webtoonDtService.findFeedbackList(dto.getRefId());
     }
 
     private HttpHeaders redirect() {

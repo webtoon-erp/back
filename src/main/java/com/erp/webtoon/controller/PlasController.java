@@ -20,37 +20,37 @@ public class PlasController {
     // 템플릿 리스트 조회
     @GetMapping("/addDoc/templateList")
     public List<DocTplListDto> templateList() {
-        return plasService.findTemplateList();
+        return plasService.getTemplateList();
     }
 
     // 결재자 / 참조자 조회 기능
     @GetMapping("/addDoc/appvLineList")
     public List<AppvLineListDto> appvLineList() {
-        return plasService.findAppvLineList();
+        return plasService.getAppvLineList();
     }
 
     // 내 문서 조회
     @GetMapping("/list/myDoc/{employeeId}")
     public List<DocListDto> myDocList(@PathVariable("employeeId") String employeeId) {
-        return plasService.findMyDocList(employeeId);
+        return plasService.getMyDocList(employeeId);
     }
 
     // 내 부서 문서 조회
     @GetMapping("/list/myDeptDoc/{deptCode}")
     public List<DocListDto> myDeptDocList(@PathVariable("deptCode") String deptCode) {
-        return plasService.findMyDeptDocList(deptCode);
+        return plasService.getMyDeptDocList(deptCode);
     }
 
     // 내 결제 대기 문서 조회
     @GetMapping("/list/myAppvDoc/{employeeId}")
     public List<DocListDto> myAppvDocList(@PathVariable("employeeId") String employeeId) {
-        return plasService.findMyAppvOrCCDocList("APPV", employeeId);
+        return plasService.getMyAppvOrCCDocList("APPV", employeeId);
     }
 
     // 내 참조 문서 조회
     @GetMapping("/list/myCCDoc/{employeeId}")
     public List<DocListDto> myCCDocist(@PathVariable("employeeId") String employeeId) {
-        return plasService.findMyAppvOrCCDocList("CC", employeeId);
+        return plasService.getMyAppvOrCCDocList("CC", employeeId);
     }
 
 }

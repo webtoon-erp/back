@@ -29,7 +29,7 @@ public class PlasService {
         템플릿 조회
     */
     @Transactional(readOnly = true)
-    public List<DocTplListDto> findTemplateList() {
+    public List<DocTplListDto> getTemplateList() {
         List<DocumentTpl> templateList = documentTplRepository.findAll();
 
         return templateList.stream()
@@ -45,7 +45,7 @@ public class PlasService {
         결재자 / 참조자 조회
     */
     @Transactional(readOnly = true)
-    public List<AppvLineListDto> findAppvLineList() {
+    public List<AppvLineListDto> getAppvLineList() {
         List<User> appvLineList = userRepository.findAll();
 
         return appvLineList.stream()
@@ -62,7 +62,7 @@ public class PlasService {
         내 문서 조회
     */
     @Transactional(readOnly = true)
-    public List<DocListDto> findMyDocList(String employeeId) {
+    public List<DocListDto> getMyDocList(String employeeId) {
         User writeUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("문서 작성 직원의 정보가 존재하지 않습니다."));
 
@@ -76,7 +76,7 @@ public class PlasService {
         내 부서 문서 조회
     */
     @Transactional(readOnly = true)
-    public List<DocListDto> findMyDeptDocList(String deptCode) {
+    public List<DocListDto> getMyDeptDocList(String deptCode) {
 
         List<User> myDeptUserList = userRepository.findAllByDeptCode(deptCode);
 
@@ -89,7 +89,7 @@ public class PlasService {
         내 결재대기 & 참조 문서 조회
     */
     @Transactional(readOnly = true)
-    public List<DocListDto> findMyAppvOrCCDocList(String rcvType, String employeeId) {
+    public List<DocListDto> getMyAppvOrCCDocList(String rcvType, String employeeId) {
 
         User appvUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("사용자 정보가 존재하지 않습니다."));

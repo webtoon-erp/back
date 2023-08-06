@@ -8,6 +8,7 @@ import com.erp.webtoon.repository.AttendenceRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
@@ -22,6 +23,7 @@ public class AttendenceService {
     /*
         출근 & 퇴근
      */
+    @Transactional
     public void addAttendence(AttendenceRequestDto dto) throws IOException {
 
         User user = userRepository.findByEmployeeId(dto.getEmployeeId())
@@ -35,17 +37,17 @@ public class AttendenceService {
     /*
         개인 근태 조회
      */
-    public AttendenceResponseDto findIndividualAttendence(String employeeId) {
+    public AttendenceResponseDto getIndividualAttendence(String employeeId) {
 
         User user = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 직원의 정보가 존재하지 않습니다."));
 
         AttendenceResponseDto dto = new AttendenceResponseDto();
 
-        dto.setWeeklyTotalTime(attendenceRepository.findIndividualWeeklyTotalTime(user));
-        dto.setWeeklyOverTime(attendenceRepository.findIndividualWeeklyOverTime(user));
-        dto.setMonthlyTotalTime(attendenceRepository.findIndividualMonthlyTotalTime(user));
-        dto.setMonthlyOverTime(attendenceRepository.findIndividualMonthlyOverTime(user));
+        dto.setWeeklyTotalTime(attendenceRepository.findIndividualWeeklyTotalTime(user.getId()));
+        dto.setWeeklyOverTime(attendenceRepository.findIndividualWeeklyOverTime(user.getId()));
+        dto.setMonthlyTotalTime(attendenceRepository.findIndividualMonthlyTotalTime(user.getId()));
+        dto.setMonthlyOverTime(attendenceRepository.findIndividualMonthlyOverTime(user.getId()));
         dto.setAttendenceList(attendenceRepository.findIndividualAttendence(user));
 
         return dto;

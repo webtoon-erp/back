@@ -211,8 +211,17 @@ public class RequestService {
     /**
      * 코멘트 조회 기능
      */
-    public List<FeedbackListDto> getAllComments(Long requestId){
-        return messageService.findFeedbackList(requestId);
+    public List<CommentListDto> getAllComments(Long requestId){
+        List<Message> commentList = messageService.getMessageListByRefId(requestId);
+
+        return commentList.stream()
+                .map(comment -> CommentListDto.builder()
+                        .content(comment.getContent())
+                        .sendUserDeptName(comment.getSendUser().getDeptName())
+                        .sendUserEmployeeId(comment.getSendUser().getEmployeeId())
+                        .sendUserName(comment.getSendUser().getName())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     /**

@@ -25,51 +25,59 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
 
     List<IndividualAttenedenceListDto> findIndividualAttendence(@Param("user") User user);
 
-    @Query("SELECT FUNCTION('SEC_TO_TIME', SUM(FUNCTION('TIMESTAMPDIFF', 'SECOND', a.attendTime, a2.attendTime))) " +
-            "FROM Attendence a " +
-            "JOIN Attendence a2 ON a.attendDate = a2.attendDate AND a.user = a2.user " +
-            "WHERE a.attendType = 'START' " +
-            "AND a2.attendType = 'END' " +
-            "AND FUNCTION('WEEK', CURRENT_DATE) = FUNCTION('WEEK', a.attendDate, 3) " +
-            "AND a.user = :user " +
-            "GROUP BY FUNCTION('WEEK', a.attendDate, 3)")
+    // 개인 이번주 누적 근무시간
+    @Query(value = "SELECT SEC_TO_TIME(TIMESTAMPDIFF(SECOND, START.attend_time, END.attend_time)) " +
+            "FROM attendence START, attendence END " +
+            "WHERE START.attend_date = END.attend_date " +
+            "AND START.user_id = END.user_id " +
+            "AND START.attend_type = 'START' " +
+            "AND END.attend_type = 'END' " +
+            "AND WEEK(NOW()) = WEEK(START.attend_date, 3) " +
+            "AND START.user_id = :userId " +
+            "GROUP BY WEEK(START.attend_date, 3)", nativeQuery = true)
 
-    String findIndividualWeeklyTotalTime(@Param("user") User user);
+    String findIndividualWeeklyTotalTime(@Param("userId") Long userId);
 
-    @Query("SELECT FUNCTION('SEC_TO_TIME', SUM(FUNCTION('TIMESTAMPDIFF', 'SECOND', " +
-            "CONCAT(FUNCTION('DATE_FORMAT', a2.attendDate, '%Y-%m-%d'), ' 18:00:00'), a2.attendTime))) " +
-            "FROM Attendence a " +
-            "JOIN Attendence a2 ON a.attendDate = a2.attendDate AND a.user = a2.user " +
-            "WHERE a.attendType = 'START' " +
-            "AND a2.attendType = 'END' " +
-            "AND FUNCTION('WEEK', CURRENT_DATE) = FUNCTION('WEEK', a.attendDate, 3) " +
-            "AND a.user = :user " +
-            "GROUP BY FUNCTION('WEEK', a.attendDate, 3)")
+    // 개인 이번주 초과 근무시간
+    @Query(value = "SELECT SEC_TO_TIME(SUM(TIMESTAMPDIFF(SECOND, CONCAT(END.attend_date, ' 18:00:00'), END.attend_time))) " +
+            "FROM attendence START, attendence END " +
+            "WHERE START.attend_date = END.attend_date " +
+            "AND START.user_id = END.user_id " +
+            "AND START.attend_type = 'START' " +
+            "AND END.attend_type = 'END' " +
+            "AND WEEK(NOW()) = WEEK(START.attend_date, 3) " +
+            "AND START.user_id = :userId " +
+            "GROUP BY WEEK(START.attend_date, 3)", nativeQuery = true)
 
-    String findIndividualWeeklyOverTime(@Param("user") User user);
+    String findIndividualWeeklyOverTime(@Param("user") Long userId);
 
-    @Query("SELECT FUNCTION('SEC_TO_TIME', SUM(FUNCTION('TIMESTAMPDIFF', 'SECOND', a.attendTime, a2.attendTime))) " +
-            "FROM Attendence a " +
-            "JOIN Attendence a2 ON a.attendDate = a2.attendDate AND a.user = a2.user " +
-            "WHERE a.attendType = 'START' " +
-            "AND a2.attendType = 'END' " +
-            "AND FUNCTION('MONTH', CURRENT_DATE) = FUNCTION('MONTH', a.attendDate) " +
-            "AND a.user = :user " +
-            "GROUP BY FUNCTION('MONTH', a.attendDate)")
+    // 개인 이번달 누적 근무시간
+    @Query(value = "SELECT SEC_TO_TIME(SUM(TIMESTAMPDIFF(SECOND, START.attend_time, END.attend_time))) " +
+            "FROM attendence START, attendence END " +
+            "WHERE START.attend_date = END.attend_date " +
+            "AND START.user_id = END.user_id " +
+            "AND START.attend_type = 'START' " +
+            "AND END.attend_type = 'END' " +
+            "AND MONTH(NOW()) = MONTH(START.attend_date) " +
+            "AND START.user_id = :userId " +
+            "GROUP BY MONTH(START.attend_date)", nativeQuery = true)
 
-    String findIndividualMonthlyTotalTime(@Param("user") User user);
+    String findIndividualMonthlyTotalTime(@Param("user") Long userId);
 
-    @Query("SELECT FUNCTION('SEC_TO_TIME', SUM(FUNCTION('TIMESTAMPDIFF', 'SECOND', " +
-            "CONCAT(FUNCTION('DATE_FORMAT', a2.attendDate, '%Y-%m-%d'), ' 18:00:00'), a2.attendTime))) " +
-            "FROM Attendence a " +
-            "JOIN Attendence a2 ON a.attendDate = a2.attendDate AND a.user = a2.user " +
-            "WHERE a.attendType = 'START' " +
-            "AND a2.attendType = 'END' " +
-            "AND FUNCTION('MONTH', CURRENT_DATE) = FUNCTION('MONTH', a.attendDate) " +
-            "AND a.user = :user " +
-            "GROUP BY FUNCTION('MONTH', a.attendDate)")
+    // 개인 이번달 초과 근무시간
+    @Query(value = "SELECT SEC_TO_TIME(SUM(TIMESTAMPDIFF(SECOND, CONCAT(END.attend_date, ' 18:00:00'), END.attend_time))) " +
+            "FROM attendence START, attendence END " +
+            "WHERE START.attend_date = END.attend_date " +
+            "AND START.user_id = END.user_id " +
+            "AND START.attend_type = 'START' " +
+            "AND END.attend_type = 'END' " +
+            "AND MONTH(NOW()) = MONTH(START.attend_date) " +
+            "AND START.user_id = :userId " +
+            "GROUP BY MONTH(START.attend_date)", nativeQuery = true)
 
-    String findIndividualMonthlyOverTime(@Param("user") User user);
+    String findIndividualMonthlyOverTime(@Param("user") Long userId);
+
+
 
 
 }

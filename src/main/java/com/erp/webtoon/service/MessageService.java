@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MessageService {
 
     private final MessageRepository messageRepository;
@@ -34,7 +35,7 @@ public class MessageService {
         - rcvUser == emp_id
     */
     @Transactional(readOnly = true)
-    public List<MessageListDto> findMessageList(MessageFindDto dto) {
+    public List<MessageListDto> getMessageList(MessageFindDto dto) {
             User user = userRepository.findByEmployeeId(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
 
@@ -62,7 +63,6 @@ public class MessageService {
         - 읽음 -> R
         - 삭제 -> N
     */
-    @Transactional
     public void modifyStat(MessageUpdateDto dto) {
         Message message = dto.toEntity();
         char stat = message.getStat();
@@ -72,7 +72,6 @@ public class MessageService {
     /**
      * 메세지 저장
      */
-    @Transactional
     public void save(Message message) {
         messageRepository.save(message);
     }
@@ -80,7 +79,6 @@ public class MessageService {
     /*
         메시지 등록
     */
-    @Transactional
     public void addMsg(Message message) {
 //    public void addMsg(MessageSaveDto dto) throws IOException {
 
@@ -102,44 +100,11 @@ public class MessageService {
     }
 
     /*
-        피드백 조회
-        - msgType : webtoon
-        - 수신자 : null
-    */
+         참조 ID로 메시지 찾기
+     */
     @Transactional(readOnly = true)
-    public List<FeedbackListDto> findFeedbackList(Long webtoonId) {
-        List<Message> feedbackList = messageRepository.findByRefId(webtoonId);
-
-        return feedbackList.stream()
-                .map(feedback -> FeedbackListDto.builder()
-                        .content(feedback.getContent())
-                        .sendUserName(feedback.getSendUser().getName())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    /*
-        피드백 등록
-        - msgType : webtoon
-        - 수신자 : null
-    */
-    @Transactional
-    public void addFeedbackMsg(MessageSaveDto dto) throws IOException {
-
-        User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
-                .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
-
-        //피드백 저장
-        Message feedbackMsg = dto.toEntity(null, sendUser);
-        messageRepository.save(feedbackMsg);
-
-        //메시지 저장
-        Webtoon webtoon = webtoonRepository.findById(feedbackMsg.getRefId())
-                .orElseThrow(() -> new EntityNotFoundException("웹툰 정보가 존재하지 않습니다."));
-
-        String originContent = feedbackMsg.getContent();
-        dto.setContent(webtoon.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
-        addMsg(feedbackMsg);
+    public List<Message> getMessageListByRefId (Long refID) {
+        return messageRepository.findByRefId(refID);
     }
 
 }
