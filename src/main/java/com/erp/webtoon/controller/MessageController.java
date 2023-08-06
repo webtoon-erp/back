@@ -24,7 +24,7 @@ public class MessageController {
      */
     @GetMapping("/message")
     public List<MessageListDto> message(@RequestBody MessageFindDto dto) {
-        return messageService.findMessageList(dto);
+        return messageService.getMessageList(dto);
     }
 
     /*

@@ -129,7 +129,7 @@ public class WebtoonDtService {
    */
     @Transactional(readOnly = true)
     public List<FeedbackListDto> findFeedbackList(Long webtoonDtId) {
-        List<Message> feedbackList = messageService.findMessageListByRefId(webtoonDtId);
+        List<Message> feedbackList = messageService.getMessageListByRefId(webtoonDtId);
 
         return feedbackList.stream()
                 .map(feedback -> FeedbackListDto.builder()

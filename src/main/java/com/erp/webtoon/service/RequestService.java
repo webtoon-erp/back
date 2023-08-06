@@ -212,7 +212,7 @@ public class RequestService {
      * 코멘트 조회 기능
      */
     public List<CommentListDto> getAllComments(Long requestId){
-        List<Message> commentList = messageService.findMessageListByRefId(requestId);
+        List<Message> commentList = messageService.getMessageListByRefId(requestId);
 
         return commentList.stream()
                 .map(comment -> CommentListDto.builder()

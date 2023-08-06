@@ -34,7 +34,7 @@ public class MessageService {
         - rcvUser == emp_id
     */
     @Transactional(readOnly = true)
-    public List<MessageListDto> findMessageList(MessageFindDto dto) {
+    public List<MessageListDto> getMessageList(MessageFindDto dto) {
             User user = userRepository.findByEmployeeId(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
 
@@ -105,7 +105,7 @@ public class MessageService {
          참조 ID로 메시지 찾기
      */
     @Transactional(readOnly = true)
-    public List<Message> findMessageListByRefId (Long refID) {
+    public List<Message> getMessageListByRefId (Long refID) {
         return messageRepository.findByRefId(refID);
     }
 
