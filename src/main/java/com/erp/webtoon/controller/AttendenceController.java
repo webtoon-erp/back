@@ -29,7 +29,7 @@ public class AttendenceController {
         개인 근태 조회
      */
     @PostMapping("/attendence/individual/{employeeId}")
-    public AttendenceResponseDto attendenceAdd(@PathVariable("employeeId") String employeeId){
+    public AttendenceResponseDto individualAttendence(@PathVariable("employeeId") String employeeId){
         return attendenceService.findIndividualAttendence(employeeId);
     }
 
