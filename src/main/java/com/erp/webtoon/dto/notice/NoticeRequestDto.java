@@ -1,9 +1,11 @@
 package com.erp.webtoon.dto.notice;
 
 import com.erp.webtoon.domain.Notice;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -17,7 +19,7 @@ public class NoticeRequestDto {
 
     private String content;
 
-    private List<MultipartFile> uploadFiles;
+    private List<MultipartFile> uploadFiles = new ArrayList<>();
 
     public Notice toEntity() {
         return Notice.builder()
