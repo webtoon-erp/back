@@ -53,7 +53,10 @@ public class User implements UserDetails {
 
     private String status; // 상태
 
+    private boolean usable;
+
     @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
     private List<String> roles = new ArrayList<>();     // 접근 권한 (로그인 시 설정 아마도,,)
 
     private int dayOff;     // 연차개수
@@ -81,9 +84,6 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DocumentRcv> documentRcvs = new ArrayList<>();     // 수신 문서들
-
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-//    private RefreshToken refreshToken;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Qualification> qualifications = new ArrayList<>();     // 자격증들
@@ -123,7 +123,12 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return employeeId;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
