@@ -81,6 +81,26 @@ public class AttendenceService {
                 .count();
     }
 
+    // 전체 - 휴가 직원 수
+    public long countDayOffAttendances() {
+        String currentDate = LocalDate.now().toString();
+        String attendType = "DAYOFF";
+
+        List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
+
+        return attendances.size();
+    }
+
+    // 전체 - 퇴근 직원 수
+    public long countOnTimeEndAttendances() {
+        String currentDate = LocalDate.now().toString();
+        String attendType = "END";
+
+        List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
+
+        return attendances.size();
+    }
+
     // 정시 출근 판단 함수 - 실제 출근 시간이 9시 10분 이전이면 true
     private boolean isOnTime(Attendence attendence) {
         LocalDateTime expectedStartTime = LocalDate.parse(attendence.getAttendDate()).atTime(9, 10);
