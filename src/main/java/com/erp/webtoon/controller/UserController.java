@@ -4,7 +4,6 @@ import com.erp.webtoon.dto.token.LogOutRequestDto;
 import com.erp.webtoon.dto.token.TokenRequestDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 
-
 import com.erp.webtoon.dto.user.LoginRequestDto;
 import com.erp.webtoon.dto.user.QualificationRequestDto;
 import com.erp.webtoon.dto.user.RegisterQualificationResponse;
@@ -13,7 +12,6 @@ import com.erp.webtoon.dto.user.UserListResponseDto;
 import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.dto.user.UserResponseDto;
 import com.erp.webtoon.dto.user.UserUpdateDto;
-import com.erp.webtoon.service.JwtService;
 import com.erp.webtoon.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +40,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity add(@Valid @RequestBody UserRequestDto userRequestDto){
         userService.addNewCome(userRequestDto);
         return new ResponseEntity(HttpStatus.CREATED);
@@ -91,7 +89,7 @@ public class UserController {
     /**
      * 직원조회 -> 카드뷰
      */
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity cardView(@RequestParam("page") int page) {
         List<UserListResponseDto> dtos = userService.getCardView(page);
 
@@ -101,7 +99,7 @@ public class UserController {
     /**
      * 직원 정보 수정
      */
-    @PatchMapping("")
+    @PatchMapping
     public void update(@RequestBody UserUpdateDto dto) {
         userService.update(dto);
     }
