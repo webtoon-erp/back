@@ -116,7 +116,7 @@ public class UserService {
         User updateUser = userRepository.findByEmployeeId(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
-        updateUser.updateInfo(dto.getLoginId(), dto.getPassword(), dto.getName(), dto.getDeptCode(), dto.getDeptName(), dto.getTeamNum(), dto.getPosition(),
+        updateUser.updateInfo(dto.getEmployeeId(), dto.getPassword(), dto.getName(), dto.getDeptCode(), dto.getDeptName(), dto.getTeamNum(), dto.getPosition(),
                 dto.getEmail(), dto.getTel(), dto.getBirthDate(), dto.getDayOff());
     }
 
@@ -171,19 +171,20 @@ public class UserService {
      */
     @Transactional
     public TokenResponseDto login(LoginRequestDto loginRequestDto){
-        User user = userRepository.findByLoginId(loginRequestDto.getEmail());
+        User user = userRepository.findByEmployeeId(loginRequestDto.getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("사원을 찾을 수 없습니다."));
         checkPassword(loginRequestDto.getPassword(), user.getPassword());
 
         // 1. Login ID/PW를 기반으로 Authentication 객체 생성
         // 이때 authenticaiton는 인증 여부를 확인하는 authenticated 값이 false
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), user.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getEmployeeId(), user.getPassword());
 
         // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
         // authenticate 메서드가 실행될 때 CustomUserDetailsService에서 만든 loadUserByUsername 메서드가 실행
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        TokenResponseDto tokenDto = tokenProvider.createToken(authentication, loginRequestDto.getEmail());
+        TokenResponseDto tokenDto = tokenProvider.createToken(authentication, loginRequestDto.getEmployeeId());
 
         // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
         redisTemplate.opsForValue()
@@ -251,9 +252,9 @@ public class UserService {
      * 임시 비밀번호로 업데이트
      */
     public void updatePassword(String password, String userEmail){
-        String memberPassword = password;
-        User user = userRepository.findByEmail(userEmail);
-        user.updatePassword(userEmail,memberPassword);
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new EntityNotFoundException("사원을 찾을 수 없습니다."));
+        user.updatePassword(password);
     }
 
     /**

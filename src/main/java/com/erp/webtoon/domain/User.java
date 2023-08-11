@@ -30,8 +30,6 @@ public class User implements UserDetails {
 
     private String employeeId; // 사번
 
-    private String loginId; // 아이디
-
     @JsonIgnore
     private String password;    // 비밀번호
 
@@ -93,9 +91,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notice> notices = new ArrayList<>();   // 작성한 공지사항 목록
 
-    public void updateInfo(String loginId, String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, LocalDate birthDate
+    public void updateInfo(String employeeId, String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, LocalDate birthDate
             , int dayOff) {
-        this.loginId = loginId;
+        this.employeeId = employeeId;
         this.password = password;
         this.name = name;
         this.deptCode = deptCode;
@@ -108,7 +106,7 @@ public class User implements UserDetails {
         this.dayOff = dayOff;
     }
 
-    public void updatePassword(String email, String password){
+    public void updatePassword(String password){
         this.password = password;
     }
 
