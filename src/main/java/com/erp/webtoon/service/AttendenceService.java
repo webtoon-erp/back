@@ -110,7 +110,7 @@ public class AttendenceService {
     }
 
     // 전체 - 정시 출근 직원 수
-    public Long countOnTimeStartAttendances() {
+    private Long countOnTimeStartAttendances() {
         String currentDate = LocalDate.now().toString();;
         String attendType = "START";
 
@@ -122,7 +122,7 @@ public class AttendenceService {
     }
 
     // 전체 - 지각 출근 직원 수
-    public Long countLateStartAttendances() {
+    private Long countLateStartAttendances() {
         String currentDate = LocalDate.now().toString();;
         String attendType = "START";
 
@@ -134,7 +134,7 @@ public class AttendenceService {
     }
 
     // 전체 - 휴가 직원 수
-    public Long countDayOffAttendances() {
+    private Long countDayOffAttendances() {
         String currentDate = LocalDate.now().toString();
         String attendType = "DAYOFF";
 
@@ -144,7 +144,7 @@ public class AttendenceService {
     }
 
     // 전체 - 퇴근 직원 수
-    public Long countOnTimeEndAttendances() {
+    private Long countOnTimeEndAttendances() {
         String currentDate = LocalDate.now().toString();
         String attendType = "END";
 
@@ -154,7 +154,7 @@ public class AttendenceService {
     }
 
     // 전체 - 연장 근무 (미퇴근) 직원 수
-    public Long countNotEndAttendances() {
+    private Long countNotEndAttendances() {
         String currentDate = LocalDate.now().toString();
 
         // 출근한 직원 수 (지각 포함)
@@ -174,7 +174,7 @@ public class AttendenceService {
     }
 
     // 전체 - 미출근 직원 수
-    public Long countNotStartAttendances() {
+    private Long countNotStartAttendances() {
         String currentDate = LocalDate.now().toString();
 
         // 전체 직원 수
