@@ -59,7 +59,7 @@ public class AttendenceService {
     }
 
     // 전체 - 정시 출근 직원 수
-    public long countOnTimeStartAttendances() {
+    public Long countOnTimeStartAttendances() {
         String currentDate = LocalDate.now().toString();;
         String attendType = "START";
 
@@ -71,7 +71,7 @@ public class AttendenceService {
     }
 
     // 전체 - 지각 출근 직원 수
-    public long countLateStartAttendances() {
+    public Long countLateStartAttendances() {
         String currentDate = LocalDate.now().toString();;
         String attendType = "START";
 
@@ -83,27 +83,27 @@ public class AttendenceService {
     }
 
     // 전체 - 휴가 직원 수
-    public long countDayOffAttendances() {
+    public Long countDayOffAttendances() {
         String currentDate = LocalDate.now().toString();
         String attendType = "DAYOFF";
 
         List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
 
-        return attendances.size();
+        return (long) attendances.size();
     }
 
     // 전체 - 퇴근 직원 수
-    public long countOnTimeEndAttendances() {
+    public Long countOnTimeEndAttendances() {
         String currentDate = LocalDate.now().toString();
         String attendType = "END";
 
         List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
 
-        return attendances.size();
+        return (long) attendances.size();
     }
 
     // 전체 - 연장 근무 (미퇴근) 직원 수
-    public long countNotEndAttendances() {
+    public Long countNotEndAttendances() {
         String currentDate = LocalDate.now().toString();
 
         // 출근한 직원 수 (지각 포함)
@@ -118,12 +118,12 @@ public class AttendenceService {
         if (currentTime.isAfter(LocalTime.of(18, 10))) {
             return startAttendances - endAttendances;
         } else {
-            return 0;
+            return 0L;
         }
     }
 
     // 전체 - 미출근 직원 수
-    public long countNotStartAttendances() {
+    public Long countNotStartAttendances() {
         String currentDate = LocalDate.now().toString();
 
         // 전체 직원 수
