@@ -207,6 +207,27 @@ public class AttendenceService {
         List<Attendence> attendances = attendenceRepository.findByAttendMonthAndAttendTypeAndUserIn(currentMonth, attendType, userList);
 
 
+        return sumOvertime(attendances);
+    }
+
+    // 월별 연장근무 시간
+    private String calculateOvertimeByMonth(int month) {
+        List<Attendence> attendences = attendenceRepository.findByAttendMonthAndAttendType(month, "END");
+
+        return sumOvertime(attendences);
+    }
+
+    // 연장근무 시간 계산
+    private Duration calculateOverTime(Attendence attendence) {
+        LocalDateTime expectedEndTime = LocalDate.parse(attendence.getAttendDate()).atTime(18, 0);
+        LocalDateTime actualEndTime = attendence.getAttendTime();
+
+        return Duration.between(expectedEndTime, actualEndTime);
+    }
+
+    // 연장근무 시간 합계
+    private String sumOvertime(List<Attendence> attendances) {
+
         Duration totalOverTime = attendances.stream()
                 .map(this::calculateOverTime)
                 .reduce(Duration.ZERO, Duration::plus);
@@ -216,28 +237,6 @@ public class AttendenceService {
         long totalSeconds = totalOverTime.toSecondsPart();
 
         return String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSeconds);
-    }
 
-    // 월별 연장근무 시간
-    private String calculateOvertimeByMonth(int month) {
-        List<Attendence> attendences = attendenceRepository.findByAttendMonthAndAttendType(month, "END");
-
-        Duration totalOverTime = attendences.stream()
-                .map(this::calculateOverTime)
-                .reduce(Duration.ZERO, Duration::plus);
-
-        long totalHours = totalOverTime.toHours();
-        long totalMinutes = totalOverTime.toMinutesPart();
-        long totalSeconds = totalOverTime.toSecondsPart();
-
-        return String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSeconds);
-    }
-
-    // 연장근무 시간 계산
-    private Duration calculateOverTime(Attendence attendence) {
-        LocalDateTime expectedEndTime = LocalDate.parse(attendence.getAttendDate()).atTime(18, 0);
-        LocalDateTime actualEndTime = attendence.getAttendTime();
-
-        return Duration.between(expectedEndTime, actualEndTime);
     }
 }
