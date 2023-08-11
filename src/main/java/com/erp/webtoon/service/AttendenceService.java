@@ -4,6 +4,7 @@ import com.erp.webtoon.domain.Attendence;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.attendece.AttendenceRequestDto;
 import com.erp.webtoon.dto.attendece.AttendenceResponseDto;
+import com.erp.webtoon.dto.attendece.DepartmentOvertimeSummaryDto;
 import com.erp.webtoon.dto.attendece.TotalAttendenceSummaryDto;
 import com.erp.webtoon.repository.AttendenceRepository;
 import com.erp.webtoon.repository.UserRepository;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -71,6 +73,20 @@ public class AttendenceService {
                 .notStartUserCnt(countNotStartAttendances())
                 .dayOffUserCnt(countDayOffAttendances())
                 .notEndUserCnt(countNotEndAttendances())
+                .build();
+
+    }
+
+    /*
+        전체 근태 - 부서별 연장근무 시간
+     */
+    public DepartmentOvertimeSummaryDto getDeptOverTime() {
+
+        return DepartmentOvertimeSummaryDto.builder()
+                .hrOvertime(getOverTimeByDepartment("HR"))
+                .amOvertime(getOverTimeByDepartment("AM"))
+                .wtOvertime(getOverTimeByDepartment("WT"))
+                .itOVertime(getOverTimeByDepartment("IT"))
                 .build();
 
     }
@@ -161,6 +177,35 @@ public class AttendenceService {
         LocalDateTime actualStartTime = attendence.getAttendTime();
 
         return actualStartTime.isBefore(expectedStartTime);
+    }
+
+    // 이번달 부서별 연장 근무 시간
+    private String getOverTimeByDepartment(String deptCode) {
+
+        int currentMonth = LocalDate.now().getMonthValue();
+        String attendType = "END";
+        List<User> userList = userRepository.findAllByDeptCode(deptCode);
+
+        List<Attendence> attendances = attendenceRepository.findByAttendMonthAndAttendTypeAndUserIn(currentMonth, attendType, userList);
+
+
+        Duration totalOverTime = attendances.stream()
+                .map(this::calculateOverTime)
+                .reduce(Duration.ZERO, Duration::plus);
+
+        long totalHours = totalOverTime.toHours();
+        long totalMinutes = totalOverTime.toMinutesPart();
+        long totalSeconds = totalOverTime.toSecondsPart();
+
+        return String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSeconds);
+    }
+
+    // 연장근무 시간 계산
+    private Duration calculateOverTime(Attendence attendence) {
+        LocalDateTime expectedEndTime = LocalDate.parse(attendence.getAttendDate()).atTime(18, 0);
+        LocalDateTime actualEndTime = attendence.getAttendTime();
+
+        return Duration.between(expectedEndTime, actualEndTime);
     }
 
 
