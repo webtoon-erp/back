@@ -58,7 +58,7 @@ public class AttendenceService {
     }
 
     // 전체 - 정시 출근 직원 수
-    public long countOnTimeAttendances() {
+    public long countOnTimeStartAttendances() {
         String currentDate = LocalDate.now().toString();;
         String attendType = "START";
 
@@ -70,7 +70,7 @@ public class AttendenceService {
     }
 
     // 전체 - 지각 출근 직원 수
-    public long countLateAttendances() {
+    public long countLateStartAttendances() {
         String currentDate = LocalDate.now().toString();;
         String attendType = "START";
 
