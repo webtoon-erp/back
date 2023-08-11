@@ -16,6 +16,8 @@ public class Attendence {
     @Column(name = "atd_id")
     private Long id;
 
+    private int attendMonth; // 기준월
+
     private String attendDate;  //  기준일
 
     private String attendType;  // 근태타입
@@ -27,7 +29,8 @@ public class Attendence {
     private User user;
 
     @Builder
-    public Attendence(String attendDate, String attendType, LocalDateTime attendTime, User user) {
+    public Attendence(int attendMonth, String attendDate, String attendType, LocalDateTime attendTime, User user) {
+        this.attendMonth = attendMonth;
         this.attendDate = attendDate;
         this.attendType = attendType;
         this.attendTime = attendTime;
