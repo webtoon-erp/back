@@ -4,6 +4,7 @@ import com.erp.webtoon.domain.Attendence;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.attendece.AttendenceRequestDto;
 import com.erp.webtoon.dto.attendece.AttendenceResponseDto;
+import com.erp.webtoon.dto.attendece.TotalAttendenceSummaryDto;
 import com.erp.webtoon.repository.AttendenceRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,22 @@ public class AttendenceService {
         dto.setAttendenceList(attendenceRepository.findIndividualAttendence(user));
 
         return dto;
+
+    }
+
+    /*
+        전체 근태 현황 조회
+     */
+    public TotalAttendenceSummaryDto getTotalAttendence() {
+
+        return TotalAttendenceSummaryDto.builder()
+                .totalUserCnt(userRepository.countAllBy())
+                .onTimeEndUserCnt(countOnTimeStartAttendances())
+                .lateStartUserCnt(countLateStartAttendances())
+                .notStartUserCnt(countNotStartAttendances())
+                .dayOffUserCnt(countDayOffAttendances())
+                .notEndUserCnt(countNotEndAttendances())
+                .build();
 
     }
 

@@ -1,8 +1,10 @@
 package com.erp.webtoon.dto.attendece;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class TotalAttendenceSummaryDto {
 
     private Long totalUserCnt;      // 전체 직원수
@@ -17,6 +19,6 @@ public class TotalAttendenceSummaryDto {
 
     private Long onTimeEndUserCnt;        // 정상 퇴근 직원수
 
-    private Long notEndUserCnt;       // 연장근무 직원수
+    private Long notEndUserCnt;       // 연장근무 직원수er
 
 }
