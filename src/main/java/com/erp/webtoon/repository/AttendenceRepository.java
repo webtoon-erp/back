@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -77,7 +78,8 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
 
     String findIndividualMonthlyOverTime(@Param("user") Long userId);
 
-
+    // 전체 근태 조회
+    List<Attendence> findByAttendDateAndAttendType(String attendDate, String attendType);
 
 
 }
