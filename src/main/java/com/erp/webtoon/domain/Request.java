@@ -66,9 +66,4 @@ public class Request {
         this.itUser = itUser;
         this.files = files;
     }
-
-    public void addRequestDt(RequestDt requestDt) {
-        requestDts.add(requestDt);
-        requestDt.setRequest(this);
-    }
 }

@@ -32,5 +32,6 @@ public class RequestDt {
 
     public void setRequest(Request request) {
         this.request = request;
+        request.getRequestDts().add(this);
     }
 }
