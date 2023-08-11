@@ -67,7 +67,7 @@ public class RequestService {
                     .count(requestDto.getRequestDts().get(i).getCount())
                     .cost(requestDto.getRequestDts().get(i).getCost())
                     .build();
-            request.addRequestDt(requestDt);
+            requestDt.setRequest(request);
         }
 
         requestRepository.save(request);
