@@ -28,7 +28,7 @@ public enum QualificationFixture {
                 .build();
     }
 
-    public QualificationBuilder 기본_정보_생성() {
+    private QualificationBuilder 기본_정보_생성() {
         return Qualification.builder()
                 .qlfcType(this.qlfcType)
                 .content(this.content)
