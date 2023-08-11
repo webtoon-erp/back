@@ -7,7 +7,6 @@ import com.erp.webtoon.domain.RequestDt;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.itsm.*;
 import com.erp.webtoon.dto.message.MessageSaveDto;
-import com.erp.webtoon.dto.webtoon.FeedbackListDto;
 import com.erp.webtoon.repository.MessageRepository;
 import com.erp.webtoon.repository.RequestRepository;
 import com.erp.webtoon.repository.UserRepository;
@@ -43,20 +42,11 @@ public class RequestService {
     @Transactional
     public RequestRegisterResponseDto purchaseRequest(RequestDto requestDto) throws Exception {
 
-        User reqUser = userRepository.findByEmployeeId(requestDto.getReqUserId()).get();
-        User itUser = userRepository.findByEmployeeId(requestDto.getItUserId()).get();
-        List<RequestDt> requestDtList = new ArrayList<>();
+        User reqUser = userRepository.findByEmployeeId(requestDto.getReqUserId())
+                .orElseThrow(() -> new EntityNotFoundException("발신자가 존재하지 않습니다."));
+        User itUser = userRepository.findByEmployeeId(requestDto.getItUserId())
+                .orElseThrow(() -> new EntityNotFoundException("수신자가 존재하지 않습니다."));
         List<File> fileList = saveFile(requestDto);
-
-        for(int i = 0; i < requestDto.getRequestDts().size(); i++){
-            RequestDt request = RequestDt.builder()
-                    .sortSequence(requestDto.getRequestDts().get(i).getSortSequence())
-                    .content(requestDto.getRequestDts().get(i).getContent())
-                    .count(requestDto.getRequestDts().get(i).getCount())
-                    .cost(requestDto.getRequestDts().get(i).getCost())
-                    .build();
-            requestDtList.add(request);
-        }
 
         Request request = Request.builder()
                 .reqType(requestDto.getReqType())
@@ -68,8 +58,17 @@ public class RequestService {
                 .reqUser(reqUser)
                 .itUser(itUser)
                 .files(fileList)
-                .requestDts(requestDtList)
                 .build();
+
+        for(int i = 0; i < requestDto.getRequestDts().size(); i++){
+            RequestDt requestDt = RequestDt.builder()
+                    .sortSequence(requestDto.getRequestDts().get(i).getSortSequence())
+                    .content(requestDto.getRequestDts().get(i).getContent())
+                    .count(requestDto.getRequestDts().get(i).getCount())
+                    .cost(requestDto.getRequestDts().get(i).getCost())
+                    .build();
+            request.addRequestDt(requestDt);
+        }
 
         requestRepository.save(request);
 
