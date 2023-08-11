@@ -29,7 +29,7 @@ class RequestRepositoryTest {
         // given
         Request request = FIRST_REQUEST.생성(1L);
         RequestDt requestDt = FIRST_REQUESTDT.생성(1L);
-        request.addRequestDt(requestDt);
+        requestDt.setRequest(request);
         // when
         Request save = requestRepository.save(request);
         List<Request> requestList = requestRepository.findAll();
