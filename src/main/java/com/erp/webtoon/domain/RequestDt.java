@@ -29,4 +29,8 @@ public class RequestDt {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "req_id")
     private Request request;
+
+    public void setRequest(Request request) {
+        this.request = request;
+    }
 }

@@ -15,8 +15,6 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,5 +51,24 @@ public class Request {
     //단계 변경 메소드
     public void changeStep(int step) {
         this.step = step;
+    }
+
+    @Builder
+    public Request(Long id, String reqType, String title, String content, int step, LocalDate dueDate, LocalDate doneDate, User reqUser, User itUser, List<File> files) {
+        this.id = id;
+        this.reqType = reqType;
+        this.title = title;
+        this.content = content;
+        this.step = step;
+        this.dueDate = dueDate;
+        this.doneDate = doneDate;
+        this.reqUser = reqUser;
+        this.itUser = itUser;
+        this.files = files;
+    }
+
+    public void addRequestDt(RequestDt requestDt) {
+        requestDts.add(requestDt);
+        requestDt.setRequest(this);
     }
 }
