@@ -2,10 +2,7 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Attendence;
 import com.erp.webtoon.domain.User;
-import com.erp.webtoon.dto.attendece.AttendenceRequestDto;
-import com.erp.webtoon.dto.attendece.AttendenceResponseDto;
-import com.erp.webtoon.dto.attendece.DepartmentOvertimeSummaryDto;
-import com.erp.webtoon.dto.attendece.TotalAttendenceSummaryDto;
+import com.erp.webtoon.dto.attendece.*;
 import com.erp.webtoon.repository.AttendenceRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +15,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -89,6 +87,26 @@ public class AttendenceService {
                 .itOVertime(getOverTimeByDepartment("IT"))
                 .build();
 
+    }
+
+    /*
+        전체 근태 - 월별 연장 근무 시간 조회
+     */
+    public MonthlyOvertimeSummaryDto getMonthlyOvertime() {
+        return MonthlyOvertimeSummaryDto.builder()
+                .janOvertime(calculateOvertimeByMonth(1))
+                .febOvertime(calculateOvertimeByMonth(2))
+                .marOvertime(calculateOvertimeByMonth(3))
+                .aprOvertime(calculateOvertimeByMonth(4))
+                .mayOvertime(calculateOvertimeByMonth(5))
+                .junOvertime(calculateOvertimeByMonth(6))
+                .junOvertime(calculateOvertimeByMonth(7))
+                .augOvertime(calculateOvertimeByMonth(8))
+                .sepOvertime(calculateOvertimeByMonth(9))
+                .octOvertime(calculateOvertimeByMonth(10))
+                .novOvertime(calculateOvertimeByMonth(11))
+                .devOvertime(calculateOvertimeByMonth(12))
+                .build();
     }
 
     // 전체 - 정시 출근 직원 수
@@ -200,6 +218,21 @@ public class AttendenceService {
         return String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSeconds);
     }
 
+    // 월별 연장근무 시간
+    private String calculateOvertimeByMonth(int month) {
+        List<Attendence> attendences = attendenceRepository.findByAttendMonthAndAttendType(month, "END");
+
+        Duration totalOverTime = attendences.stream()
+                .map(this::calculateOverTime)
+                .reduce(Duration.ZERO, Duration::plus);
+
+        long totalHours = totalOverTime.toHours();
+        long totalMinutes = totalOverTime.toMinutesPart();
+        long totalSeconds = totalOverTime.toSecondsPart();
+
+        return String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSeconds);
+    }
+
     // 연장근무 시간 계산
     private Duration calculateOverTime(Attendence attendence) {
         LocalDateTime expectedEndTime = LocalDate.parse(attendence.getAttendDate()).atTime(18, 0);
@@ -207,6 +240,4 @@ public class AttendenceService {
 
         return Duration.between(expectedEndTime, actualEndTime);
     }
-
-
 }
