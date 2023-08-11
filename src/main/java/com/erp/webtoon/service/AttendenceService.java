@@ -14,6 +14,7 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -99,6 +100,26 @@ public class AttendenceService {
         List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
 
         return attendances.size();
+    }
+
+    // 전체 - 연장 근무 (미퇴근) 직원 수
+    public long countNotEndAttendances() {
+        String currentDate = LocalDate.now().toString();
+
+        // 출근한 직원 수 (지각 포함)
+        long startAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START").size();
+
+        // 퇴근한 직원 수
+        long endAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "END").size();
+
+        // 현재 시간 구하기
+        LocalTime currentTime = LocalTime.now();
+
+        if (currentTime.isAfter(LocalTime.of(18, 10))) {
+            return startAttendances - endAttendances;
+        } else {
+            return 0;
+        }
     }
 
     // 전체 - 미출근 직원 수
