@@ -71,7 +71,7 @@ public class AttendenceService {
     }
 
     // 전체 근태 - 현황 요약 조회
-    public TotalAttendenceSummaryDto getTotalAttendenceSummary() {
+    private TotalAttendenceSummaryDto getTotalAttendenceSummary() {
 
         return TotalAttendenceSummaryDto.builder()
                 .totalUserCnt(userRepository.countAllBy())
@@ -85,7 +85,7 @@ public class AttendenceService {
     }
 
     // 전체 근태 - 부서별 연장근무 시간 조회
-    public DepartmentOvertimeSummaryDto getDeptOverTime() {
+    private DepartmentOvertimeSummaryDto getDeptOverTime() {
 
         return DepartmentOvertimeSummaryDto.builder()
                 .hrOvertime(getOverTimeByDepartment("HR"))
@@ -97,7 +97,7 @@ public class AttendenceService {
     }
 
     // 전체 근태 - 월별 연장근무 시간 조회
-    public MonthlyOvertimeSummaryDto getMonthlyOvertime() {
+    private MonthlyOvertimeSummaryDto getMonthlyOvertime() {
         return MonthlyOvertimeSummaryDto.builder()
                 .janOvertime(calculateOvertimeByMonth(1))
                 .febOvertime(calculateOvertimeByMonth(2))
