@@ -60,9 +60,20 @@ public class AttendenceService {
     }
 
     /*
+        전체 근태 조회
+     */
+    public TotalAttendenceResponseDto getTotalAttendence() {
+        return TotalAttendenceResponseDto.builder()
+                .totalAttendenceSummaryDto(getTotalAttendenceSummary())
+                .monthlyOvertimeSummaryDto(getMonthlyOvertime())
+                .departmentOvertimeSummaryDto(getDeptOverTime())
+                .build();
+    }
+
+    /*
         전체 근태 현황 조회
      */
-    public TotalAttendenceSummaryDto getTotalAttendence() {
+    public TotalAttendenceSummaryDto getTotalAttendenceSummary() {
 
         return TotalAttendenceSummaryDto.builder()
                 .totalUserCnt(userRepository.countAllBy())
