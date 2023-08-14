@@ -116,7 +116,7 @@ public class AttendenceService {
 
     // 전체 - 정시 출근 직원 수
     private Long countOnTimeStartAttendances() {
-        String currentDate = LocalDate.now().toString();;
+        String currentDate = LocalDate.now().toString();
         String attendType = "START";
 
         List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
@@ -128,7 +128,7 @@ public class AttendenceService {
 
     // 전체 - 지각 출근 직원 수
     private Long countLateStartAttendances() {
-        String currentDate = LocalDate.now().toString();;
+        String currentDate = LocalDate.now().toString();
         String attendType = "START";
 
         List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
