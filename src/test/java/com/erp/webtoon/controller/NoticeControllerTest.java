@@ -4,6 +4,7 @@ import com.erp.webtoon.domain.Notice;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.notice.NoticeRequestDto;
 import com.erp.webtoon.dto.notice.NoticeResponseDto;
+import com.erp.webtoon.dto.notice.NoticeUpdateDto;
 import com.erp.webtoon.repository.NoticeRepository;
 import com.erp.webtoon.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -139,7 +141,7 @@ class NoticeControllerTest {
 
     @Test
     @DisplayName("공지사항 카드뷰 조회")
-    void test6() throws Exception {
+    void test4() throws Exception {
         //given
         List<Notice> notices = IntStream.range(1, 31)
                 .mapToObj(i -> Notice.builder()
@@ -159,4 +161,65 @@ class NoticeControllerTest {
 
     }
 
+    @Test
+    @DisplayName("공지사항 수정")
+    void test5() throws Exception {
+        //given
+        User user = User.builder()
+                .employeeId("20232023")
+                .name("규규")
+                .build();
+
+        userRepository.save(user);
+
+        Notice newNotice = Notice.builder()
+                .noticeType("인사")
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+
+        newNotice.setWriteUser(user);
+        noticeRepository.save(newNotice);
+
+        NoticeUpdateDto updateDto = new NoticeUpdateDto();
+        updateDto.setNoticeType("인사부");
+        updateDto.setTitle("제목입니다.");
+        updateDto.setContent("내용입니다2.");
+
+        //expected
+        mockMvc.perform(put("/notice/{noticeId}", newNotice.getId())
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpect(status().isMovedPermanently())
+                .andDo(print());
+
+        mockMvc.perform(get("/notice/{noticeId}", newNotice.getId())
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("제목입니다."))
+                .andExpect(jsonPath("$.content").value("내용입니다2."))
+                .andExpect(jsonPath("$.noticeType").value("인사부"))
+                .andExpect(jsonPath("$.readCount").value(2))
+                .andExpect(jsonPath("$.name").value("규규"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("공지사항 삭제")
+    void test6() throws Exception {
+        //given
+        Notice newNotice = Notice.builder()
+                .noticeType("인사")
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+
+        noticeRepository.save(newNotice);
+
+        //expected
+        mockMvc.perform(delete("/notice/{noticeId}", newNotice.getId())
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isMovedPermanently())
+                .andDo(print());
+    }
 }

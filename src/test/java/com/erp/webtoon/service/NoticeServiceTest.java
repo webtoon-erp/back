@@ -2,10 +2,7 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Notice;
 import com.erp.webtoon.domain.User;
-import com.erp.webtoon.dto.notice.NoticeCardViewDto;
-import com.erp.webtoon.dto.notice.NoticeListDto;
-import com.erp.webtoon.dto.notice.NoticeRequestDto;
-import com.erp.webtoon.dto.notice.NoticeResponseDto;
+import com.erp.webtoon.dto.notice.*;
 import com.erp.webtoon.repository.NoticeRepository;
 import com.erp.webtoon.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -137,7 +135,7 @@ class NoticeServiceTest {
 
     @Test
     @DisplayName("공지사항 카드뷰 조회 기능")
-    void test6() {
+    void test4() {
         //given
         List<Notice> notices = IntStream.range(1, 31)
                 .mapToObj(i -> Notice.builder()
@@ -154,5 +152,52 @@ class NoticeServiceTest {
 
         //then
         assertEquals(6, dtoList.size());
+    }
+
+    @Test
+    @DisplayName("공지사항 수정")
+    void test5() throws IOException {
+        //given
+        Notice newNotice = Notice.builder()
+                .noticeType("인사")
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+
+        noticeRepository.save(newNotice);
+
+        NoticeUpdateDto updateDto = new NoticeUpdateDto();
+        updateDto.setNoticeType("인사부");
+        updateDto.setTitle("제목입니다.");
+        updateDto.setContent("내용입니다2.");
+
+        //when
+        noticeService.update(newNotice.getId(), updateDto);
+
+        //then
+        assertEquals(1L, noticeRepository.count());
+        Notice notice = noticeRepository.findAll().get(0);
+        assertEquals("인사부", notice.getNoticeType());
+        assertEquals("제목입니다.", notice.getTitle());
+        assertEquals("내용입니다2.", notice.getContent());
+    }
+
+    @Test
+    @DisplayName("공지사항 삭제")
+    void test6() {
+        //given
+        Notice newNotice = Notice.builder()
+                .noticeType("인사")
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+
+        noticeRepository.save(newNotice);
+
+        //when
+        noticeService.delete(newNotice.getId());
+
+        //then
+        assertEquals(0, noticeRepository.count());
     }
 }
