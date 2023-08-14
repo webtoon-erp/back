@@ -55,7 +55,6 @@ public class User implements UserDetails {
     private boolean usable;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
     private List<String> roles = new ArrayList<>();     // 접근 권한 (로그인 시 설정 아마도,,)
 
     private int dayOff;     // 연차개수
@@ -91,8 +90,9 @@ public class User implements UserDetails {
     private List<Notice> notices = new ArrayList<>();   // 작성한 공지사항 목록
 
     @Builder
-    public User(String employeeId, String password, String name, String deptCode, String deptName
-                ,int teamNum, String position, String email, String tel, LocalDate birthDate, LocalDate joinDate, int dayOff) {
+    public User(Long id, String employeeId, String password, String name, String deptCode, String deptName,int teamNum,
+                String position, String email, String tel, LocalDate birthDate, LocalDate joinDate, int dayOff, boolean usable) {
+        this.id = id;
         this.employeeId = employeeId;
         this.password = password;
         this.name = name;
@@ -105,6 +105,7 @@ public class User implements UserDetails {
         this.position = position;
         this.joinDate = joinDate;
         this.dayOff = dayOff;
+        this.usable = usable;
     }
 
     public void updateInfo(String employeeId, String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, LocalDate birthDate
