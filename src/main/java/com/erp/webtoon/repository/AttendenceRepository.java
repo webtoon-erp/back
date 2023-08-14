@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -76,4 +77,14 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
             "GROUP BY MONTH(START.attend_date)", nativeQuery = true)
 
     String findIndividualMonthlyOverTime(@Param("user") Long userId);
+
+    // 전체 근태 조회
+    List<Attendence> findByAttendDateAndAttendType(String attendDate, String attendType);
+
+    // 조건 : 기준월, 근태타입
+    List<Attendence> findByAttendMonthAndAttendType(int attendMonth, String attendType);
+
+    // 조건 : 기준월, 근태 타입, User
+    List<Attendence> findByAttendMonthAndAttendTypeAndUserIn(int attendMonth, String attendType, List<User> userList);
+
 }
