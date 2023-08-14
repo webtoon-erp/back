@@ -16,9 +16,6 @@ public class UserUpdateDto {
     private String employeeId; // 사번
 
     @NotBlank
-    private String loginId; // 아이디
-
-    @NotBlank
     private String password;    // 비밀번호
 
     @NotBlank
