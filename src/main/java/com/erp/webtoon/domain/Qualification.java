@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Builder
+@NoArgsConstructor
 public class Qualification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +34,16 @@ public class Qualification {
 
     public void updateQlfcPay(int qlfcPay) {
         this.qlfcPay = qlfcPay;
+    }
+
+    @Builder
+    public Qualification(Long id, Integer sortSequence, String qlfcType, String content, LocalDate qlfcDate, int qlfcPay, User user) {
+        this.id = id;
+        this.sortSequence = sortSequence;
+        this.qlfcType = qlfcType;
+        this.content = content;
+        this.qlfcDate = qlfcDate;
+        this.qlfcPay = qlfcPay;
+        this.user = user;
     }
 }

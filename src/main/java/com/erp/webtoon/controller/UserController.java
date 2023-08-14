@@ -1,39 +1,26 @@
 package com.erp.webtoon.controller;
 
-import com.erp.webtoon.dto.token.LogOutRequestDto;
-import com.erp.webtoon.dto.token.TokenRequestDto;
+import com.erp.webtoon.dto.token.LogoutResponseDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 
-
 import com.erp.webtoon.dto.user.*;
-import com.erp.webtoon.dto.user.QualificationRequestDto;
-import com.erp.webtoon.dto.user.LoginRequestDto;
-import com.erp.webtoon.dto.user.QualificationRequestDto;
-import com.erp.webtoon.dto.user.RegisterQualificationResponse;
-import com.erp.webtoon.dto.user.SlackRequestDto;
-import com.erp.webtoon.dto.user.UserListResponseDto;
-import com.erp.webtoon.dto.user.UserRequestDto;
-import com.erp.webtoon.dto.user.UserResponseDto;
-import com.erp.webtoon.dto.user.UserUpdateDto;
-import com.erp.webtoon.service.JwtService;
 import com.erp.webtoon.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -44,29 +31,20 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity add(@Valid @RequestBody UserRequestDto userRequestDto){
         userService.addNewCome(userRequestDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public TokenResponseDto login(@RequestBody LoginRequestDto loginDto, HttpServletResponse response) {
-        TokenResponseDto tokenDto = userService.login(loginDto);
-
-        Cookie cookie = new Cookie("RefreshToken", String.format(tokenDto.getRefreshToken()));
-        cookie.setPath("/");
-        cookie.setMaxAge(tokenDto.getRefreshExpire());
-        cookie.setHttpOnly(true); // 서버만 쿠키에 접근
-        cookie.setSecure(false);
-        response.addCookie(cookie);
-
-        return tokenDto;
+    public TokenResponseDto login(@RequestBody LoginRequestDto loginDto) {
+        return userService.issueToken(loginDto.getEmployeeId(), loginDto.getPassword());
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<?> reissue(@Validated TokenRequestDto reissue, Errors errors) {
-        return userService.reissue(reissue);
+    public TokenResponseDto reissue(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @CookieValue("refresh_token") String refreshToken) throws Exception {
+        return userService.reissueToken(accessToken, refreshToken);
     }
 
     @PostMapping("/sendPassword")
@@ -77,8 +55,8 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@Validated LogOutRequestDto logout, Errors errors) {
-        return userService.logout(logout);
+    public LogoutResponseDto logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
+        return userService.logout(accessToken);
     }
 
     /**
@@ -93,7 +71,7 @@ public class UserController {
     /**
      * 직원조회 -> 카드뷰
      */
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity cardView(@RequestParam("page") int page) {
         List<UserListResponseDto> dtos = userService.getCardView(page);
 
@@ -103,7 +81,7 @@ public class UserController {
     /**
      * 직원 정보 수정
      */
-    @PatchMapping("")
+    @PatchMapping
     public void update(@RequestBody UserUpdateDto dto) {
         userService.update(dto);
     }

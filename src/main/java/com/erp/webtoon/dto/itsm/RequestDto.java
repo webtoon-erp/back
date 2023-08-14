@@ -1,6 +1,5 @@
 package com.erp.webtoon.dto.itsm;
 
-import com.erp.webtoon.domain.RequestDt;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,5 +28,5 @@ public class RequestDto {
 
     private List<MultipartFile> files;   // 요청에 쓰이는 첨부파일들
 
-    private List<RequestDt> requestDts;
+    private List<RequestDtDto> requestDts;
 }

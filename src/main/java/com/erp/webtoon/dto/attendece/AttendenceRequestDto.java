@@ -2,16 +2,22 @@ package com.erp.webtoon.dto.attendece;
 
 import com.erp.webtoon.domain.Attendence;
 import com.erp.webtoon.domain.User;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Data
+@Builder
 public class AttendenceRequestDto {
 
-    @NotBlank
-    private String attendDate;  //  기준일
+    @Builder.Default
+    private int attendMonth = LocalDate.now().getMonthValue(); // 기준월
+
+    @Builder.Default
+    private String attendDate = LocalDate.now().toString();  //  기준일
 
     @NotBlank
     private String attendType;  // 근태타입
@@ -24,6 +30,7 @@ public class AttendenceRequestDto {
 
     public Attendence toEntity(User user) {
         return Attendence.builder()
+                .attendMonth(attendMonth)
                 .attendDate(attendDate)
                 .attendType(attendType)
                 .attendTime(attendTime)
