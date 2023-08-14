@@ -65,7 +65,7 @@ public class AttendenceService {
         return TotalAttendenceResponseDto.builder()
                 .totalAttendenceSummaryDto(getTotalAttendenceSummary())
                 .monthlyOvertimeSummaryDto(getMonthlyOvertime())
-                .departmentOvertimeSumDto(getDeptOverTime())
+                .departmentOvertimeSumDto(getDeptOverTimeSum())
                 .departmentOvertimeAvgDto(getDeptOverTimeAvg())
                 .build();
     }
@@ -86,13 +86,13 @@ public class AttendenceService {
     }
 
     // 전체 근태 - 부서별 연장근무 시간 합계 조회
-    private DepartmentOvertimeSumDto getDeptOverTime() {
+    private DepartmentOvertimeSumDto getDeptOverTimeSum() {
 
         return DepartmentOvertimeSumDto.builder()
-                .hrOvertimeSum(getOverTimeByDepartment("HR"))
-                .amOvertimeSum(getOverTimeByDepartment("AM"))
-                .wtOvertimeSum(getOverTimeByDepartment("WT"))
-                .itOVertimeSum(getOverTimeByDepartment("IT"))
+                .hrOvertimeSum(getOverTimeSumByDepartment("HR"))
+                .amOvertimeSum(getOverTimeSumByDepartment("AM"))
+                .wtOvertimeSum(getOverTimeSumByDepartment("WT"))
+                .itOVertimeSum(getOverTimeSumByDepartment("IT"))
                 .build();
 
     }
@@ -216,8 +216,8 @@ public class AttendenceService {
         return actualStartTime.isBefore(expectedStartTime);
     }
 
-    // 이번달 부서별 연장 근무 시간
-    private String getOverTimeByDepartment(String deptCode) {
+    // 이번달 부서별 연장 근무 합계 시간
+    private String getOverTimeSumByDepartment(String deptCode) {
 
         int currentMonth = LocalDate.now().getMonthValue();
         String attendType = "END";
