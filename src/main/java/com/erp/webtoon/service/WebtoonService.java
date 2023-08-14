@@ -32,7 +32,7 @@ public class WebtoonService {
     public Long save(WebtoonRequestDto dto) throws IOException {
         Webtoon webtoon = dto.toEntity();
 
-        if(!dto.getThumbnailFile().isEmpty()) {
+        if(dto.getThumbnailFile() != null) {
             File uploadfile = fileService.save(dto.getThumbnailFile());
             uploadfile.updateFileWebtoon(webtoon);
             webtoon.getFiles().add(uploadfile);
