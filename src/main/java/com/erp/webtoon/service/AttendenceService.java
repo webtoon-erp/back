@@ -75,10 +75,11 @@ public class AttendenceService {
 
         return TotalAttendenceSummaryDto.builder()
                 .totalUserCnt(userRepository.countAllBy())
-                .onTimeEndUserCnt(countOnTimeStartAttendances())
+                .onTimeStartUserCnt(countOnTimeStartAttendances())
                 .lateStartUserCnt(countLateStartAttendances())
                 .notStartUserCnt(countNotStartAttendances())
                 .dayOffUserCnt(countDayOffAttendances())
+                .onTimeEndUserCnt(countOnTimeEndAttendances())
                 .notEndUserCnt(countNotEndAttendances())
                 .build();
 
