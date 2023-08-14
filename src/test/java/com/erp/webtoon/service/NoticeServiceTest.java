@@ -43,12 +43,15 @@ class NoticeServiceTest {
         //given
         User user = User.builder()
                 .employeeId("20232023")
+                .deptName("외계부")
                 .build();
 
         userRepository.save(user);
 
         NoticeRequestDto noticeRequestDto = new NoticeRequestDto();
+
         noticeRequestDto.setEmployeeId("20232023");
+        noticeRequestDto.setDeptName("외계부");
         noticeRequestDto.setNoticeType("인사팀");
         noticeRequestDto.setTitle("제목입니다.");
         noticeRequestDto.setContent("내용입니다.");

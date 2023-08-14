@@ -8,6 +8,7 @@ import com.erp.webtoon.dto.notice.NoticeUpdateDto;
 import com.erp.webtoon.repository.NoticeRepository;
 import com.erp.webtoon.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,12 +46,18 @@ class NoticeControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @BeforeEach
+    void clean() {
+        noticeRepository.deleteAll();
+    }
+
     @Test
     @DisplayName("공지사항 등록")
     void test1() throws Exception{
         //given
         User user = User.builder()
                 .employeeId("20232023")
+                .deptName("외계부")
                 .build();
 
         userRepository.save(user);
@@ -58,6 +65,7 @@ class NoticeControllerTest {
         NoticeRequestDto noticeRequestDto = new NoticeRequestDto();
         noticeRequestDto.setEmployeeId("20232023");
         noticeRequestDto.setNoticeType("인사팀");
+        noticeRequestDto.setDeptName("외계부");
         noticeRequestDto.setTitle("제목입니다.");
         noticeRequestDto.setContent("내용입니다.");
 
@@ -65,8 +73,8 @@ class NoticeControllerTest {
 
         //expected
         mockMvc.perform(post("/notice")
-                .contentType(APPLICATION_JSON)
-                .content(json))
+                    .contentType(APPLICATION_JSON)
+                    .content(json))
                 .andExpect(status().isMovedPermanently())
                 .andDo(print());
     }
