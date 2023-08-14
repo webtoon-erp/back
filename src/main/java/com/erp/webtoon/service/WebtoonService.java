@@ -32,7 +32,7 @@ public class WebtoonService {
     public Long save(WebtoonRequestDto dto) throws IOException {
         Webtoon webtoon = dto.toEntity();
 
-        if(!dto.getThumbnailFile().isEmpty()) {
+        if(dto.getThumbnailFile() != null) {
             File uploadfile = fileService.save(dto.getThumbnailFile());
             uploadfile.updateFileWebtoon(webtoon);
             webtoon.getFiles().add(uploadfile);
@@ -144,7 +144,6 @@ public class WebtoonService {
                         .finalUploadYN(false).build())
                 .collect(Collectors.toList());
 
-
         return WebtoonResponseDto.builder()
                 .title(findWebtoon.getTitle())
                 .artist(findWebtoon.getArtist())
@@ -152,7 +151,7 @@ public class WebtoonService {
                 .intro(findWebtoon.getIntro())
                 .category(findWebtoon.getCategory())
                 .keyword(findWebtoon.getKeyword())
-                .thumbnailFileName(findWebtoon.getFiles().get(-1).getFileName())   // 저장된 썸네일 파일 중 가장 마지막 썸네일 파일
+                .thumbnailFileName(findWebtoon.getFiles().get(findWebtoon.getFiles().size()-1).getFileName())   // 저장된 썸네일 파일 중 가장 마지막 썸네일 파일
                 .episode(episodeDtos).build();
     }
 
@@ -169,7 +168,7 @@ public class WebtoonService {
 
         //파일 업데이트
         //만약 파일을 업데이트 하는 경우
-        if (!dto.getUploadFile().isEmpty()) {
+        if (dto.getUploadFile() != null) {
             // 기존의 저장된 가장 최근의 파일 상태 변경
             File file = findWebtoon.getFiles().get(-1);
             fileService.changeStat(file);

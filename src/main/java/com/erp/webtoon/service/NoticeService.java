@@ -39,6 +39,10 @@ public class NoticeService {
         User writeUser = userRepository.findByEmployeeId(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
 
+        if (!dto.getDeptName().equals(writeUser.getDeptName())) {
+            throw new EntityNotFoundException("부서가 일치하지 않습니다.");
+        }
+
         notice.setWriteUser(writeUser);
 
         // 첨부파일이 1개 이상인 경우

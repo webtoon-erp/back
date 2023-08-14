@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -37,7 +38,10 @@ public class WebtoonController {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/webtoon"));
 
-        return new ResponseEntity(id, headers, HttpStatus.MOVED_PERMANENTLY);
+        HashMap<String, Long> body = new HashMap<>();
+        body.put("id", id);
+
+        return new ResponseEntity(body, headers, HttpStatus.MOVED_PERMANENTLY);
     }
 
     /**
@@ -68,8 +72,8 @@ public class WebtoonController {
     /**
      * 제목 웹툰 검색
      */
-    @GetMapping("/webtoon/{title}")
-    public ResponseEntity showByTitle(@PathVariable String title) {
+    @GetMapping("/webtoon/one/{title}")
+    public ResponseEntity showByTitle(@PathVariable("title") String title) {
 
         List<WebtoonListResponseDto> dtos = webtoonService.getTitleWebtoon(title);
 
@@ -80,8 +84,8 @@ public class WebtoonController {
     /**
      * 작가 웹툰 검색
      */
-    @GetMapping("/webtoon/{artist}")
-    public ResponseEntity showByArtist(@PathVariable String artist) {
+    @GetMapping("/webtoon/one/{artist}")
+    public ResponseEntity showByArtist(@PathVariable("artist") String artist) {
 
         List<WebtoonListResponseDto> dtos = webtoonService.getTitleWebtoon(artist);
 
@@ -91,8 +95,8 @@ public class WebtoonController {
     /**
      * 카테고리 웹툰 검색
      */
-    @GetMapping("/webtoon/{category}")
-    public ResponseEntity showByCategory(@PathVariable String category) {
+    @GetMapping("/webtoon/one/{category}")
+    public ResponseEntity showByCategory(@PathVariable("category") String category) {
 
         List<WebtoonListResponseDto> dtos = webtoonService.getTitleWebtoon(category);
 
@@ -103,8 +107,8 @@ public class WebtoonController {
     /**
      * 키워드 웹툰 검색
      */
-    @GetMapping("/webtoon/{keyword}")
-    public ResponseEntity showByKeyword(@PathVariable String keyword) {
+    @GetMapping("/webtoon/one/{keyword}")
+    public ResponseEntity showByKeyword(@PathVariable("keyword") String keyword) {
 
         List<WebtoonListResponseDto> dtos = webtoonService.getTitleWebtoon(keyword);
 

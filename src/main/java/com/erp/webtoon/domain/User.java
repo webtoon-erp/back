@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 @Entity
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements UserDetails {
@@ -90,6 +89,24 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notice> notices = new ArrayList<>();   // 작성한 공지사항 목록
+
+    @Builder
+    public User(String employeeId,String loginId, String password, String name, String deptCode, String deptName
+                ,int teamNum, String position, String email, String tel, LocalDate birthDate, LocalDate joinDate, int dayOff) {
+        this.employeeId = employeeId;
+        this.loginId = loginId;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        this.tel = tel;
+        this.birthDate = birthDate;
+        this.deptName = deptName;
+        this.deptCode = deptCode;
+        this.teamNum = teamNum;
+        this.position = position;
+        this.joinDate = joinDate;
+        this.dayOff = dayOff;
+    }
 
     public void updateInfo(String employeeId, String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, LocalDate birthDate
             , int dayOff) {

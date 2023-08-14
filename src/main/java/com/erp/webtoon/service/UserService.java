@@ -136,11 +136,11 @@ public class UserService {
     /**
      * 자격증 추가 (인사팀에서 진행)
      */
-    public List<RegisterQualificationResponse> registerQualification(List<QualificationRequestDto> qualificaitonRequestDtoList){
+    public List<RegisterQualificationResponse> registerQualification(List<QualificationRequestDto> qualificationRequestDtoList){
         List<RegisterQualificationResponse> registerqualificationList = new ArrayList<>();
         List<Qualification> qualificationList = new ArrayList<>();
 
-        for (QualificationRequestDto qualificationRequestDto : qualificaitonRequestDtoList) {
+        for (QualificationRequestDto qualificationRequestDto : qualificationRequestDtoList) {
             Qualification qualification = qualificationRepository.save(Qualification.builder()
                     .sortSequence(qualificationRequestDto.getSortSequence())
                     .qlfcDate(qualificationRequestDto.getQlfcDate())
