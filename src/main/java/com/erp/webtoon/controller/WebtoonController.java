@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -37,7 +38,10 @@ public class WebtoonController {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/webtoon"));
 
-        return new ResponseEntity(id, headers, HttpStatus.MOVED_PERMANENTLY);
+        HashMap<String, Long> body = new HashMap<>();
+        body.put("id", id);
+
+        return new ResponseEntity(body, headers, HttpStatus.MOVED_PERMANENTLY);
     }
 
     /**
