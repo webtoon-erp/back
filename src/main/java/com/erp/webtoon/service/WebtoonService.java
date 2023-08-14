@@ -144,7 +144,6 @@ public class WebtoonService {
                         .finalUploadYN(false).build())
                 .collect(Collectors.toList());
 
-
         return WebtoonResponseDto.builder()
                 .title(findWebtoon.getTitle())
                 .artist(findWebtoon.getArtist())
@@ -152,7 +151,7 @@ public class WebtoonService {
                 .intro(findWebtoon.getIntro())
                 .category(findWebtoon.getCategory())
                 .keyword(findWebtoon.getKeyword())
-                .thumbnailFileName(findWebtoon.getFiles().get(-1).getFileName())   // 저장된 썸네일 파일 중 가장 마지막 썸네일 파일
+                .thumbnailFileName(findWebtoon.getFiles().get(findWebtoon.getFiles().size()-1).getFileName())   // 저장된 썸네일 파일 중 가장 마지막 썸네일 파일
                 .episode(episodeDtos).build();
     }
 
