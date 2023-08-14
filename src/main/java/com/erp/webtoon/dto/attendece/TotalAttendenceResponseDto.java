@@ -11,6 +11,6 @@ public class TotalAttendenceResponseDto {
 
     private MonthlyOvertimeSummaryDto monthlyOvertimeSummaryDto;
 
-    private DepartmentOvertimeSummaryDto departmentOvertimeSummaryDto;
+    private DepartmentOvertimeSumDto departmentOvertimeSumDto;
 
 }

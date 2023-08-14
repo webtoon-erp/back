@@ -15,7 +15,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -66,7 +65,7 @@ public class AttendenceService {
         return TotalAttendenceResponseDto.builder()
                 .totalAttendenceSummaryDto(getTotalAttendenceSummary())
                 .monthlyOvertimeSummaryDto(getMonthlyOvertime())
-                .departmentOvertimeSummaryDto(getDeptOverTime())
+                .departmentOvertimeSumDto(getDeptOverTime())
                 .build();
     }
 
@@ -85,14 +84,14 @@ public class AttendenceService {
 
     }
 
-    // 전체 근태 - 부서별 연장근무 시간 조회
-    private DepartmentOvertimeSummaryDto getDeptOverTime() {
+    // 전체 근태 - 부서별 연장근무 시간 합계 조회
+    private DepartmentOvertimeSumDto getDeptOverTime() {
 
-        return DepartmentOvertimeSummaryDto.builder()
-                .hrOvertime(getOverTimeByDepartment("HR"))
-                .amOvertime(getOverTimeByDepartment("AM"))
-                .wtOvertime(getOverTimeByDepartment("WT"))
-                .itOVertime(getOverTimeByDepartment("IT"))
+        return DepartmentOvertimeSumDto.builder()
+                .hrOvertimeSum(getOverTimeByDepartment("HR"))
+                .amOvertimeSum(getOverTimeByDepartment("AM"))
+                .wtOvertimeSum(getOverTimeByDepartment("WT"))
+                .itOVertimeSum(getOverTimeByDepartment("IT"))
                 .build();
 
     }
