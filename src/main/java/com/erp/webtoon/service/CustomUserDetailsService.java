@@ -6,38 +6,34 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
+    /**
+     * memberId를 사용하여 UserDetailsService 구현
+     * @param username the username identifying the user whose data is required.
+     * @return 현재 사용자의 정보
+     * @throws UsernameNotFoundException
+     */
     @Override
-    public UserDetails loadUserByUsername(String employeeId) throws UsernameNotFoundException {
-        return userRepository.findByEmployeeId(employeeId)
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, NumberFormatException {
+        return userRepository.findById(Long.valueOf(username))
                 .map(this::createUserDetails)
-                .orElseThrow(() -> new RuntimeException("해당하는 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
     }
 
-    // 해당하는 User의 데이터가 존재한다면 UserDetails 객체로 만들어서 리턴
     private UserDetails createUserDetails(User user) {
-        return User.builder()
-                .loginId(user.getLoginId())
-                .password(passwordEncoder.encode(user.getPassword()))
-                .name(user.getName())
-                .deptCode(user.getDeptCode())
-                .deptName(user.getDeptName())
-                .teamNum(user.getTeamNum())
-                .position(user.getPosition())
-                .email(user.getEmail())
-                .tel(user.getTel())
-                .birthDate(user.getBirthDate())
-                .dayOff(user.getDayOff())
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getEmployeeId())
+                .password(user.getPassword())
+                .roles(user.getRoles().toArray(new String[0]))
                 .build();
-
     }
 }

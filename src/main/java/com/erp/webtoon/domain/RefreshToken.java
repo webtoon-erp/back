@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 
@@ -14,13 +15,20 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class RefreshToken {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "token_id")
-    private Long id;
+    @Id
+    @Column(name = "member_id", unique = true)
+    private Long employeeId;
 
+    @Column(unique = true)
     private String refreshToken;
 
-    private int expiration;
+    private Long expiration;
 
-    private String email;
+    public static RefreshToken from(Long employeeId, String token, Long expirationTime) {
+        return RefreshToken.builder()
+                .employeeId(employeeId)
+                .refreshToken(token)
+                .expiration(expirationTime)
+                .build();
+    }
 }

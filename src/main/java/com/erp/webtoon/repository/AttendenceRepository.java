@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 @Repository
 public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
 
@@ -22,7 +23,6 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
             "AND a1.user = a2.user " +
             "AND FUNCTION('MONTH', a1.attendDate) = FUNCTION('MONTH', CURRENT_TIMESTAMP) " +
             "AND a1.user = :user")
-
     List<IndividualAttenedenceListDto> findIndividualAttendence(@Param("user") User user);
 
     // 개인 이번주 누적 근무시간
@@ -76,8 +76,4 @@ public interface AttendenceRepository extends JpaRepository<Attendence, Long> {
             "GROUP BY MONTH(START.attend_date)", nativeQuery = true)
 
     String findIndividualMonthlyOverTime(@Param("user") Long userId);
-
-
-
-
 }

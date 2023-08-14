@@ -30,8 +30,6 @@ public class User implements UserDetails {
 
     private String employeeId; // 사번
 
-    private String loginId; // 아이디
-
     @JsonIgnore
     private String password;    // 비밀번호
 
@@ -55,7 +53,10 @@ public class User implements UserDetails {
 
     private String status; // 상태
 
+    private boolean usable;
+
     @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
     private List<String> roles = new ArrayList<>();     // 접근 권한 (로그인 시 설정 아마도,,)
 
     private int dayOff;     // 연차개수
@@ -84,18 +85,15 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DocumentRcv> documentRcvs = new ArrayList<>();     // 수신 문서들
 
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-//    private RefreshToken refreshToken;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Qualification> qualifications = new ArrayList<>();     // 자격증들
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notice> notices = new ArrayList<>();   // 작성한 공지사항 목록
 
-    public void updateInfo(String loginId, String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, LocalDate birthDate
+    public void updateInfo(String employeeId, String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, LocalDate birthDate
             , int dayOff) {
-        this.loginId = loginId;
+        this.employeeId = employeeId;
         this.password = password;
         this.name = name;
         this.deptCode = deptCode;
@@ -108,7 +106,7 @@ public class User implements UserDetails {
         this.dayOff = dayOff;
     }
 
-    public void updatePassword(String email, String password){
+    public void updatePassword(String password){
         this.password = password;
     }
 
@@ -125,7 +123,12 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return employeeId;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
