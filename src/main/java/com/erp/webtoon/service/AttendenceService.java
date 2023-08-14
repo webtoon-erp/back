@@ -66,6 +66,7 @@ public class AttendenceService {
                 .totalAttendenceSummaryDto(getTotalAttendenceSummary())
                 .monthlyOvertimeSummaryDto(getMonthlyOvertime())
                 .departmentOvertimeSumDto(getDeptOverTime())
+                .departmentOvertimeAvgDto(getDeptOverTimeAvg())
                 .build();
     }
 
@@ -95,6 +96,19 @@ public class AttendenceService {
                 .build();
 
     }
+
+    // 전체 근태 - 부서별 연장근무 시간 평균 조회
+    private DepartmentOvertimeAvgDto getDeptOverTimeAvg() {
+
+        return DepartmentOvertimeAvgDto.builder()
+                .hrOvertimeAvg(getOverTimeAvgByDepartment("HR"))
+                .amOvertimeAvg(getOverTimeAvgByDepartment("AM"))
+                .wtOvertimeAvg(getOverTimeAvgByDepartment("WT"))
+                .itOVertimeAvg(getOverTimeAvgByDepartment("IT"))
+                .build();
+
+    }
+
 
     // 전체 근태 - 월별 연장근무 시간 조회
     private MonthlyOvertimeSummaryDto getMonthlyOvertime() {
@@ -213,6 +227,34 @@ public class AttendenceService {
 
 
         return sumOvertime(attendances);
+    }
+
+    // 이번달 부서별 연장 근무 시간 평균 계산
+    private String getOverTimeAvgByDepartment(String deptCode) {
+
+        int currentMonth = LocalDate.now().getMonthValue();
+        String attendType = "END";
+
+        List<User> userList = userRepository.findAllByDeptCode(deptCode);
+        List<Attendence> attendances = attendenceRepository.findByAttendMonthAndAttendTypeAndUserIn(currentMonth, attendType, userList);
+
+        if (attendances.isEmpty()) {
+            return "00:00:00";
+        }
+
+        Duration totalOverTime = attendances.stream()
+                .map(this::calculateOverTime)
+                .reduce(Duration.ZERO, Duration::plus);
+
+        long totalMinutes = totalOverTime.toMinutes();
+        int numEmployees = userList.size();
+
+        long averageMinutes = totalMinutes / numEmployees;
+
+        long avgHours = averageMinutes / 60;
+        long avgMinutesRemaining = averageMinutes % 60;
+
+        return String.format("%02d:%02d:00", avgHours, avgMinutesRemaining);
     }
 
     // 월별 연장근무 시간

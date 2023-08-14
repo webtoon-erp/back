@@ -1,5 +1,10 @@
 package com.erp.webtoon.dto.attendece;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
 public class DepartmentOvertimeAvgDto {
 
     private String hrOvertimeAvg; // 인사부 연장근무시간 평균

@@ -13,4 +13,6 @@ public class TotalAttendenceResponseDto {
 
     private DepartmentOvertimeSumDto departmentOvertimeSumDto;
 
+    private DepartmentOvertimeAvgDto departmentOvertimeAvgDto;
+
 }
