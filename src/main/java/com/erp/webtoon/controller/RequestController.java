@@ -4,11 +4,12 @@ import com.erp.webtoon.dto.itsm.CommentListDto;
 import com.erp.webtoon.dto.itsm.CommentResponseDto;
 import com.erp.webtoon.dto.itsm.RequestDto;
 import com.erp.webtoon.dto.itsm.RequestRegisterResponseDto;
-import com.erp.webtoon.dto.webtoon.FeedbackListDto;
 import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,12 +42,13 @@ public class RequestController {
     }
 
     @GetMapping("/comment")
-    public List<CommentListDto> getAllComments(@RequestParam Long requestId){
+    public List<CommentListDto> getAllComments(@RequestParam("requestId") Long requestId){
         return requestService.getAllComments(requestId);
     }
 
     @DeleteMapping("/comment")
-    public void deleteComment(@RequestParam Long messageId){
+    public ResponseEntity deleteComment(@RequestParam("messageId") Long messageId){
         requestService.deleteComment(messageId);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
