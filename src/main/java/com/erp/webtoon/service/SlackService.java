@@ -95,7 +95,7 @@ public class SlackService {
     }
     public String findUserEmail(String employeeId) {
         User user = userRepository.findByEmployeeId(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException("해당 직원의 이메일이 존재하지 않습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 직원의 사번이 존재하지 않습니다."));
 
         return user.getEmail();
     }
