@@ -136,6 +136,7 @@ public class UserService {
     /**
      * 자격증 추가 (인사팀에서 진행)
      */
+    @Transactional
     public List<RegisterQualificationResponse> registerQualification(List<QualificationRequestDto> qualificationRequestDtoList){
         List<RegisterQualificationResponse> registerqualificationList = new ArrayList<>();
         List<Qualification> qualificationList = new ArrayList<>();
