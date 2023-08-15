@@ -135,6 +135,8 @@ public class AttendenceService {
 
         List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
 
+        if (attendances == null) return 0L;
+
         return attendances.stream()
                 .filter(this::isOnTime)
                 .count();
@@ -147,6 +149,8 @@ public class AttendenceService {
 
         List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
 
+        if (attendances == null) return 0L;
+
         return attendances.stream()
                 .filter(attendance -> !isOnTime(attendance))
                 .count();
@@ -157,9 +161,12 @@ public class AttendenceService {
         String currentDate = LocalDate.now().toString();
         String attendType = "DAYOFF";
 
-        List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
+        long attendances = 0;
 
-        return (long) attendances.size();
+        List<Attendence> attendancesList = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
+        if (attendancesList != null)  attendances = attendancesList.size();
+
+        return attendances;
     }
 
     // 전체 - 퇴근 직원 수
@@ -167,9 +174,12 @@ public class AttendenceService {
         String currentDate = LocalDate.now().toString();
         String attendType = "END";
 
-        List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
+        long attendances = 0;
 
-        return (long) attendances.size();
+        List<Attendence> attendancesList = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
+        if (attendancesList != null)  attendances = attendancesList.size();
+
+        return attendances;
     }
 
     // 전체 - 연장 근무 (미퇴근) 직원 수
@@ -185,25 +195,28 @@ public class AttendenceService {
         // 현재 시간 구하기
         LocalTime currentTime = LocalTime.now();
 
-        if (currentTime.isAfter(LocalTime.of(18, 10))) {
-            return startAttendances - endAttendances;
-        } else {
-            return 0L;
-        }
+        if (currentTime.isAfter(LocalTime.of(18, 10)))  return startAttendances - endAttendances;
+        else  return 0L;
+
     }
 
     // 전체 - 미출근 직원 수
     private Long countNotStartAttendances() {
         String currentDate = LocalDate.now().toString();
 
+        long startAttendances = 0;
+        long dayOffAttendances = 0;
+
         // 전체 직원 수
         long allEmployees = userRepository.countAllBy();
 
         // 출근한 직원 수 (지각 포함)
-        long startAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START").size();
+        List<Attendence> startAttendancesList = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START");
+        if (startAttendancesList != null)  startAttendances = startAttendancesList.size();
 
         // 휴가인 직원 수
-        long dayOffAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "DAYOFF").size();
+        List<Attendence> dayOffAttendencesList = attendenceRepository.findByAttendDateAndAttendType(currentDate, "DAYOFF");
+        if (dayOffAttendencesList != null)  dayOffAttendances = dayOffAttendencesList.size();
 
         return allEmployees - startAttendances - dayOffAttendances;
     }
@@ -238,9 +251,7 @@ public class AttendenceService {
         List<User> userList = userRepository.findAllByDeptCode(deptCode);
         List<Attendence> attendances = attendenceRepository.findByAttendMonthAndAttendTypeAndUserIn(currentMonth, attendType, userList);
 
-        if (attendances.isEmpty()) {
-            return "00:00:00";
-        }
+        if (attendances.isEmpty())  return "00:00:00";
 
         Duration totalOverTime = attendances.stream()
                 .map(this::calculateOverTime)
@@ -274,6 +285,8 @@ public class AttendenceService {
 
     // 연장근무 시간 합계
     private String sumOvertime(List<Attendence> attendances) {
+
+        if (attendances.isEmpty())  return "00:00:00";
 
         Duration totalOverTime = attendances.stream()
                 .map(this::calculateOverTime)
