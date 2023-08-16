@@ -4,14 +4,20 @@ import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.dto.webtoon.WebtoonRequestDto;
 import com.erp.webtoon.repository.WebtoonRepository;
+import com.erp.webtoon.service.FileService;
+import com.erp.webtoon.service.WebtoonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -36,6 +42,16 @@ class WebtoonControllerTest {
 
     @Autowired
     private WebtoonRepository webtoonRepository;
+
+    @Autowired
+    private FileService fileService;
+
+    @Autowired
+    private WebtoonService webtoonService;
+
+    private MockMultipartFile getMultipartFile() throws IOException {
+        return new MockMultipartFile("test", "test.png", "image/png", new FileInputStream("/Users/kh/Desktop/file/파일명.png"));
+    }
 
     @Test
     @DisplayName("웹툰 등록")
@@ -85,28 +101,21 @@ class WebtoonControllerTest {
     @DisplayName("웹툰 개별 조회")
     void test3() throws Exception {
         //given
-        Webtoon newWebtoon = Webtoon.builder()
-                .title("제목입니다.")
-                .intro("인트로입니다.")
-                .category("월요일")
-                .build();
+        WebtoonRequestDto webtoonDto = new WebtoonRequestDto();
+        webtoonDto.setTitle("제목입니다.");
+        webtoonDto.setIntro("인트로입니다.");
+        webtoonDto.setCategory("월요일");
+        webtoonDto.setThumbnailFile(getMultipartFile());
 
-        File file = File.builder()
-                .originName("파일명")
-                .ext("png")
-                .build();
+        Long webtoonId = webtoonService.save(webtoonDto);
 
-        file.updateFileWebtoon(newWebtoon);
-        newWebtoon.getFiles().add(file);
-
-        webtoonRepository.save(newWebtoon);
 
         //expected
-        mockMvc.perform(get("/webtoon/{webtoonId}", newWebtoon.getId())
+        mockMvc.perform(get("/webtoon/{webtoonId}", webtoonId)
                     .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("제목입니다."))
-                .andExpect(jsonPath("$.resource").value("file : 파일명"))
+                .andExpect(jsonPath("$.info.title").value("제목입니다."))
+                .andExpect(jsonPath("$..info.intro").value("인트로입니다."))
                 .andDo(print());
     }
 
