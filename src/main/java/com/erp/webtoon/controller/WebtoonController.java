@@ -59,13 +59,12 @@ public class WebtoonController {
      * 특정 웹툰 조회
      */
     @GetMapping("/webtoon/{webtoonId}")
-    public ResponseEntity<Result> getWebtoon(@PathVariable("webtoonId") Long webtoonId) throws MalformedURLException {
+    public ResponseEntity getWebtoon(@PathVariable("webtoonId") Long webtoonId) throws MalformedURLException {
         WebtoonResponseDto webtoon = webtoonService.getOneWebtoon(webtoonId);
 
         // 썸네일 이미지 조회
         UrlResource resource = new UrlResource("file:" + fileService.getFullPath(webtoon.getThumbnailFileName()));
-
-        return ResponseEntity.ok(new Result(resource, webtoon));
+        return ResponseEntity.ok(new Result(resource.getURL(), webtoon));
 
     }
 
