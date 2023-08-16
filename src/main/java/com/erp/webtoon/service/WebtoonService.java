@@ -171,7 +171,7 @@ public class WebtoonService {
         if (dto.getUploadFile() != null) {
             // 기존의 저장된 가장 최근의 파일 상태 변경
             File file = findWebtoon.getFiles().get(-1);
-            fileService.changeStat(file);
+            fileService.changeStat(file.getId());
 
             File uploadFile = fileService.save(dto.getUploadFile());
             uploadFile.updateFileWebtoon(findWebtoon);
