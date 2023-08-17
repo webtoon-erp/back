@@ -79,7 +79,7 @@ public class AttendenceService {
         return TotalAttendenceSummaryDto.builder()
                 .totalUserCnt(userRepository.countAllBy())
                 .onTimeStartUserCnt((Long) getOnTimeStartAttendances().get("count"))
-                .lateStartUserCnt(countLateStartAttendances())
+                .lateStartUserCnt((Long) getLateStartAttendances().get("count"))
                 .notStartUserCnt(countNotStartAttendances())
                 .dayOffUserCnt(countDayOffAttendances())
                 .onTimeEndUserCnt(countOnTimeEndAttendances())
@@ -156,17 +156,27 @@ public class AttendenceService {
     }
 
     // 전체 - 지각 출근 직원 수
-    private Long countLateStartAttendances() {
+    private Map<String, Object> getLateStartAttendances() {
         String currentDate = LocalDate.now().toString();
         String attendType = "START";
 
         List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
 
-        if (attendances == null) return 0L;
+        Map<String, Object> results = new HashMap<>();
 
-        return attendances.stream()
-                .filter(attendance -> !isOnTime(attendance))
-                .count();
+        long count = attendances.stream()
+                        .filter(attendance -> !isOnTime(attendance))
+                        .count();
+
+        List<User> userList = attendances.stream()
+                                .filter(attendance -> !isOnTime(attendance))
+                                .map(Attendence::getUser)
+                                .collect(Collectors.toList());
+
+        results.put("count", count);
+        results.put("userList", userList);
+
+        return results;
     }
 
     // 전체 - 휴가 직원 수
