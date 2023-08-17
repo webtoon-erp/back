@@ -15,6 +15,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +84,7 @@ public class AttendenceService {
                 .notStartUserCnt(countNotStartAttendances())
                 .dayOffUserCnt((Long) getDayOffAttendances().get("count"))
                 .onTimeEndUserCnt((Long) getOnTimeEndAttendances().get("count"))
-                .notEndUserCnt(countNotEndAttendances())
+                .notEndUserCnt((Long) getNotEndAttendances().get("count"))
                 .build();
 
     }
@@ -208,21 +209,35 @@ public class AttendenceService {
     }
 
     // 전체 - 연장 근무 (미퇴근) 직원 수
-    private Long countNotEndAttendances() {
+    private Map<String, Object> getNotEndAttendances() {
         String currentDate = LocalDate.now().toString();
 
-        // 출근한 직원 수 (지각 포함)
-        long startAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START").size();
+        // 출근한 직원 (지각 포함)
+        List<Attendence> startAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START");
 
-        // 퇴근한 직원 수
-        long endAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "END").size();
+        // 퇴근한 직원
+        List<Attendence> endAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "END");
+
+        // 출근한 직원 리스트
+        List<User> startAttendancesUserList = startAttendances.stream().map(Attendence::getUser).collect(Collectors.toList());
+
+        // 퇴근한 직원 리스트
+        List<User> endAttendancesUserList = endAttendances.stream().map(Attendence::getUser).collect(Collectors.toList());
 
         // 현재 시간 구하기
         LocalTime currentTime = LocalTime.now();
 
-        if (currentTime.isAfter(LocalTime.of(18, 10)))  return startAttendances - endAttendances;
-        else  return 0L;
+        Map<String, Object> results = new HashMap<>();
 
+        if (currentTime.isAfter(LocalTime.of(18, 10))) {
+            List<User> notEndUsers = new ArrayList<>(startAttendancesUserList);
+            notEndUsers.removeAll(endAttendancesUserList);
+
+            results.put("count", startAttendances.size() - endAttendances.size());
+            results.put("userList", notEndUsers);
+        }
+
+        return results;
     }
 
     // 전체 - 미출근 직원 수
