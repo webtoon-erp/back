@@ -214,14 +214,10 @@ public class AttendenceService {
 
         // 출근한 직원 (지각 포함)
         List<Attendence> startAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START");
+        List<User> startAttendancesUserList = startAttendances.stream().map(Attendence::getUser).collect(Collectors.toList());
 
         // 퇴근한 직원
         List<Attendence> endAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "END");
-
-        // 출근한 직원 리스트
-        List<User> startAttendancesUserList = startAttendances.stream().map(Attendence::getUser).collect(Collectors.toList());
-
-        // 퇴근한 직원 리스트
         List<User> endAttendancesUserList = endAttendances.stream().map(Attendence::getUser).collect(Collectors.toList());
 
         // 현재 시간 구하기
@@ -230,11 +226,11 @@ public class AttendenceService {
         Map<String, Object> results = new HashMap<>();
 
         if (currentTime.isAfter(LocalTime.of(18, 10))) {
-            List<User> notEndUsers = new ArrayList<>(startAttendancesUserList);
-            notEndUsers.removeAll(endAttendancesUserList);
+            List<User> userList = new ArrayList<>(startAttendancesUserList);
+            userList.removeAll(endAttendancesUserList);
 
             results.put("count", startAttendances.size() - endAttendances.size());
-            results.put("userList", notEndUsers);
+            results.put("userList", userList);
         }
 
         return results;
