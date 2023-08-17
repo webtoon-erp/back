@@ -134,6 +134,11 @@ public class AttendenceService {
         private long count;
         private List<User> userList;
 
+        public AttendanceResult() {
+            this.count = 0;
+            this.userList = Collections.emptyList();
+        }
+
         public AttendanceResult(long count, List<User> userList) {
             this.count = count;
             this.userList = userList;
@@ -222,28 +227,23 @@ public class AttendenceService {
     // 전체 - 연장 근무 (미퇴근) 직원 수
     private AttendanceResult getNotEndAttendances() {
         String currentDate = LocalDate.now().toString();
-
-        // 출근한 직원 (지각 포함)
-        List<Attendence> startAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START");
-        List<User> startAttendancesUserList = startAttendances.stream().map(Attendence::getUser).collect(Collectors.toList());
-
-        // 퇴근한 직원
-        List<Attendence> endAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "END");
-        List<User> endAttendancesUserList = endAttendances.stream().map(Attendence::getUser).collect(Collectors.toList());
-
-        // 현재 시간 구하기
         LocalTime currentTime = LocalTime.now();
 
         if (currentTime.isAfter(LocalTime.of(18, 10))) {
-            long count = startAttendances.size() - endAttendances.size();
+            // 출근한 직원 (지각 포함)
+            List<Attendence> startAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START");
+            if (startAttendances == null)  return new AttendanceResult();
+            List<User> startAttendancesUserList = startAttendances.stream().map(Attendence::getUser).collect(Collectors.toList());
+
+            long count = startAttendances.size() - getOnTimeEndAttendances().getCount();
 
             List<User> userList = new ArrayList<>(startAttendancesUserList);
-            userList.removeAll(endAttendancesUserList);
+            userList.removeAll(getOnTimeEndAttendances().getUserList());
 
             return new AttendanceResult(count, userList);
         }
         else {
-            return new AttendanceResult(0, Collections.emptyList());
+            return new AttendanceResult();
         }
     }
 
@@ -256,17 +256,14 @@ public class AttendenceService {
 
         // 출근한 직원 수 (지각 포함)
         List<Attendence> startAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START");
+        if (startAttendances == null)  return new AttendanceResult(allUserList.size(), allUserList);
         List<User> startAttendancesUserList = startAttendances.stream().map(Attendence::getUser).collect(Collectors.toList());
 
-        // 휴가인 직원 수
-        List<Attendence> dayOffAttendences = attendenceRepository.findByAttendDateAndAttendType(currentDate, "DAYOFF");
-        List<User> dayOffAttendencesUserList = dayOffAttendences.stream().map(Attendence::getUser).collect(Collectors.toList());
-
-        long count = allUserList.size() - startAttendances.size() - dayOffAttendences.size();
+        long count = allUserList.size() - startAttendances.size() - getDayOffAttendances().getCount();
 
         List<User> userList = new ArrayList<>(allUserList);
         userList.removeAll(startAttendancesUserList);
-        userList.removeAll(dayOffAttendencesUserList);
+        userList.removeAll(getDayOffAttendances().getUserList());
 
         return new AttendanceResult(count, userList);
     }
