@@ -15,7 +15,10 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,7 +78,7 @@ public class AttendenceService {
 
         return TotalAttendenceSummaryDto.builder()
                 .totalUserCnt(userRepository.countAllBy())
-                .onTimeStartUserCnt(countOnTimeStartAttendances())
+                .onTimeStartUserCnt((Long) getOnTimeStartAttendances().get("count"))
                 .lateStartUserCnt(countLateStartAttendances())
                 .notStartUserCnt(countNotStartAttendances())
                 .dayOffUserCnt(countDayOffAttendances())
@@ -129,17 +132,27 @@ public class AttendenceService {
     }
 
     // 전체 - 정시 출근 직원 수
-    private Long countOnTimeStartAttendances() {
+    private Map<String, Object> getOnTimeStartAttendances() {
         String currentDate = LocalDate.now().toString();
         String attendType = "START";
 
         List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
 
-        if (attendances == null) return 0L;
+        Map<String, Object> results = new HashMap<>();
 
-        return attendances.stream()
-                .filter(this::isOnTime)
-                .count();
+        long count = attendances.stream()
+                        .filter(this::isOnTime)
+                        .count();
+
+        List<User> userList = attendances.stream()
+                                .filter(this::isOnTime)
+                                .map(Attendence::getUser)
+                                .collect(Collectors.toList());
+
+        results.put("count", count);
+        results.put("userList", userList);
+
+        return results;
     }
 
     // 전체 - 지각 출근 직원 수
