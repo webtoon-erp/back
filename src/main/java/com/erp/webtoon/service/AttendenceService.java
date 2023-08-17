@@ -15,10 +15,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,12 +76,12 @@ public class AttendenceService {
 
         return TotalAttendenceSummaryDto.builder()
                 .totalUserCnt(userRepository.countAllBy())
-                .onTimeStartUserCnt((Long) getOnTimeStartAttendances().get("count"))
-                .lateStartUserCnt((Long) getLateStartAttendances().get("count"))
-                .notStartUserCnt((Long) getNotStartAttendances().get("count"))
-                .dayOffUserCnt((Long) getDayOffAttendances().get("count"))
-                .onTimeEndUserCnt((Long) getOnTimeEndAttendances().get("count"))
-                .notEndUserCnt((Long) getNotEndAttendances().get("count"))
+                .onTimeStartUserCnt(getOnTimeStartAttendances().getCount())
+                .lateStartUserCnt(getLateStartAttendances().getCount())
+                .notStartUserCnt(getNotStartAttendances().getCount())
+                .dayOffUserCnt(getDayOffAttendances().getCount())
+                .onTimeEndUserCnt(getOnTimeEndAttendances().getCount())
+                .notEndUserCnt(getNotEndAttendances().getCount())
                 .build();
 
     }
@@ -132,14 +129,40 @@ public class AttendenceService {
                 .build();
     }
 
+    // 근태 결과 클래스
+    private static class AttendanceResult {
+        private long count;
+        private List<User> userList;
+
+        public AttendanceResult(long count, List<User> userList) {
+            this.count = count;
+            this.userList = userList;
+        }
+
+        public long getCount() {
+            return count;
+        }
+
+        public void setCount(long count) {
+            this.count = count;
+        }
+
+        public List<User> getUserList() {
+            return userList;
+        }
+
+        public void setUserList(List<User> userList) {
+            this.userList = userList;
+        }
+
+    }
+
     // 전체 - 정시 출근 직원 수
-    private Map<String, Object> getOnTimeStartAttendances() {
+    private AttendanceResult getOnTimeStartAttendances() {
         String currentDate = LocalDate.now().toString();
         String attendType = "START";
 
         List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
-
-        Map<String, Object> results = new HashMap<>();
 
         long count = attendances.stream()
                         .filter(this::isOnTime)
@@ -150,20 +173,15 @@ public class AttendenceService {
                                 .map(Attendence::getUser)
                                 .collect(Collectors.toList());
 
-        results.put("count", count);
-        results.put("userList", userList);
-
-        return results;
+        return new AttendanceResult(count, userList);
     }
 
     // 전체 - 지각 출근 직원 수
-    private Map<String, Object> getLateStartAttendances() {
+    private AttendanceResult getLateStartAttendances() {
         String currentDate = LocalDate.now().toString();
         String attendType = "START";
 
         List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
-
-        Map<String, Object> results = new HashMap<>();
 
         long count = attendances.stream()
                         .filter(attendance -> !isOnTime(attendance))
@@ -174,42 +192,35 @@ public class AttendenceService {
                                 .map(Attendence::getUser)
                                 .collect(Collectors.toList());
 
-        results.put("count", count);
-        results.put("userList", userList);
-
-        return results;
+        return new AttendanceResult(count, userList);
     }
 
     // 전체 - 휴가 직원 수
-    private Map<String, Object> getDayOffAttendances() {
+    private AttendanceResult getDayOffAttendances() {
         String currentDate = LocalDate.now().toString();
 
         List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "DAYOFF");
 
-        Map<String, Object> results = new HashMap<>();
+        long count = attendances.size();
+        List<User> userList = attendances.stream().map(Attendence::getUser).collect(Collectors.toList());
 
-        results.put("count", attendances.size());
-        results.put("userList", attendances.stream().map(Attendence::getUser).collect(Collectors.toList()));
-
-        return results;
+        return new AttendanceResult(count, userList);
     }
 
     // 전체 - 퇴근 직원 수
-    private Map<String, Object> getOnTimeEndAttendances() {
+    private AttendanceResult getOnTimeEndAttendances() {
         String currentDate = LocalDate.now().toString();
 
         List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "END");
 
-        Map<String, Object> results = new HashMap<>();
+        long count = attendances.size();
+        List<User> userList = attendances.stream().map(Attendence::getUser).collect(Collectors.toList());
 
-        results.put("count", attendances.size());
-        results.put("userList", attendances.stream().map(Attendence::getUser).collect(Collectors.toList()));
-
-        return results;
+        return new AttendanceResult(count, userList);
     }
 
     // 전체 - 연장 근무 (미퇴근) 직원 수
-    private Map<String, Object> getNotEndAttendances() {
+    private AttendanceResult getNotEndAttendances() {
         String currentDate = LocalDate.now().toString();
 
         // 출근한 직원 (지각 포함)
@@ -223,21 +234,21 @@ public class AttendenceService {
         // 현재 시간 구하기
         LocalTime currentTime = LocalTime.now();
 
-        Map<String, Object> results = new HashMap<>();
-
         if (currentTime.isAfter(LocalTime.of(18, 10))) {
+            long count = startAttendances.size() - endAttendances.size();
+
             List<User> userList = new ArrayList<>(startAttendancesUserList);
             userList.removeAll(endAttendancesUserList);
 
-            results.put("count", startAttendances.size() - endAttendances.size());
-            results.put("userList", userList);
+            return new AttendanceResult(count, userList);
         }
-
-        return results;
+        else {
+            return new AttendanceResult(0, Collections.emptyList());
+        }
     }
 
     // 전체 - 미출근 직원 수
-    private Map<String, Object> getNotStartAttendances() {
+    private AttendanceResult getNotStartAttendances() {
         String currentDate = LocalDate.now().toString();
 
         // 전체 직원 수
@@ -257,12 +268,7 @@ public class AttendenceService {
         userList.removeAll(startAttendancesUserList);
         userList.removeAll(dayOffAttendencesUserList);
 
-        Map<String, Object> results = new HashMap<>();
-
-        results.put("count", count);
-        results.put("userList", userList);
-
-        return results;
+        return new AttendanceResult(count, userList);
     }
 
     // 정시 출근 판단 함수 - 실제 출근 시간이 9시 10분 이전이면 true
