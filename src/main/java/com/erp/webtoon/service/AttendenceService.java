@@ -82,7 +82,7 @@ public class AttendenceService {
                 .lateStartUserCnt((Long) getLateStartAttendances().get("count"))
                 .notStartUserCnt(countNotStartAttendances())
                 .dayOffUserCnt((Long) getDayOffAttendances().get("count"))
-                .onTimeEndUserCnt(countOnTimeEndAttendances())
+                .onTimeEndUserCnt((Long) getOnTimeEndAttendances().get("count"))
                 .notEndUserCnt(countNotEndAttendances())
                 .build();
 
@@ -194,16 +194,17 @@ public class AttendenceService {
     }
 
     // 전체 - 퇴근 직원 수
-    private Long countOnTimeEndAttendances() {
+    private Map<String, Object> getOnTimeEndAttendances() {
         String currentDate = LocalDate.now().toString();
-        String attendType = "END";
 
-        long attendances = 0;
+        List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "END");
 
-        List<Attendence> attendancesList = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
-        if (attendancesList != null)  attendances = attendancesList.size();
+        Map<String, Object> results = new HashMap<>();
 
-        return attendances;
+        results.put("count", attendances.size());
+        results.put("userList", attendances.stream().map(Attendence::getUser).collect(Collectors.toList()));
+
+        return results;
     }
 
     // 전체 - 연장 근무 (미퇴근) 직원 수
