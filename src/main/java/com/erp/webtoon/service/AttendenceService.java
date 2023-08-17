@@ -132,14 +132,14 @@ public class AttendenceService {
     // 근태 결과 클래스
     private static class AttendanceResult {
         private long count;
-        private List<User> userList;
+        private List<TotalAttendenceUserListDto> userList;
 
         public AttendanceResult() {
             this.count = 0;
             this.userList = Collections.emptyList();
         }
 
-        public AttendanceResult(long count, List<User> userList) {
+        public AttendanceResult(long count, List<TotalAttendenceUserListDto> userList) {
             this.count = count;
             this.userList = userList;
         }
@@ -152,11 +152,11 @@ public class AttendenceService {
             this.count = count;
         }
 
-        public List<User> getUserList() {
+        public List<TotalAttendenceUserListDto> getUserList() {
             return userList;
         }
 
-        public void setUserList(List<User> userList) {
+        public void setUserList(List<TotalAttendenceUserListDto> userList) {
             this.userList = userList;
         }
 
@@ -178,7 +178,7 @@ public class AttendenceService {
                                 .map(Attendence::getUser)
                                 .collect(Collectors.toList());
 
-        return new AttendanceResult(count, userList);
+        return new AttendanceResult(count, userListDtoList(userList));
     }
 
     // 전체 - 지각 출근 직원 수
@@ -197,7 +197,7 @@ public class AttendenceService {
                                 .map(Attendence::getUser)
                                 .collect(Collectors.toList());
 
-        return new AttendanceResult(count, userList);
+        return new AttendanceResult(count, userListDtoList(userList));
     }
 
     // 전체 - 휴가 직원 수
@@ -209,7 +209,7 @@ public class AttendenceService {
         long count = attendances.size();
         List<User> userList = attendances.stream().map(Attendence::getUser).collect(Collectors.toList());
 
-        return new AttendanceResult(count, userList);
+        return new AttendanceResult(count, userListDtoList(userList));
     }
 
     // 전체 - 퇴근 직원 수
@@ -221,7 +221,7 @@ public class AttendenceService {
         long count = attendances.size();
         List<User> userList = attendances.stream().map(Attendence::getUser).collect(Collectors.toList());
 
-        return new AttendanceResult(count, userList);
+        return new AttendanceResult(count, userListDtoList(userList));
     }
 
     // 전체 - 연장 근무 (미퇴근) 직원 수
@@ -237,7 +237,7 @@ public class AttendenceService {
 
             long count = startAttendances.size() - getOnTimeEndAttendances().getCount();
 
-            List<User> userList = new ArrayList<>(startAttendancesUserList);
+            List<TotalAttendenceUserListDto> userList = new ArrayList<>(userListDtoList(startAttendancesUserList));
             userList.removeAll(getOnTimeEndAttendances().getUserList());
 
             return new AttendanceResult(count, userList);
@@ -256,13 +256,13 @@ public class AttendenceService {
 
         // 출근한 직원 수 (지각 포함)
         List<Attendence> startAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START");
-        if (startAttendances == null)  return new AttendanceResult(allUserList.size(), allUserList);
+        if (startAttendances == null)  return new AttendanceResult(allUserList.size(), userListDtoList(allUserList));
         List<User> startAttendancesUserList = startAttendances.stream().map(Attendence::getUser).collect(Collectors.toList());
 
         long count = allUserList.size() - startAttendances.size() - getDayOffAttendances().getCount();
 
-        List<User> userList = new ArrayList<>(allUserList);
-        userList.removeAll(startAttendancesUserList);
+        List<TotalAttendenceUserListDto> userList = new ArrayList<>(userListDtoList(allUserList));
+        userList.removeAll(userListDtoList(startAttendancesUserList));
         userList.removeAll(getDayOffAttendances().getUserList());
 
         return new AttendanceResult(count, userList);
@@ -346,4 +346,20 @@ public class AttendenceService {
         return String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSeconds);
 
     }
+
+    // USER -> TotalAttendenceUserListDto
+    private List<TotalAttendenceUserListDto> userListDtoList (List<User> userList) {
+
+        return userList.stream()
+                .map(user -> TotalAttendenceUserListDto.builder()
+                        .deptName(user.getDeptName())
+                        .teamNum(user.getTeamNum())
+                        .position(user.getPosition())
+                        .name(user.getName())
+                        .tel(user.getTel())
+                        .email(user.getEmail())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
 }
