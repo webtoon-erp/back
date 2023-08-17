@@ -81,7 +81,7 @@ public class AttendenceService {
                 .totalUserCnt(userRepository.countAllBy())
                 .onTimeStartUserCnt((Long) getOnTimeStartAttendances().get("count"))
                 .lateStartUserCnt((Long) getLateStartAttendances().get("count"))
-                .notStartUserCnt(countNotStartAttendances())
+                .notStartUserCnt((Long) getNotStartAttendances().get("count"))
                 .dayOffUserCnt((Long) getDayOffAttendances().get("count"))
                 .onTimeEndUserCnt((Long) getOnTimeEndAttendances().get("count"))
                 .notEndUserCnt((Long) getNotEndAttendances().get("count"))
@@ -237,24 +237,32 @@ public class AttendenceService {
     }
 
     // 전체 - 미출근 직원 수
-    private Long countNotStartAttendances() {
+    private Map<String, Object> getNotStartAttendances() {
         String currentDate = LocalDate.now().toString();
 
-        long startAttendances = 0;
-        long dayOffAttendances = 0;
-
         // 전체 직원 수
-        long allEmployees = userRepository.countAllBy();
+        List<User> allUserList = userRepository.findAll();
 
         // 출근한 직원 수 (지각 포함)
-        List<Attendence> startAttendancesList = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START");
-        if (startAttendancesList != null)  startAttendances = startAttendancesList.size();
+        List<Attendence> startAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START");
+        List<User> startAttendancesUserList = startAttendances.stream().map(Attendence::getUser).collect(Collectors.toList());
 
         // 휴가인 직원 수
-        List<Attendence> dayOffAttendencesList = attendenceRepository.findByAttendDateAndAttendType(currentDate, "DAYOFF");
-        if (dayOffAttendencesList != null)  dayOffAttendances = dayOffAttendencesList.size();
+        List<Attendence> dayOffAttendences = attendenceRepository.findByAttendDateAndAttendType(currentDate, "DAYOFF");
+        List<User> dayOffAttendencesUserList = dayOffAttendences.stream().map(Attendence::getUser).collect(Collectors.toList());
 
-        return allEmployees - startAttendances - dayOffAttendances;
+        long count = allUserList.size() - startAttendances.size() - dayOffAttendences.size();
+
+        List<User> userList = new ArrayList<>(allUserList);
+        userList.removeAll(startAttendancesUserList);
+        userList.removeAll(dayOffAttendencesUserList);
+
+        Map<String, Object> results = new HashMap<>();
+
+        results.put("count", count);
+        results.put("userList", userList);
+
+        return results;
     }
 
     // 정시 출근 판단 함수 - 실제 출근 시간이 9시 10분 이전이면 true
