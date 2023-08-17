@@ -159,6 +159,7 @@ public class WebtoonService {
     /**
      * 등록 웹툰 수정
      */
+    @Transactional
     public void update(Long webtoonId, WebtoonUpdaateDto dto) throws IOException {
         Webtoon findWebtoon = webtoonRepository.findById(webtoonId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 웹툰입니다."));
@@ -170,7 +171,7 @@ public class WebtoonService {
         //만약 파일을 업데이트 하는 경우
         if (dto.getUploadFile() != null) {
             // 기존의 저장된 가장 최근의 파일 상태 변경
-            File file = findWebtoon.getFiles().get(-1);
+            File file = findWebtoon.getFiles().get(findWebtoon.getFiles().size()-1);
             fileService.changeStat(file.getId());
 
             File uploadFile = fileService.save(dto.getUploadFile());
