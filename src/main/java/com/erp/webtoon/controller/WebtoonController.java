@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -122,7 +123,11 @@ public class WebtoonController {
         webtoonService.update(webtoonId, dto);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/webtoon/{webtoonId}"));
+        URI location = UriComponentsBuilder.newInstance()
+                .path("/webtoon/{webtoonId}")
+                .buildAndExpand(webtoonId).toUri();
+
+        headers.setLocation(location);
 
         return new ResponseEntity(headers, HttpStatus.MOVED_PERMANENTLY);
     }
