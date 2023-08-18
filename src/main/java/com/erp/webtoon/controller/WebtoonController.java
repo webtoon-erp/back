@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -119,8 +120,8 @@ public class WebtoonController {
      * 웹툰 수정
      */
     @PutMapping("/webtoon/{webtoonId}")
-    public ResponseEntity update(@PathVariable Long webtoonId, @RequestBody WebtoonUpdaateDto dto) throws IOException {
-        webtoonService.update(webtoonId, dto);
+    public ResponseEntity update(@PathVariable Long webtoonId, @RequestPart("dto") WebtoonUpdaateDto dto, @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        webtoonService.update(webtoonId,file, dto);
 
         HttpHeaders headers = new HttpHeaders();
         URI location = UriComponentsBuilder.newInstance()
