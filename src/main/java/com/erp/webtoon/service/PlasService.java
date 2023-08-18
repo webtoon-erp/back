@@ -216,9 +216,17 @@ public class PlasService {
                 if (i != approvers.size() - 1) { // 현재 결재자가 최종 결재자일 경우 다음 결재자 업데이트
                     DocumentRcv nextDocumentRcv = approvers.get(i + 1);
                     nextDocumentRcv.changeStat('Y');
+
+                    // 다음 결재자 알림
+                    String content = "새 전자결재 문서가 상신되었습니다. 문서명 - " + document.getTitle();
+                    sendMsg(documentId, nextDocumentRcv.getUser(), document.getWriteUser(), content);
                 }
                 else { // 현재 결재자가 최종 결재자일 경우 문서 업데이트
                     document.changeStat('C'); // 완료 상태로 변경
+
+                    // 문서 완료 시 문서 작성자 알림
+                    String content = "전자결재 문서가 최종 승인 및 완료되었습니다. 문서명 - " + document.getTitle();
+                    sendMsg(documentId, document.getWriteUser(), documentRcv.getUser(), content);
                 }
 
                 approved = true;
@@ -255,5 +263,17 @@ public class PlasService {
                 .documentDataResponses(document.getDataResponse())
                 .build();
 
+    }
+
+    private void sendMsg(Long documentId, User rcvUser, User sendUser, String content) {
+        MessageSaveDto messageSaveDto = MessageSaveDto.builder()
+                .msgType("dm")
+                .content(content)
+                .refId(documentId)
+                .programId("plas")
+                .build();
+
+        Message message = messageSaveDto.toEntity(rcvUser, sendUser);
+        messageService.addMsg(message);
     }
 }
