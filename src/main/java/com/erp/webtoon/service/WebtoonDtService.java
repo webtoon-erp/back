@@ -76,8 +76,9 @@ public class WebtoonDtService {
 
         return WebtoonDtResponseDto.builder()
                 .episodeNum(findWebtoonDt.getEpisodeNum())
+                .subTitle(findWebtoonDt.getSubTitle())
                 .content(findWebtoonDt.getContent())
-                .fileName(findWebtoonDt.getFiles().get(-1).getFileName())
+                .fileName(findWebtoonDt.getFiles().get(findWebtoonDt.getFiles().size()-1).getFileName())
                 .feedbackList(feedbackList)
                 .build();
     }
