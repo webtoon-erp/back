@@ -8,12 +8,11 @@ import com.erp.webtoon.dto.webtoon.WebtoonResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonUpdaateDto;
 import com.erp.webtoon.repository.FileRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,6 +33,9 @@ class WebtoonServiceTest {
     @Autowired
     private FileRepository fileRepository;
 
+    @BeforeEach
+    void clean() {webtoonRepository.deleteAll();}
+
     @Test
     @DisplayName("웹툰 등록")
     void test1() throws IOException {
@@ -44,7 +46,7 @@ class WebtoonServiceTest {
         dto.setArtist("작가입니다.");
 
         //when
-        Long id = webtoonService.save(dto);
+        Long id = webtoonService.save(dto, null);
 
         //then
         assertEquals(1L, webtoonRepository.count());

@@ -58,18 +58,20 @@ class WebtoonControllerTest {
     }
 
     @Test
-    @DisplayName("웹툰 등록")
+    @DisplayName("웹툰 등록-파일o")
     void test1() throws Exception {
         //given
-        WebtoonRequestDto dto = new WebtoonRequestDto();
-        dto.setTitle("제목입니다.");
-        dto.setIntro("인트로입니다.");
-        dto.setArtist("작가입니다.");
+        WebtoonRequestDto requestDto = new WebtoonRequestDto();
+        requestDto.setTitle("제목입니다.");
+        requestDto.setIntro("인트로입니다.");
+        requestDto.setArtist("작가입니다.");
+
+        MockMultipartFile dto = new MockMultipartFile("dto", "dto", "application/json", objectMapper.writeValueAsString(requestDto).getBytes(StandardCharsets.UTF_8));
 
         //expected
-        mockMvc.perform(post("/webtoon")
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(multipart("/webtoon")
+                        .file(getMultipartFile())
+                        .file(dto))
                 .andExpect(status().isMovedPermanently())
                 .andExpect(jsonPath("$.id").value(webtoonRepository.findAll().get(0).getId()))
                 .andDo(print());
@@ -111,9 +113,9 @@ class WebtoonControllerTest {
         webtoonDto.setTitle("제목입니다.");
         webtoonDto.setIntro("인트로입니다.");
         webtoonDto.setCategory("월요일");
-        webtoonDto.setThumbnailFile(getMultipartFile());
 
-        Long webtoonId = webtoonService.save(webtoonDto);
+
+        Long webtoonId = webtoonService.save(webtoonDto, getMultipartFile());
 
 
         //expected
@@ -169,9 +171,9 @@ class WebtoonControllerTest {
         webtoonDto.setIllustrator("그림");
         webtoonDto.setCategory("월요일");
         webtoonDto.setKeyword("공포");
-        webtoonDto.setThumbnailFile(getMultipartFile());
 
-        Long webtoonId = webtoonService.save(webtoonDto);
+
+        Long webtoonId = webtoonService.save(webtoonDto, getMultipartFile());
 
         WebtoonUpdaateDto updaateDto = new WebtoonUpdaateDto();
         updaateDto.setTitle("제목입니다.");
