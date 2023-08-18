@@ -98,7 +98,7 @@ public class UserController {
     /**
      * 자격증 수정
      */
-    @PatchMapping
+    @PatchMapping("/qualification")
     public List<QualificationModifyResponseDto> modifyQualification(@RequestBody List<QualificationModifyRequestDto> qualificationModifyRequestDtoList) {
         return userService.updateQualification(qualificationModifyRequestDtoList);
     }
@@ -106,7 +106,7 @@ public class UserController {
     /**
      * 자격증 삭제
      */
-    @DeleteMapping
+    @DeleteMapping("/qualification")
     public ResponseEntity deleteQualification(@RequestBody List<QualificationDeleteRequestDto> qualificationDeleteRequestDtoList) {
         userService.deleteQualification(qualificationDeleteRequestDtoList);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
