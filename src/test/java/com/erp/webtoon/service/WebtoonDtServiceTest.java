@@ -41,7 +41,10 @@ class WebtoonDtServiceTest {
     private UserRepository userRepository;
 
     @BeforeEach
-    void clean() {webtoonDtRepository.deleteAll();}
+    void clean() {
+        webtoonDtRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     public MockMultipartFile getMultipartFile() throws IOException {
         return new MockMultipartFile("file", "test.png", "image/png", new FileInputStream("/Users/kh/Desktop/file/파일명.png"));
@@ -176,6 +179,24 @@ class WebtoonDtServiceTest {
         assertEquals("감사합니다.", webtoonDt.getContent());
         assertEquals("규규", webtoonDt.getManager());
         assertEquals(false, webtoonDt.isFinalUploadYN());
+    }
+
+    @Test
+    @DisplayName("웹툰 회차 삭제")
+    void test5() throws IOException {
+        //given
+        WebtoonDt newWebtoonDt = WebtoonDt.builder()
+                .subTitle("세상에 이런일이")
+                .content("감사합니다.")
+                .build();
+
+        webtoonDtRepository.save(newWebtoonDt);
+
+        //when
+        webtoonDtService.delete(newWebtoonDt.getId());
+
+        //then
+        assertEquals(0L, webtoonDtRepository.count());
     }
 
 }

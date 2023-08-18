@@ -56,7 +56,10 @@ class WebtoonDtControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    void clean() {webtoonDtRepository.deleteAll();}
+    void clean() {
+        webtoonDtRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     public MockMultipartFile getMultipartFile() throws IOException {
         return new MockMultipartFile("file", "test.png", "image/png", new FileInputStream("/Users/kh/Desktop/file/파일명.png"));
@@ -198,6 +201,24 @@ class WebtoonDtControllerTest {
         mockMvc.perform(multipart(HttpMethod.PUT, "/webtoonDt/{webtoonDtId}", id)
                         .file(dto)
                         .file(getMultipartFile()))
+                .andExpect(status().isMovedPermanently())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("웹툰 회차 삭제")
+    void test5() throws Exception {
+        //given
+        WebtoonDt newWebtoonDt = WebtoonDt.builder()
+                .subTitle("세상에 이런일이")
+                .content("감사합니다.")
+                .build();
+
+        webtoonDtRepository.save(newWebtoonDt);
+
+        //expected
+        mockMvc.perform(delete("/webtoonDt/{webtoonDtId}", newWebtoonDt.getId())
+                        .contentType(APPLICATION_JSON))
                 .andExpect(status().isMovedPermanently())
                 .andDo(print());
     }
