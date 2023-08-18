@@ -166,6 +166,17 @@ public class PlasService {
     }
 
     /*
+        전자결재 문서 삭제
+     */
+    public void deleteDoc(Long documentId) {
+        Document document = documentRepository.findById(documentId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 입니다."));
+
+        if (document.getStat() == 'Y')  documentRepository.delete(document);
+        else  throw new RuntimeException("이미 상신이나 완료된 문서는 삭제할 수 없습니다.");
+    }
+
+    /*
         전자결재 문서 상신
      */
     public void sendDoc(Long documentId) {

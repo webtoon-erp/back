@@ -31,6 +31,10 @@ public class PlasController {
     @PostMapping("/doc")
     public void save(@RequestBody DocumentRequestDto dto) throws IOException { plasService.addDoc(dto); }
 
+    // 전자결재 문서 삭제
+    @DeleteMapping("/doc/{documentId}")
+    public void delete(@PathVariable Long documentId) { plasService.deleteDoc(documentId); }
+
     // 전자결재 문서 상신
     @PostMapping("/doc/{documentId}")
     public void send(@PathVariable("documentId") Long documentId) { plasService.sendDoc(documentId); }
