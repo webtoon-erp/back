@@ -99,7 +99,7 @@ public class UserController {
      */
     @PatchMapping
     public List<QualificationModifyResponseDto> modifyQualification(@RequestBody List<QualificationModifyRequestDto> qualificationModifyRequestDtoList) {
-        return userService.updateRequest(qualificationModifyRequestDtoList);
+        return userService.updateQualification(qualificationModifyRequestDtoList);
     }
 }
 

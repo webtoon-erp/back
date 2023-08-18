@@ -169,7 +169,7 @@ public class UserService {
     }
 
     @Transactional
-    public List<QualificationModifyResponseDto> updateRequest(List<QualificationModifyRequestDto> qualificationRequestList) {
+    public List<QualificationModifyResponseDto> updateQualification(List<QualificationModifyRequestDto> qualificationRequestList) {
         List<QualificationModifyResponseDto> modifyQualifications = new ArrayList<>();
 
         for (QualificationModifyRequestDto qualificationModifyRequestDto : qualificationRequestList) {
