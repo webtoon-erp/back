@@ -16,23 +16,23 @@ public class PlasController {
     private final PlasService plasService;
 
     // 템플릿 리스트 조회
-    @GetMapping("/addDoc/templateList")
+    @GetMapping("/doc/templateList")
     public List<DocTplListDto> templateList() {
         return plasService.getTemplateList();
     }
 
     // 결재자 / 참조자 조회 기능
-    @GetMapping("/addDoc/appvLineList")
+    @GetMapping("/doc/appvLineList")
     public List<AppvLineListDto> appvLineList() {
         return plasService.getAppvLineList();
     }
 
     // 전자결재 문서 저장
-    @PostMapping("/addDoc/save")
+    @PostMapping("/doc")
     public void save(@RequestBody DocumentRequestDto dto) throws IOException { plasService.addDoc(dto); }
 
     // 전자결재 문서 상신
-    @PostMapping("/addDoc/send/{documentId}")
+    @PostMapping("/doc/{documentId}")
     public void send(@PathVariable("documentId") Long documentId) { plasService.sendDoc(documentId); }
 
     // 내 문서 조회
