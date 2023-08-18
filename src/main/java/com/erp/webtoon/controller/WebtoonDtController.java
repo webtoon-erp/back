@@ -13,6 +13,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -31,11 +33,15 @@ public class WebtoonDtController {
      * 개별 웹툰 에피소드 등록
      */
     @PostMapping("/webtoonDt")
-    public ResponseEntity upload(@RequestBody WebtoonDtRequestDto dto) throws IOException {
-        webtoonDtService.upload(dto);
+    public ResponseEntity upload(@RequestPart WebtoonDtRequestDto dto, @RequestPart("file") MultipartFile file) throws IOException {
+        webtoonDtService.upload(dto, file);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/webtoon/{webtoonId}"));
+        URI location = UriComponentsBuilder.newInstance()
+                .path("/webtoon/{webtoonId}")
+                .buildAndExpand(dto.getWebtoonId()).toUri();
+
+        headers.setLocation(location);
 
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }

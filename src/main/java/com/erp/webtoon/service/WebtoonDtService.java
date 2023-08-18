@@ -8,10 +8,10 @@ import com.erp.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +30,7 @@ public class WebtoonDtService {
     /**
      * 회차 임시 업로드 (최초 등록)
      */
-    public void upload(WebtoonDtRequestDto dto) throws IOException {
+    public void upload(WebtoonDtRequestDto dto, MultipartFile episodeFile) throws IOException {
         Webtoon findWebtoon = webtoonRepository.findById(dto.getWebtoonId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 웹툰입니다."));
 
@@ -45,8 +45,8 @@ public class WebtoonDtService {
         newWebtoonDt.setWebtoon(findWebtoon);
 
         //파일 저장
-        if(!dto.getUploadFile().isEmpty()) {
-            File uploadFile = fileService.save(dto.getUploadFile());
+        if(episodeFile != null) {
+            File uploadFile = fileService.save(episodeFile);
             uploadFile.updateFileWebtoonDt(newWebtoonDt);
             newWebtoonDt.getFiles().add(uploadFile);
         }
