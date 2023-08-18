@@ -4,6 +4,7 @@ import com.erp.webtoon.domain.User;
 import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.domain.WebtoonDt;
 import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
+import com.erp.webtoon.dto.webtoon.WebtoonDtResponseDto;
 import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.repository.WebtoonDtRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
@@ -25,6 +26,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.*;
@@ -111,6 +113,43 @@ class WebtoonDtControllerTest {
         mockMvc.perform(post("/webtoonDt/{webtoonDtId}", newWebtoonDt.getId())
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("웹툰 회차 개별 조회 - 피드백 x")
+    void test3() throws Exception {
+        //given
+        User newUser = User.builder()
+                .employeeId("20232023")
+                .name("규규")
+                .position("과장")
+                .build();
+
+        userRepository.save(newUser);
+
+        Webtoon newWebtoon = Webtoon.builder()
+                .title("웹툰입니다.")
+                .intro("인트로입니다.")
+                .artist("작가입니다.")
+                .build();
+
+        webtoonRepository.save(newWebtoon);
+
+        WebtoonDtRequestDto requestDto = new WebtoonDtRequestDto();
+        requestDto.setWebtoonId(newWebtoon.getId());
+        requestDto.setSubTitle("세상에 이런일이");
+        requestDto.setEmployeeId("20232023");
+
+        webtoonDtService.upload(requestDto, getMultipartFile());
+        Long id = webtoonDtRepository.findAll().get(0).getId();
+
+        //expected
+        mockMvc.perform(get("/webtoonDt/{webtoonDtId}", id)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.info.subTitle").value("세상에 이런일이"))
+                .andExpect(jsonPath("$.info.episodeNum").value(1))
                 .andDo(print());
     }
 
