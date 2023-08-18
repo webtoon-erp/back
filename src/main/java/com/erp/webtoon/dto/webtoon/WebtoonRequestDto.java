@@ -27,8 +27,6 @@ public class WebtoonRequestDto {
     @NotBlank
     private String keyword;
 
-    private MultipartFile thumbnailFile;
-
     public Webtoon toEntity() {
         return Webtoon.builder()
                 .title(title)

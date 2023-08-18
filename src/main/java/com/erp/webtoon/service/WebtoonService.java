@@ -30,11 +30,11 @@ public class WebtoonService {
      * 등록 웹툰 생성
      */
     @Transactional
-    public Long save(WebtoonRequestDto dto) throws IOException {
+    public Long save(WebtoonRequestDto dto, MultipartFile thumbnailFile) throws IOException {
         Webtoon webtoon = dto.toEntity();
 
-        if(dto.getThumbnailFile() != null) {
-            File uploadfile = fileService.save(dto.getThumbnailFile());
+        if(thumbnailFile != null) {
+            File uploadfile = fileService.save(thumbnailFile);
             uploadfile.updateFileWebtoon(webtoon);
             webtoon.getFiles().add(uploadfile);
         }

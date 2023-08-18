@@ -34,8 +34,8 @@ public class WebtoonController {
      * 웹툰 등록
      */
     @PostMapping("/webtoon")
-    public ResponseEntity save(@RequestBody WebtoonRequestDto dto) throws IOException {
-        Long id = webtoonService.save(dto);
+    public ResponseEntity save(@RequestPart("dto") WebtoonRequestDto dto, @RequestPart("file") MultipartFile file) throws IOException {
+        Long id = webtoonService.save(dto, file);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/webtoon"));
