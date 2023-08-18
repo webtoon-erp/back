@@ -2,6 +2,7 @@ package com.erp.webtoon.controller;
 
 import com.erp.webtoon.dto.itsm.CommentListDto;
 import com.erp.webtoon.dto.itsm.CommentResponseDto;
+import com.erp.webtoon.dto.itsm.RequestDeleteDto;
 import com.erp.webtoon.dto.itsm.RequestDto;
 import com.erp.webtoon.dto.itsm.RequestRegisterResponseDto;
 import com.erp.webtoon.dto.message.MessageSaveDto;
@@ -34,6 +35,12 @@ public class RequestController {
     @PostMapping("/request")
     public RequestRegisterResponseDto Request(@RequestBody RequestDto requestDto) throws Exception {
         return requestService.assistRequest(requestDto);
+    }
+
+    @DeleteMapping("/request")
+    public ResponseEntity deleteRequest(@RequestBody List<RequestDeleteDto> requestIds) {
+        requestService.deleteRequest(requestIds);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping ("/comment")
