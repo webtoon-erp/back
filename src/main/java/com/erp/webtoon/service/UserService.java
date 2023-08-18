@@ -2,6 +2,7 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.LogoutAccessToken;
 import com.erp.webtoon.domain.RefreshToken;
+import com.erp.webtoon.dto.user.QualificationDeleteRequestDto;
 import com.erp.webtoon.dto.user.QualificationModifyRequestDto;
 import com.erp.webtoon.dto.user.QualificationModifyResponseDto;
 import com.erp.webtoon.dto.token.LogoutResponseDto;
@@ -168,6 +169,9 @@ public class UserService {
         return registerqualificationList;
     }
 
+    /**
+     * 자격증 수정
+     */
     @Transactional
     public List<QualificationModifyResponseDto> updateQualification(List<QualificationModifyRequestDto> qualificationRequestList) {
         List<QualificationModifyResponseDto> modifyQualifications = new ArrayList<>();
@@ -185,6 +189,15 @@ public class UserService {
         }
 
         return modifyQualifications;
+    }
+
+    /**
+     * 자격증 삭제
+     */
+    public void deleteQualification(List<QualificationDeleteRequestDto> deleteRequestList) {
+        for (QualificationDeleteRequestDto deleteRequest : deleteRequestList) {
+            qualificationRepository.deleteById(deleteRequest.getRequestId());
+        }
     }
 
     /**
