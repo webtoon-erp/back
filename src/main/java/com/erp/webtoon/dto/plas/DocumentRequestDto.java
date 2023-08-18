@@ -35,7 +35,7 @@ public class DocumentRequestDto {
 
     private List<DocumentRcvRequestDto> documentRcvRequests;
 
-    private List<DocumentDataRequestDto> documentDataRequests;
+    private List<DocumentDataDto> documentDataRequests;
 
     public Document toEntity(DocumentTpl documentTpl, User writeUser) {
         return Document.builder()
