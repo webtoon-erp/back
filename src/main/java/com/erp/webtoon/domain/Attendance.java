@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Attendence {
+public class Attendance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "atd_id")
@@ -29,7 +29,7 @@ public class Attendence {
     private User user;
 
     @Builder
-    public Attendence(int attendMonth, String attendDate, String attendType, LocalDateTime attendTime, User user) {
+    public Attendance(int attendMonth, String attendDate, String attendType, LocalDateTime attendTime, User user) {
         this.attendMonth = attendMonth;
         this.attendDate = attendDate;
         this.attendType = attendType;

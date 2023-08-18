@@ -1,11 +1,11 @@
-package com.erp.webtoon.dto.attendece;
+package com.erp.webtoon.dto.attendance;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class TotalAttendenceUserListDto {
+public class TotalAttendanceUserListDto {
 
     private String deptName;    //부서명
     private int teamNum;        // 팀 번호

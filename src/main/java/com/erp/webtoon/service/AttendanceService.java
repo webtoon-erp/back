@@ -1,9 +1,9 @@
 package com.erp.webtoon.service;
 
-import com.erp.webtoon.domain.Attendence;
+import com.erp.webtoon.domain.Attendance;
 import com.erp.webtoon.domain.User;
-import com.erp.webtoon.dto.attendece.*;
-import com.erp.webtoon.repository.AttendenceRepository;
+import com.erp.webtoon.dto.attendance.*;
+import com.erp.webtoon.repository.AttendanceRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,40 +20,40 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AttendenceService {
+public class AttendanceService {
 
-    private final AttendenceRepository attendenceRepository;
+    private final AttendanceRepository attendanceRepository;
     private final UserRepository userRepository;
 
     /*
         출근 & 퇴근
      */
     @Transactional
-    public void addAttendence(AttendenceRequestDto dto) throws IOException {
+    public void addAttendance(AttendanceRequestDto dto) throws IOException {
 
         User user = userRepository.findByEmployeeId(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 직원의 정보가 존재하지 않습니다."));
 
-        Attendence attendence = dto.toEntity(user);
-        attendenceRepository.save(attendence);
+        Attendance attendance = dto.toEntity(user);
+        attendanceRepository.save(attendance);
 
     }
 
     /*
         개인 근태 조회
      */
-    public AttendenceResponseDto getIndividualAttendence(String employeeId) {
+    public AttendanceResponseDto getIndividualAttendance(String employeeId) {
 
         User user = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 직원의 정보가 존재하지 않습니다."));
 
-        AttendenceResponseDto dto = new AttendenceResponseDto();
+        AttendanceResponseDto dto = new AttendanceResponseDto();
 
-        dto.setWeeklyTotalTime(attendenceRepository.findIndividualWeeklyTotalTime(user.getId()));
-        dto.setWeeklyOverTime(attendenceRepository.findIndividualWeeklyOverTime(user.getId()));
-        dto.setMonthlyTotalTime(attendenceRepository.findIndividualMonthlyTotalTime(user.getId()));
-        dto.setMonthlyOverTime(attendenceRepository.findIndividualMonthlyOverTime(user.getId()));
-        dto.setAttendenceList(attendenceRepository.findIndividualAttendence(user));
+        dto.setWeeklyTotalTime(attendanceRepository.findIndividualWeeklyTotalTime(user.getId()));
+        dto.setWeeklyOverTime(attendanceRepository.findIndividualWeeklyOverTime(user.getId()));
+        dto.setMonthlyTotalTime(attendanceRepository.findIndividualMonthlyTotalTime(user.getId()));
+        dto.setMonthlyOverTime(attendanceRepository.findIndividualMonthlyOverTime(user.getId()));
+        dto.setAttendanceList( attendanceRepository.findIndividualAttendance(user));
 
         return dto;
 
@@ -62,9 +62,9 @@ public class AttendenceService {
     /*
         전체 근태 조회
      */
-    public TotalAttendenceResponseDto getTotalAttendence() {
-        return TotalAttendenceResponseDto.builder()
-                .totalAttendenceSummaryDto(getTotalAttendenceSummary())
+    public TotalAttendanceResponseDto getTotalAttendance() {
+        return TotalAttendanceResponseDto.builder()
+                .totalAttendanceSummaryDto(getTotalAttendanceSummary())
                 .monthlyOvertimeSummaryDto(getMonthlyOvertime())
                 .departmentOvertimeSumDto(getDeptOverTimeSum())
                 .departmentOvertimeAvgDto(getDeptOverTimeAvg())
@@ -72,9 +72,9 @@ public class AttendenceService {
     }
 
     // 전체 근태 - 현황 요약 조회
-    private TotalAttendenceSummaryDto getTotalAttendenceSummary() {
+    private TotalAttendanceSummaryDto getTotalAttendanceSummary() {
 
-        return TotalAttendenceSummaryDto.builder()
+        return TotalAttendanceSummaryDto.builder()
                 .totalUserCnt(userRepository.countAllBy())
                 .onTimeStartUserCnt(getOnTimeStartAttendances().getCount())
                 .lateStartUserCnt(getLateStartAttendances().getCount())
@@ -132,14 +132,14 @@ public class AttendenceService {
     // 근태 결과 클래스
     private static class AttendanceResult {
         private long count;
-        private List<TotalAttendenceUserListDto> userList;
+        private List<TotalAttendanceUserListDto> userList;
 
         public AttendanceResult() {
             this.count = 0;
             this.userList = Collections.emptyList();
         }
 
-        public AttendanceResult(long count, List<TotalAttendenceUserListDto> userList) {
+        public AttendanceResult(long count, List<TotalAttendanceUserListDto> userList) {
             this.count = count;
             this.userList = userList;
         }
@@ -152,11 +152,11 @@ public class AttendenceService {
             this.count = count;
         }
 
-        public List<TotalAttendenceUserListDto> getUserList() {
+        public List<TotalAttendanceUserListDto> getUserList() {
             return userList;
         }
 
-        public void setUserList(List<TotalAttendenceUserListDto> userList) {
+        public void setUserList(List<TotalAttendanceUserListDto> userList) {
             this.userList = userList;
         }
 
@@ -167,7 +167,7 @@ public class AttendenceService {
         String currentDate = LocalDate.now().toString();
         String attendType = "START";
 
-        List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
+        List<Attendance> attendances = attendanceRepository.findByAttendDateAndAttendType(currentDate, attendType);
 
         long count = attendances.stream()
                         .filter(this::isOnTime)
@@ -175,7 +175,7 @@ public class AttendenceService {
 
         List<User> userList = attendances.stream()
                                 .filter(this::isOnTime)
-                                .map(Attendence::getUser)
+                                .map(Attendance::getUser)
                                 .collect(Collectors.toList());
 
         return new AttendanceResult(count, userListDtoList(userList));
@@ -186,7 +186,7 @@ public class AttendenceService {
         String currentDate = LocalDate.now().toString();
         String attendType = "START";
 
-        List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, attendType);
+        List<Attendance> attendances = attendanceRepository.findByAttendDateAndAttendType(currentDate, attendType);
 
         long count = attendances.stream()
                         .filter(attendance -> !isOnTime(attendance))
@@ -194,7 +194,7 @@ public class AttendenceService {
 
         List<User> userList = attendances.stream()
                                 .filter(attendance -> !isOnTime(attendance))
-                                .map(Attendence::getUser)
+                                .map(Attendance::getUser)
                                 .collect(Collectors.toList());
 
         return new AttendanceResult(count, userListDtoList(userList));
@@ -204,10 +204,10 @@ public class AttendenceService {
     private AttendanceResult getDayOffAttendances() {
         String currentDate = LocalDate.now().toString();
 
-        List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "DAYOFF");
+        List<Attendance> attendances = attendanceRepository.findByAttendDateAndAttendType(currentDate, "DAYOFF");
 
         long count = attendances.size();
-        List<User> userList = attendances.stream().map(Attendence::getUser).collect(Collectors.toList());
+        List<User> userList = attendances.stream().map(Attendance::getUser).collect(Collectors.toList());
 
         return new AttendanceResult(count, userListDtoList(userList));
     }
@@ -216,10 +216,10 @@ public class AttendenceService {
     private AttendanceResult getOnTimeEndAttendances() {
         String currentDate = LocalDate.now().toString();
 
-        List<Attendence> attendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "END");
+        List<Attendance> attendances = attendanceRepository.findByAttendDateAndAttendType(currentDate, "END");
 
         long count = attendances.size();
-        List<User> userList = attendances.stream().map(Attendence::getUser).collect(Collectors.toList());
+        List<User> userList = attendances.stream().map(Attendance::getUser).collect(Collectors.toList());
 
         return new AttendanceResult(count, userListDtoList(userList));
     }
@@ -231,13 +231,13 @@ public class AttendenceService {
 
         if (currentTime.isAfter(LocalTime.of(18, 10))) {
             // 출근한 직원 (지각 포함)
-            List<Attendence> startAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START");
+            List<Attendance> startAttendances = attendanceRepository.findByAttendDateAndAttendType(currentDate, "START");
             if (startAttendances == null)  return new AttendanceResult();
-            List<User> startAttendancesUserList = startAttendances.stream().map(Attendence::getUser).collect(Collectors.toList());
+            List<User> startAttendancesUserList = startAttendances.stream().map(Attendance::getUser).collect(Collectors.toList());
 
             long count = startAttendances.size() - getOnTimeEndAttendances().getCount();
 
-            List<TotalAttendenceUserListDto> userList = new ArrayList<>(userListDtoList(startAttendancesUserList));
+            List<TotalAttendanceUserListDto> userList = new ArrayList<>(userListDtoList(startAttendancesUserList));
             userList.removeAll(getOnTimeEndAttendances().getUserList());
 
             return new AttendanceResult(count, userList);
@@ -255,13 +255,13 @@ public class AttendenceService {
         List<User> allUserList = userRepository.findAll();
 
         // 출근한 직원 수 (지각 포함)
-        List<Attendence> startAttendances = attendenceRepository.findByAttendDateAndAttendType(currentDate, "START");
+        List<Attendance> startAttendances = attendanceRepository.findByAttendDateAndAttendType(currentDate, "START");
         if (startAttendances == null)  return new AttendanceResult(allUserList.size(), userListDtoList(allUserList));
-        List<User> startAttendancesUserList = startAttendances.stream().map(Attendence::getUser).collect(Collectors.toList());
+        List<User> startAttendancesUserList = startAttendances.stream().map(Attendance::getUser).collect(Collectors.toList());
 
         long count = allUserList.size() - startAttendances.size() - getDayOffAttendances().getCount();
 
-        List<TotalAttendenceUserListDto> userList = new ArrayList<>(userListDtoList(allUserList));
+        List<TotalAttendanceUserListDto> userList = new ArrayList<>(userListDtoList(allUserList));
         userList.removeAll(userListDtoList(startAttendancesUserList));
         userList.removeAll(getDayOffAttendances().getUserList());
 
@@ -269,9 +269,9 @@ public class AttendenceService {
     }
 
     // 정시 출근 판단 함수 - 실제 출근 시간이 9시 10분 이전이면 true
-    private boolean isOnTime(Attendence attendence) {
-        LocalDateTime expectedStartTime = LocalDate.parse(attendence.getAttendDate()).atTime(9, 10);
-        LocalDateTime actualStartTime = attendence.getAttendTime();
+    private boolean isOnTime(Attendance attendance) {
+        LocalDateTime expectedStartTime = LocalDate.parse(attendance.getAttendDate()).atTime(9, 10);
+        LocalDateTime actualStartTime = attendance.getAttendTime();
 
         return actualStartTime.isBefore(expectedStartTime);
     }
@@ -283,7 +283,7 @@ public class AttendenceService {
         String attendType = "END";
         List<User> userList = userRepository.findAllByDeptCode(deptCode);
 
-        List<Attendence> attendances = attendenceRepository.findByAttendMonthAndAttendTypeAndUserIn(currentMonth, attendType, userList);
+        List<Attendance> attendances = attendanceRepository.findByAttendMonthAndAttendTypeAndUserIn(currentMonth, attendType, userList);
 
 
         return sumOvertime(attendances);
@@ -296,7 +296,7 @@ public class AttendenceService {
         String attendType = "END";
 
         List<User> userList = userRepository.findAllByDeptCode(deptCode);
-        List<Attendence> attendances = attendenceRepository.findByAttendMonthAndAttendTypeAndUserIn(currentMonth, attendType, userList);
+        List<Attendance> attendances = attendanceRepository.findByAttendMonthAndAttendTypeAndUserIn(currentMonth, attendType, userList);
 
         if (attendances.isEmpty())  return "00:00:00";
 
@@ -317,21 +317,21 @@ public class AttendenceService {
 
     // 월별 연장근무 시간
     private String calculateOvertimeByMonth(int month) {
-        List<Attendence> attendences = attendenceRepository.findByAttendMonthAndAttendType(month, "END");
+        List<Attendance> attendances = attendanceRepository.findByAttendMonthAndAttendType(month, "END");
 
-        return sumOvertime(attendences);
+        return sumOvertime(attendances);
     }
 
     // 연장근무 시간 계산
-    private Duration calculateOverTime(Attendence attendence) {
-        LocalDateTime expectedEndTime = LocalDate.parse(attendence.getAttendDate()).atTime(18, 0);
-        LocalDateTime actualEndTime = attendence.getAttendTime();
+    private Duration calculateOverTime(Attendance attendance) {
+        LocalDateTime expectedEndTime = LocalDate.parse(attendance.getAttendDate()).atTime(18, 0);
+        LocalDateTime actualEndTime = attendance.getAttendTime();
 
         return Duration.between(expectedEndTime, actualEndTime);
     }
 
     // 연장근무 시간 합계
-    private String sumOvertime(List<Attendence> attendances) {
+    private String sumOvertime(List<Attendance> attendances) {
 
         if (attendances.isEmpty())  return "00:00:00";
 
@@ -347,11 +347,11 @@ public class AttendenceService {
 
     }
 
-    // USER -> TotalAttendenceUserListDto
-    private List<TotalAttendenceUserListDto> userListDtoList (List<User> userList) {
+    // USER -> TotalAttendanceUserListDto
+    private List<TotalAttendanceUserListDto> userListDtoList (List<User> userList) {
 
         return userList.stream()
-                .map(user -> TotalAttendenceUserListDto.builder()
+                .map(user -> TotalAttendanceUserListDto.builder()
                         .deptName(user.getDeptName())
                         .teamNum(user.getTeamNum())
                         .position(user.getPosition())

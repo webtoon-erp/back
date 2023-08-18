@@ -1,11 +1,11 @@
-package com.erp.webtoon.dto.attendece;
+package com.erp.webtoon.dto.attendance;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public class IndividualAttenedenceListDto {
+public class IndividualAttendanceListDto {
 
     private int week; // 주차
 

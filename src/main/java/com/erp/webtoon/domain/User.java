@@ -66,7 +66,7 @@ public class User implements UserDetails {
     private List<Message> sendMessages = new ArrayList<>();     // 메세지 발신 목록
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Attendence> attendences  = new ArrayList<>();  // 근태 목록
+    private List<Attendance> attendances = new ArrayList<>();  // 근태 목록
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Pay> pays = new ArrayList<>();    // 유저의 급여 목록

@@ -1,4 +1,4 @@
-package com.erp.webtoon.dto.attendece;
+package com.erp.webtoon.dto.attendance;
 
 import lombok.Builder;
 import lombok.Data;

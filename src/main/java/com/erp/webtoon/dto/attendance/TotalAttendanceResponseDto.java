@@ -1,13 +1,13 @@
-package com.erp.webtoon.dto.attendece;
+package com.erp.webtoon.dto.attendance;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class TotalAttendenceResponseDto {
+public class TotalAttendanceResponseDto {
 
-    private TotalAttendenceSummaryDto totalAttendenceSummaryDto;
+    private TotalAttendanceSummaryDto totalAttendanceSummaryDto;
 
     private MonthlyOvertimeSummaryDto monthlyOvertimeSummaryDto;
 
