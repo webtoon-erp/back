@@ -181,7 +181,7 @@ public class UserService {
                     qualificationModifyRequestDto.getContent(), qualificationModifyRequestDto.getQlfcDate(), qualificationModifyRequestDto.getQlfcPay());
 
             QualificationModifyResponseDto response = QualificationModifyResponseDto.builder()
-                    .qualificationId(requestDto.getRequestId())
+                    .qualificationId(requestDto.getQualificationId())
                     .modifiedDate(LocalDate.now())
                     .build();
 

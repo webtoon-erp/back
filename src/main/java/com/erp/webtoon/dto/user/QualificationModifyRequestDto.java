@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Builder
 @Data
 public class QualificationModifyRequestDto {
-    private Long requestId;
+    private Long qualificationId;
 
     private String employeeId; // 사원 번호
 
