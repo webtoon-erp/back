@@ -5,6 +5,7 @@ import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.domain.WebtoonDt;
 import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtResponseDto;
+import com.erp.webtoon.dto.webtoon.WebtoonDtUpdateDto;
 import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.repository.WebtoonDtRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
@@ -139,6 +140,42 @@ class WebtoonDtServiceTest {
         assertEquals("세상에 이런일이", dto.getSubTitle());
         assertEquals(null, dto.getContent());
         assertEquals(new ArrayList<>(), dto.getFeedbackList());
+    }
+
+    @Test
+    @DisplayName("웹툰 회차 수정 - 파일 x")
+    void test4() throws IOException {
+        //given
+        User newUser = User.builder()
+                .employeeId("20232023")
+                .name("규규")
+                .position("과장")
+                .build();
+
+        userRepository.save(newUser);
+
+        WebtoonDt newWebtoonDt = WebtoonDt.builder()
+                .subTitle("세상에 이런일이")
+                .content("감사합니다.")
+                .build();
+
+        webtoonDtRepository.save(newWebtoonDt);
+
+        WebtoonDtUpdateDto updateDto = new WebtoonDtUpdateDto();
+        updateDto.setSubTitle("세상에 저런일이");
+        updateDto.setContent("감사합니다.");
+        updateDto.setManagerId("20232023");
+
+        //when
+        webtoonDtService.update(newWebtoonDt.getId(), updateDto, null);
+
+        //then
+        assertEquals(1L, webtoonDtRepository.count());
+        WebtoonDt webtoonDt = webtoonDtRepository.findAll().get(0);
+        assertEquals("세상에 저런일이", webtoonDt.getSubTitle());
+        assertEquals("감사합니다.", webtoonDt.getContent());
+        assertEquals("규규", webtoonDt.getManager());
+        assertEquals(false, webtoonDt.isFinalUploadYN());
     }
 
 }
