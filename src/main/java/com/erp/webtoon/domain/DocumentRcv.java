@@ -19,7 +19,7 @@ public class DocumentRcv {
 
     private String receiveType;
 
-    private boolean stat;
+    private char stat;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doc_id")
@@ -30,7 +30,7 @@ public class DocumentRcv {
     private User user;
 
     @Builder
-    public DocumentRcv (int sortSequence, String receiveType, boolean stat, Document document, User user) {
+    public DocumentRcv (int sortSequence, String receiveType, char stat, Document document, User user) {
         this.sortSequence = sortSequence;
         this.receiveType = receiveType;
         this.stat = stat;
@@ -38,5 +38,5 @@ public class DocumentRcv {
         this.user = user;
     }
 
-    public void changeStat(boolean stat) { this.stat = stat; }
+    public void changeStat(char stat) { this.stat = stat; }
 }

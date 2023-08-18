@@ -26,7 +26,7 @@ public class DocumentRcvRequestDto {
         return DocumentRcv.builder()
                 .sortSequence(sortSequence)
                 .receiveType(receiveType)
-                .stat(false)
+                .stat('N')
                 .document(document)
                 .user(user)
                 .build();

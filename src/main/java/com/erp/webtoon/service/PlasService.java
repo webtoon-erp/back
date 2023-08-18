@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -177,7 +178,7 @@ public class PlasService {
         DocumentRcv documentRcv = documentRcvRepository.findByDocumentAndReceiveTypeAndSortSequence(document, "APPV", 1)
                 .orElseThrow(() -> new EntityNotFoundException("해당 문서에 결재자가 존재하지 않습니다."));
 
-        documentRcv.changeStat(true);
+        documentRcv.changeStat('Y');
 
         MessageSaveDto messageSaveDto = MessageSaveDto.builder()
                 .msgType("dm")
