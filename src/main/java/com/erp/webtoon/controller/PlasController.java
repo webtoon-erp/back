@@ -1,9 +1,6 @@
 package com.erp.webtoon.controller;
 
-import com.erp.webtoon.dto.plas.AppvLineListDto;
-import com.erp.webtoon.dto.plas.DocListDto;
-import com.erp.webtoon.dto.plas.DocTplListDto;
-import com.erp.webtoon.dto.plas.DocumentRequestDto;
+import com.erp.webtoon.dto.plas.*;
 import com.erp.webtoon.service.PlasService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -60,6 +57,12 @@ public class PlasController {
     @GetMapping("/list/myCCDoc/{employeeId}")
     public List<DocListDto> myCCDocist(@PathVariable("employeeId") String employeeId) {
         return plasService.getMyAppvOrCCDocList("CC", employeeId);
+    }
+
+    // 전자결재 문서 상세 조회
+    @GetMapping("/{documentId}")
+    public DocumentResponseDto getDocument(@PathVariable("documentId") Long documentId) {
+        return plasService.getDocument(documentId);
     }
 
 }

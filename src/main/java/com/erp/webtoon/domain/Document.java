@@ -1,6 +1,8 @@
 package com.erp.webtoon.domain;
 
-import com.slack.api.methods.request.calls.CallsAddRequest;
+import com.erp.webtoon.dto.plas.DocumentFileResponseDto;
+import com.erp.webtoon.dto.plas.DocumentDataDto;
+import com.erp.webtoon.dto.plas.DocumentRcvResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -64,4 +66,43 @@ public class Document {
     }
 
     public void changeStat(char stat) { this.stat = stat; }
+
+    public List<DocumentFileResponseDto> getFileResponse() {
+        return files.stream()
+                .map(file -> DocumentFileResponseDto.builder()
+                        .id(file.getId())
+                        .originName(file.getOriginName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<DocumentRcvResponseDto> getRcvResponse() {
+        return documentRcvs.stream()
+                .map(documentRcv -> DocumentRcvResponseDto.builder()
+                        .sortSequence(documentRcv.getSortSequence())
+                        .receiveType(documentRcv.getReceiveType())
+                        .userPosition(documentRcv.getUser().getPosition())
+                        .userName(documentRcv.getUser().getName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<DocumentDataDto> getDataResponse() {
+        return documentDataList.stream()
+                .map(documentData -> DocumentDataDto.builder()
+                        .fromDate(documentData.getFromDate())
+                        .toDate(documentData.getToDate())
+                        .deptCode(documentData.getDeptCode())
+                        .deptName(documentData.getDeptName())
+                        .company(documentData.getCompany())
+                        .expenseType(documentData.getExpenseType())
+                        .count(documentData.getCount())
+                        .price(documentData.getPrice())
+                        .supAmt(documentData.getSupAmt())
+                        .vatAmt(documentData.getVatAmt())
+                        .totalAmt(documentData.getTotalAmt())
+                        .remark(documentData.getRemark())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }

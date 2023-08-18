@@ -183,4 +183,29 @@ public class PlasService {
         Message message = messageSaveDto.toEntity(documentRcv.getUser(), document.getWriteUser());
         messageService.addMsg(message);
     }
+
+    /*
+       전자결재 문서 상세 조회
+     */
+    public DocumentResponseDto getDocument(Long documentId) {
+
+        Document document = documentRepository.findById(documentId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 정보입니다."));
+
+        return DocumentResponseDto.builder()
+                .title(document.getTitle())
+                .content(document.getContent())
+                .regDate(document.getRegDate())
+                .templateName(document.getDocumentTpl().getTemplateName())
+                .writeUserDeptName(document.getWriteUser().getDeptName())
+                .writeUserTeamNum(document.getWriteUser().getTeamNum())
+                .writeUserPosition(document.getWriteUser().getPosition())
+                .writeUserEmployeeId(document.getWriteUser().getEmployeeId())
+                .writeUserName(document.getWriteUser().getUsername())
+                .uploadFiles(document.getFileResponse())
+                .documentRcvResponses(document.getRcvResponse())
+                .documentDataResponses(document.getDataResponse())
+                .build();
+
+    }
 }
