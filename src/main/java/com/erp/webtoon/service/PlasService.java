@@ -34,6 +34,7 @@ public class PlasService {
 
         return templateList.stream()
                 .map(template -> DocTplListDto.builder()
+                        .id(template.getId())
                         .templateName(template.getTemplateName())
                         .intro(template.getIntro())
                         .template(template.getTemplate())
