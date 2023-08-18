@@ -56,7 +56,7 @@ class WebtoonServiceTest {
 
     @Test
     @DisplayName("웹툰 전체 리스트 조회")
-    void test2() {
+    void test3() {
         //given
         List<Webtoon> webtoonList = IntStream.range(1, 22)
                 .mapToObj(i -> Webtoon.builder()
@@ -85,7 +85,7 @@ class WebtoonServiceTest {
 
     @Test
     @DisplayName("웹툰 개별 상세 조회")
-    void test3() {
+    void test4() {
         //given
         Webtoon newWebtoon = Webtoon.builder()
                 .title("제목입니다.")
@@ -115,7 +115,7 @@ class WebtoonServiceTest {
 
     @Test
     @DisplayName("웹툰 수정-파일x")
-    void test4() throws IOException {
+    void test5() throws IOException {
         //given
         Webtoon newWebtoon = Webtoon.builder()
                 .title("제목입니다.")
