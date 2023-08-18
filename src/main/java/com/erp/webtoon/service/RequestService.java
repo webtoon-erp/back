@@ -138,6 +138,20 @@ public class RequestService {
     }
 
     /**
+     * 요청 삭제 기능
+     */
+    @Transactional
+    public void deleteRequest(List<RequestDeleteDto> requestIds) {
+        for (RequestDeleteDto requestDelete : requestIds) {
+            Request request = requestRepository.findById(requestDelete.getRequestId())
+                    .orElseThrow(() -> new EntityNotFoundException("요청이 존재하지 않습니다."));
+            if(request.getStep() == 1) {
+                requestRepository.deleteById(requestDelete.getRequestId());
+            }
+        }
+    }
+
+    /**
      * 사원별 개인 요청 리스트 조회 기능
      */
     public List<RequestListResponseDto> searchUserList(String employeeId) {
