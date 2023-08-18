@@ -172,5 +172,15 @@ public class PlasService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 문서에 결재자가 존재하지 않습니다."));
 
         documentRcv.changeStat(true);
+
+        MessageSaveDto messageSaveDto = MessageSaveDto.builder()
+                .msgType("dm")
+                .content("새 전자결재 문서가 상신되었습니다. 문서명 - " + document.getTitle())
+                .refId(documentId)
+                .programId("plas")
+                .build();
+
+        Message message = messageSaveDto.toEntity(documentRcv.getUser(), document.getWriteUser());
+        messageService.addMsg(message);
     }
 }
