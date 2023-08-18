@@ -37,7 +37,7 @@ public class PlasController {
 
     // 전자결재 문서 상신
     @PostMapping("/doc/{documentId}")
-    public void send(@PathVariable("documentId") Long documentId) { plasService.sendDoc(documentId); }
+    public void send(@PathVariable Long documentId) { plasService.sendDoc(documentId); }
 
     // 전자결재 문서 승인
     @PostMapping("/doc/{documentId}/{employeeId}")
@@ -47,31 +47,31 @@ public class PlasController {
 
     // 내 문서 조회
     @GetMapping("/list/myDoc/{employeeId}")
-    public List<DocListDto> myDocList(@PathVariable("employeeId") String employeeId) {
+    public List<DocListDto> myDocList(@PathVariable String employeeId) {
         return plasService.getMyDocList(employeeId);
     }
 
     // 내 부서 문서 조회
     @GetMapping("/list/myDeptDoc/{deptCode}")
-    public List<DocListDto> myDeptDocList(@PathVariable("deptCode") String deptCode) {
+    public List<DocListDto> myDeptDocList(@PathVariable String deptCode) {
         return plasService.getMyDeptDocList(deptCode);
     }
 
     // 내 결제 대기 문서 조회
     @GetMapping("/list/myAppvDoc/{employeeId}")
-    public List<DocListDto> myAppvDocList(@PathVariable("employeeId") String employeeId) {
+    public List<DocListDto> myAppvDocList(@PathVariable String employeeId) {
         return plasService.getMyAppvOrCCDocList("APPV", employeeId);
     }
 
     // 내 참조 문서 조회
     @GetMapping("/list/myCCDoc/{employeeId}")
-    public List<DocListDto> myCCDocist(@PathVariable("employeeId") String employeeId) {
+    public List<DocListDto> myCCDocist(@PathVariable String employeeId) {
         return plasService.getMyAppvOrCCDocList("CC", employeeId);
     }
 
     // 전자결재 문서 상세 조회
     @GetMapping("/{documentId}")
-    public DocumentResponseDto getDocument(@PathVariable("documentId") Long documentId) {
+    public DocumentResponseDto getDocument(@PathVariable Long documentId) {
         return plasService.getDocument(documentId);
     }
 

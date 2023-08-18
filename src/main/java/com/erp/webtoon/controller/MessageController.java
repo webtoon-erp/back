@@ -21,7 +21,7 @@ public class MessageController {
         메시지 조회
      */
     @GetMapping("/message/{employeeId}")
-    public List<MessageListDto> message(@PathVariable("employeeId") String employeeId ) {
+    public List<MessageListDto> message(@PathVariable String employeeId ) {
         return messageService.getMessageList(employeeId);
     }
 
