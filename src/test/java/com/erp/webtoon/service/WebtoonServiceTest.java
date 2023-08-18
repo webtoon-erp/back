@@ -8,6 +8,7 @@ import com.erp.webtoon.dto.webtoon.WebtoonResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonUpdaateDto;
 import com.erp.webtoon.repository.FileRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ class WebtoonServiceTest {
 
     @Test
     @DisplayName("웹툰 전체 리스트 조회")
-    void test3() {
+    void test2() {
         //given
         List<Webtoon> webtoonList = IntStream.range(1, 22)
                 .mapToObj(i -> Webtoon.builder()
@@ -85,7 +86,7 @@ class WebtoonServiceTest {
 
     @Test
     @DisplayName("웹툰 개별 상세 조회")
-    void test4() {
+    void test3() {
         //given
         Webtoon newWebtoon = Webtoon.builder()
                 .title("제목입니다.")
@@ -115,7 +116,7 @@ class WebtoonServiceTest {
 
     @Test
     @DisplayName("웹툰 수정-파일x")
-    void test5() throws IOException {
+    void test4() throws IOException {
         //given
         Webtoon newWebtoon = Webtoon.builder()
                 .title("제목입니다.")
@@ -136,9 +137,9 @@ class WebtoonServiceTest {
         dto.setCategory("월요일");
         dto.setKeyword("공포");
 
-        MultipartFile file = null;
+
         //when
-        webtoonService.update(newWebtoon.getId(), file, dto);
+        webtoonService.update(newWebtoon.getId(), null, dto);
 
         //then
         Webtoon webtoon = webtoonRepository.findAll().get(0);
