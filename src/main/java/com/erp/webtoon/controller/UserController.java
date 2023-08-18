@@ -93,5 +93,13 @@ public class UserController {
     public List<RegisterQualificationResponse> registerQualification(@RequestBody List<QualificationRequestDto> qualificationRequestDtoList) {
         return userService.registerQualification(qualificationRequestDtoList);
     }
+
+    /**
+     * 자격증 수정
+     */
+    @PatchMapping
+    public List<QualificationModifyResponseDto> modifyQualification(@RequestBody List<QualificationModifyRequestDto> qualificationModifyRequestDtoList) {
+        return userService.updateRequest(qualificationModifyRequestDtoList);
+    }
 }
 
