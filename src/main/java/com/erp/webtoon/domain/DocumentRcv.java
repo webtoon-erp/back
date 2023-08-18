@@ -19,7 +19,7 @@ public class DocumentRcv {
 
     private String receiveType;
 
-    private char stat;
+    private char stat; // N : 승인 불가 , Y : 승인 가능, C : 승인 완료
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doc_id")

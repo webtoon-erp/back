@@ -26,7 +26,7 @@ public class Document {
 
     private String content;
 
-    private char stat;
+    private char stat; // N : 임시 , Y : 상신 , C : 완료
 
     private LocalDateTime regDate; // 작성일시
 
