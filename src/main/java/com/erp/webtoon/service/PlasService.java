@@ -192,6 +192,47 @@ public class PlasService {
     }
 
     /*
+        전자결재 문서 승인
+     */
+    public void approveDoc(Long documentId, String employeeId) {
+
+        Document document = documentRepository.findById(documentId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 정보입니다."));
+
+        User user = userRepository.findByEmployeeId(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자 정보입니다."));
+
+        // 참조자 제외, 결제자만 조회
+        List<DocumentRcv> approvers = document.getApprovers();
+
+        boolean approved = false;
+
+        for (int i = 0; i < approvers.size(); i++) {
+            DocumentRcv documentRcv = approvers.get(i);
+
+            if (documentRcv.getUser() == user && documentRcv.getStat() == 'Y') {
+                documentRcv.changeStat('C'); // 완료 상태로 변경
+
+                if (i != approvers.size() - 1) { // 현재 결재자가 최종 결재자일 경우 다음 결재자 업데이트
+                    DocumentRcv nextDocumentRcv = approvers.get(i + 1);
+                    nextDocumentRcv.changeStat('Y');
+                }
+                else { // 현재 결재자가 최종 결재자일 경우 문서 업데이트
+                    document.changeStat('C'); // 완료 상태로 변경
+                }
+
+                approved = true;
+                break;
+            }
+        }
+
+        if (!approved) {
+            throw new RuntimeException("해당 사용자의 승인 권한 아직 없거나 이미 처리되었습니다.");
+        }
+
+    }
+
+    /*
        전자결재 문서 상세 조회
      */
     public DocumentResponseDto getDocument(Long documentId) {

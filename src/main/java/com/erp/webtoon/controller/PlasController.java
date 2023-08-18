@@ -35,6 +35,12 @@ public class PlasController {
     @PostMapping("/doc/{documentId}")
     public void send(@PathVariable("documentId") Long documentId) { plasService.sendDoc(documentId); }
 
+    // 전자결재 문서 승인
+    @PostMapping("/doc/{documentId}/{employeeId}")
+    public void approve(@PathVariable Long documentId, @PathVariable String employeeId) {
+        plasService.approveDoc(documentId, employeeId);
+    }
+
     // 내 문서 조회
     @GetMapping("/list/myDoc/{employeeId}")
     public List<DocListDto> myDocList(@PathVariable("employeeId") String employeeId) {

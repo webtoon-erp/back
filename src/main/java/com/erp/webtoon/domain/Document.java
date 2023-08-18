@@ -105,4 +105,10 @@ public class Document {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    public List<DocumentRcv> getApprovers() {
+        return documentRcvs.stream()
+                .filter(documentRcv -> documentRcv.getReceiveType().equals("APPV"))
+                .collect(Collectors.toList());
+    }
 }
