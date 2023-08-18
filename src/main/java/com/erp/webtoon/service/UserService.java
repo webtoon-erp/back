@@ -182,7 +182,7 @@ public class UserService {
 
             QualificationModifyResponseDto response = QualificationModifyResponseDto.builder()
                     .qualificationId(requestDto.getQualificationId())
-                    .modifiedDate(LocalDate.now())
+                    .modifiedAt(LocalDate.now())
                     .build();
 
             modifyQualifications.add(response);

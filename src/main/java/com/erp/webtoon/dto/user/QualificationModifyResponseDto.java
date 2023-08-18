@@ -10,5 +10,5 @@ import java.time.LocalDate;
 public class QualificationModifyResponseDto {
     private Long qualificationId;
 
-    private LocalDate modifiedDate;
+    private LocalDate modifiedAt;
 }
