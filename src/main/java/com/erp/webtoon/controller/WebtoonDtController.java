@@ -71,8 +71,8 @@ public class WebtoonDtController {
      * 회차 수정
      */
     @PutMapping("/webtoonDt/{webtoonDtId}")
-    public ResponseEntity update(@PathVariable Long webtoonDtId, @RequestBody WebtoonDtUpdateDto dto) throws IOException {
-        webtoonDtService.update(webtoonDtId, dto);
+    public ResponseEntity update(@PathVariable Long webtoonDtId, @RequestPart("dto") WebtoonDtUpdateDto dto, @RequestPart("file") MultipartFile file) throws IOException {
+        webtoonDtService.update(webtoonDtId, dto, file);
 
         return new ResponseEntity<>(redirect(webtoonDtId), HttpStatus.MOVED_PERMANENTLY);
     }

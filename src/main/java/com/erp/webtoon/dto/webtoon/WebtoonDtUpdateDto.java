@@ -18,5 +18,4 @@ public class WebtoonDtUpdateDto {
     @NotBlank
     private String managerId; // 담당자 사번
 
-    private MultipartFile uploadFile;
 }
