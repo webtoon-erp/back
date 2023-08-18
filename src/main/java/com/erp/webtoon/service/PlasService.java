@@ -97,7 +97,7 @@ public class PlasService {
         User appvUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("사용자 정보가 존재하지 않습니다."));
 
-        List<DocumentRcv> myDocumentRcvList = documentRcvRepository.findAllByUserAndReceiveTypeAndStat(appvUser, rcvType, true);
+        List<DocumentRcv> myDocumentRcvList = documentRcvRepository.findAllByUserAndReceiveTypeAndDocument_StatNot(appvUser, rcvType, 'N');
 
         List<Document> myAppvDocList = myDocumentRcvList.stream()
                                             .map(DocumentRcv::getDocument).collect(Collectors.toList());
