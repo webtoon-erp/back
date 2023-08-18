@@ -2,6 +2,8 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.LogoutAccessToken;
 import com.erp.webtoon.domain.RefreshToken;
+import com.erp.webtoon.dto.user.QualificationModifyRequestDto;
+import com.erp.webtoon.dto.user.QualificationModifyResponseDto;
 import com.erp.webtoon.dto.token.LogoutResponseDto;
 import com.erp.webtoon.token.LogoutAccessTokenService;
 import com.erp.webtoon.token.RefreshTokenService;
@@ -137,13 +139,12 @@ public class UserService {
      * 자격증 추가 (인사팀에서 진행)
      */
     @Transactional
-    public List<RegisterQualificationResponse> registerQualification(List<QualificationRequestDto> qualificationRequestDtoList){
+    public List<RegisterQualificationResponse> registerQualification(List<QualificationRequestDto> qualificationRequestList){
         List<RegisterQualificationResponse> registerqualificationList = new ArrayList<>();
         List<Qualification> qualificationList = new ArrayList<>();
 
-        for (QualificationRequestDto qualificationRequestDto : qualificationRequestDtoList) {
+        for (QualificationRequestDto qualificationRequestDto : qualificationRequestList) {
             Qualification qualification = qualificationRepository.save(Qualification.builder()
-                    .sortSequence(qualificationRequestDto.getSortSequence())
                     .qlfcDate(qualificationRequestDto.getQlfcDate())
                     .content(qualificationRequestDto.getContent())
                     .qlfcType(qualificationRequestDto.getQlfcType())
@@ -165,6 +166,25 @@ public class UserService {
         }
 
         return registerqualificationList;
+    }
+
+    @Transactional
+    public List<QualificationModifyResponseDto> updateRequest(List<QualificationModifyRequestDto> qualificationRequestList) {
+        List<QualificationModifyResponseDto> modifyQualifications = new ArrayList<>();
+
+        for (QualificationModifyRequestDto qualificationModifyRequestDto : qualificationRequestList) {
+            QualificationModifyRequestDto requestDto = qualificationModifyRequestDto.updateInfo(qualificationModifyRequestDto.getEmployeeId(), qualificationModifyRequestDto.getQlfcType(),
+                    qualificationModifyRequestDto.getContent(), qualificationModifyRequestDto.getQlfcDate(), qualificationModifyRequestDto.getQlfcPay());
+
+            QualificationModifyResponseDto response = QualificationModifyResponseDto.builder()
+                    .requestId(requestDto.getRequestId())
+                    .modifiedDate(LocalDate.now())
+                    .build();
+
+            modifyQualifications.add(response);
+        }
+
+        return modifyQualifications;
     }
 
     /**
