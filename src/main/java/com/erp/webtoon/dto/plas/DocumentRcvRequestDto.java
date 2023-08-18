@@ -1,5 +1,8 @@
 package com.erp.webtoon.dto.plas;
 
+import com.erp.webtoon.domain.Document;
+import com.erp.webtoon.domain.DocumentRcv;
+import com.erp.webtoon.domain.User;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,4 +22,14 @@ public class DocumentRcvRequestDto {
     @NotBlank
     private String rcvEmployeeId;
 
+    public DocumentRcv toEntity(Document document, User user) {
+        return DocumentRcv.builder()
+                .sortSequence(sortSequence)
+                .receiveType(receiveType)
+                .stat(false)
+                .document(document)
+                .user(user)
+                .build();
+
+    }
 }

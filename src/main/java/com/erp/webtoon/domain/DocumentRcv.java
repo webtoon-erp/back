@@ -1,5 +1,6 @@
 package com.erp.webtoon.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,4 +28,13 @@ public class DocumentRcv {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Builder
+    public DocumentRcv (int sortSequence, String receiveType, boolean stat, Document document, User user) {
+        this.sortSequence = sortSequence;
+        this.receiveType = receiveType;
+        this.stat = stat;
+        this.document = document;
+        this.user = user;
+    }
 }

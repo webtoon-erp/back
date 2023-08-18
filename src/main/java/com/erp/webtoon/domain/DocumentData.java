@@ -1,5 +1,6 @@
 package com.erp.webtoon.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -42,6 +43,22 @@ public class DocumentData {
     @JoinColumn(name = "doc_id")
     private Document document;
 
-
+    @Builder
+    public DocumentData (LocalDateTime fromDate, LocalDateTime toDate, String deptCode, String deptName, String company, String expenseType, int
+            count, int price, int supAmt, int vatAmt, int totalAmt, String remark, Document document) {
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        this.deptCode = deptCode;
+        this.deptName = deptName;
+        this.company = company;
+        this.expenseType = expenseType;
+        this.count = count;
+        this.price = price;
+        this.supAmt = supAmt;
+        this.vatAmt = vatAmt;
+        this.totalAmt = totalAmt;
+        this.remark = remark;
+        this.document = document;
+    }
 
 }

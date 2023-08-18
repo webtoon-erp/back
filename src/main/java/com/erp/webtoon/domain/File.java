@@ -69,4 +69,6 @@ public class File {
     public void updateFileWebtoonDt(WebtoonDt webtoonDt) {
         this.webtoonDt = webtoonDt;
     }
+
+    public void updateFileDocument(Document document) { this.document = document; }
 }

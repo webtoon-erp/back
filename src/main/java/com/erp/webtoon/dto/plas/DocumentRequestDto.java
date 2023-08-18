@@ -1,4 +1,7 @@
 package com.erp.webtoon.dto.plas;
+import com.erp.webtoon.domain.Document;
+import com.erp.webtoon.domain.DocumentTpl;
+import com.erp.webtoon.domain.User;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,9 +22,6 @@ public class DocumentRequestDto {
     @NotBlank
     private String content;
 
-    @Builder.Default
-    private char stat = 'N'; // 임시 저장 상태
-
     @CreationTimestamp
     private LocalDateTime regDate; // 작성일시
 
@@ -36,4 +36,15 @@ public class DocumentRequestDto {
     private List<DocumentRcvRequestDto> documentRcvRequests;
 
     private List<DocumentDataRequestDto> documentDataRequests;
+
+    public Document toEntity(DocumentTpl documentTpl, User writeUser) {
+        return Document.builder()
+                .title(title)
+                .content(content)
+                .stat('N')
+                .regDate(regDate)
+                .documentTpl(documentTpl)
+                .writeUser(writeUser)
+                .build();
+    }
 }

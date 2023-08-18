@@ -1,5 +1,7 @@
 package com.erp.webtoon.domain;
 
+import com.slack.api.methods.request.calls.CallsAddRequest;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -42,6 +44,17 @@ public class Document {
 
     @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
     private List<DocumentData> documentDataList = new ArrayList<>();   // 데이터 목록
+
+    @Builder
+    public Document(String title, String content, char stat, LocalDateTime regDate, DocumentTpl documentTpl, User writeUser) {
+        this.title = title;
+        this.content = content;
+        this.stat = stat;
+        this.regDate = regDate;
+        this.documentTpl = documentTpl;
+        this.writeUser = writeUser;
+    }
+
 
     //수신자 목록의 이름 불러오기
     public List<String> getRcvNames() {

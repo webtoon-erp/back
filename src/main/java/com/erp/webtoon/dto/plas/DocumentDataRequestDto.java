@@ -1,5 +1,7 @@
 package com.erp.webtoon.dto.plas;
 
+import com.erp.webtoon.domain.Document;
+import com.erp.webtoon.domain.DocumentData;
 import lombok.Builder;
 import lombok.Data;
 
@@ -32,5 +34,23 @@ public class DocumentDataRequestDto {
     private int totalAmt;           // 총금액
 
     private String remark;          // 비고
+
+    public DocumentData toEntity(Document document) {
+        return DocumentData.builder()
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .deptCode(deptCode)
+                .deptName(deptName)
+                .company(company)
+                .expenseType(expenseType)
+                .count(count)
+                .price(price)
+                .supAmt(supAmt)
+                .vatAmt(vatAmt)
+                .totalAmt(totalAmt)
+                .remark(remark)
+                .document(document)
+                .build();
+    }
 
 }
