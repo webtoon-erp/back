@@ -9,11 +9,13 @@ import com.erp.webtoon.repository.WebtoonDtRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
 import com.erp.webtoon.service.WebtoonDtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -49,6 +52,9 @@ class WebtoonDtControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @BeforeEach
+    void clean() {webtoonDtRepository.deleteAll();}
 
     public MockMultipartFile getMultipartFile() throws IOException {
         return new MockMultipartFile("file", "test.png", "image/png", new FileInputStream("/Users/kh/Desktop/file/파일명.png"));
@@ -88,6 +94,24 @@ class WebtoonDtControllerTest {
                 .andExpect(status().isMovedPermanently())
                 .andDo(print());
 
+    }
+
+    @Test
+    @DisplayName("웹툰 회차 최종 업로드")
+    void test2() throws Exception {
+        //given
+        WebtoonDt newWebtoonDt = WebtoonDt.builder()
+                .subTitle("세상에 이런일이")
+                .content("감사합니다.")
+                .build();
+
+        webtoonDtRepository.save(newWebtoonDt);
+
+        //expected
+        mockMvc.perform(post("/webtoonDt/{webtoonDtId}", newWebtoonDt.getId())
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
 }

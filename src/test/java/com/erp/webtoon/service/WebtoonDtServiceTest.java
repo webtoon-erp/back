@@ -8,6 +8,7 @@ import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.repository.WebtoonDtRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ class WebtoonDtServiceTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @BeforeEach
+    void clean() {webtoonDtRepository.deleteAll();}
 
     public MockMultipartFile getMultipartFile() throws IOException {
         return new MockMultipartFile("file", "test.png", "image/png", new FileInputStream("/Users/kh/Desktop/file/파일명.png"));
@@ -74,6 +78,27 @@ class WebtoonDtServiceTest {
         assertEquals(1, webtoonDt.getEpisodeNum());
         assertEquals("세상에 이런일이", webtoonDt.getSubTitle());
         assertEquals("규규", webtoonDt.getManager());
+    }
+
+    @Test
+    @DisplayName("웹툰 회차 최종 업로드")
+    void test2() throws IOException {
+        //given
+        WebtoonDt newWebtoonDt = WebtoonDt.builder()
+                .subTitle("세상에 이런일이")
+                .content("감사합니다.")
+                .build();
+
+        webtoonDtRepository.save(newWebtoonDt);
+
+        //when
+        webtoonDtService.finalUpload(newWebtoonDt.getId());
+
+        //then
+        assertEquals(1L, webtoonDtRepository.count());
+        WebtoonDt webtoonDt = webtoonDtRepository.findAll().get(0);
+        assertEquals("세상에 이런일이", webtoonDt.getSubTitle());
+        assertEquals(true, webtoonDt.isFinalUploadYN());
     }
 
 }
