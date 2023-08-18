@@ -1,6 +1,7 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.*;
+import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.dto.plas.*;
 import com.erp.webtoon.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class PlasService {
     private final DocumentDataRepository documentDataRepository;
     private final UserRepository userRepository;
     private final FileService fileService;
+    private final MessageService messageService;
 
     /*
         템플릿 조회
@@ -157,5 +159,18 @@ public class PlasService {
 
         // 문서 저장
         documentRepository.save(document);
+    }
+
+    public void sendDoc(Long documentId) {
+        Document document = documentRepository.findById(documentId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 입니다."));
+
+        document.changeStat('Y');
+
+        // 1번 결재자 조회
+        DocumentRcv documentRcv = documentRcvRepository.findByDocumentAndReceiveTypeAndSortSequence(document, "APPV", 1)
+                .orElseThrow(() -> new EntityNotFoundException("해당 문서에 결재자가 존재하지 않습니다."));
+
+        documentRcv.changeStat(true);
     }
 }

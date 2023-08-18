@@ -34,6 +34,10 @@ public class PlasController {
     @PostMapping("/addDoc/save")
     public void save(@RequestBody DocumentRequestDto dto) throws IOException { plasService.addDoc(dto); }
 
+    // 전자결재 문서 상신
+    @PostMapping("/addDoc/send/{documentId}")
+    public void send(@PathVariable("documentId") Long documentId) { plasService.sendDoc(documentId); }
+
     // 내 문서 조회
     @GetMapping("/list/myDoc/{employeeId}")
     public List<DocListDto> myDocList(@PathVariable("employeeId") String employeeId) {

@@ -62,4 +62,6 @@ public class Document {
                 .map(documentRcv -> documentRcv.getUser().getName())
                 .collect(Collectors.toList());
     }
+
+    public void changeStat(char stat) { this.stat = stat; }
 }

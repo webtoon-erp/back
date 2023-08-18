@@ -37,4 +37,6 @@ public class DocumentRcv {
         this.document = document;
         this.user = user;
     }
+
+    public void changeStat(boolean stat) { this.stat = stat; }
 }
