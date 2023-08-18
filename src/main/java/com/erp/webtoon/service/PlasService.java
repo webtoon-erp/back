@@ -118,6 +118,9 @@ public class PlasService {
                 .collect(Collectors.toList());
     }
 
+    /*
+        전자결재 문서 저장
+     */
     public void addDoc(DocumentRequestDto dto) throws IOException {
         DocumentTpl documentTpl = documentTplRepository.findById(dto.getDocumentTpId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 템플릿 정보입니다."));
@@ -161,6 +164,9 @@ public class PlasService {
         documentRepository.save(document);
     }
 
+    /*
+        전자결재 문서 상신
+     */
     public void sendDoc(Long documentId) {
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 입니다."));
