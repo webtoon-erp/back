@@ -5,13 +5,14 @@ import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.dto.webtoon.WebtoonListResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonResponseDto;
+import com.erp.webtoon.dto.webtoon.WebtoonUpdaateDto;
 import com.erp.webtoon.repository.FileRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -110,5 +111,42 @@ class WebtoonServiceTest {
         assertEquals("월요일", oneWebtoon.getCategory());
         assertEquals("파일명", oneWebtoon.getThumbnailFileName());
         assertEquals(0, oneWebtoon.getEpisode().size());
+    }
+
+    @Test
+    @DisplayName("웹툰 수정-파일x")
+    void test4() throws IOException {
+        //given
+        Webtoon newWebtoon = Webtoon.builder()
+                .title("제목입니다.")
+                .intro("인트로입니다.")
+                .artist("규규")
+                .illustrator("그림 작가")
+                .category("월요일")
+                .keyword("공포")
+                .build();
+
+        webtoonRepository.save(newWebtoon);
+
+        WebtoonUpdaateDto dto = new WebtoonUpdaateDto();
+        dto.setTitle("제목입니다.");
+        dto.setIntro("인트로입니다.");
+        dto.setArtist("규규2");
+        dto.setIllustrator("규규2");
+        dto.setCategory("월요일");
+        dto.setKeyword("공포");
+
+        MultipartFile file = null;
+        //when
+        webtoonService.update(newWebtoon.getId(), file, dto);
+
+        //then
+        Webtoon webtoon = webtoonRepository.findAll().get(0);
+        assertEquals("제목입니다.", webtoon.getTitle());
+        assertEquals("인트로입니다.", webtoon.getIntro());
+        assertEquals("규규2", webtoon.getArtist());
+        assertEquals("규규2", webtoon.getIllustrator());
+        assertEquals("월요일", webtoon.getCategory());
+        assertEquals("공포", webtoon.getKeyword());
     }
 }
