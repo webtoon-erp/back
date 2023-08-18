@@ -83,7 +83,7 @@ public class PlasService {
 
         List<User> myDeptUserList = userRepository.findAllByDeptCode(deptCode);
 
-        List<Document> myDeptDocList = documentRepository.findAllByWriteUserIn(myDeptUserList);
+        List<Document> myDeptDocList = documentRepository.findAllByWriteUserInAndStatNot(myDeptUserList, 'N');
 
         return docStreamToList(myDeptDocList);
     }
