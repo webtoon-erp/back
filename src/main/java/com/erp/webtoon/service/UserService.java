@@ -181,7 +181,7 @@ public class UserService {
                     qualificationModifyRequestDto.getContent(), qualificationModifyRequestDto.getQlfcDate(), qualificationModifyRequestDto.getQlfcPay());
 
             QualificationModifyResponseDto response = QualificationModifyResponseDto.builder()
-                    .requestId(requestDto.getRequestId())
+                    .qualificationId(requestDto.getRequestId())
                     .modifiedDate(LocalDate.now())
                     .build();
 
@@ -196,7 +196,7 @@ public class UserService {
      */
     public void deleteQualification(List<QualificationDeleteRequestDto> deleteRequestList) {
         for (QualificationDeleteRequestDto deleteRequest : deleteRequestList) {
-            qualificationRepository.deleteById(deleteRequest.getRequestId());
+            qualificationRepository.deleteById(deleteRequest.getQualificationId());
         }
     }
 

@@ -6,5 +6,5 @@ import lombok.Data;
 @Builder
 @Data
 public class QualificationDeleteRequestDto {
-    private Long requestId;
+    private Long qualificationId;
 }
