@@ -108,9 +108,7 @@ public class User implements UserDetails {
         this.usable = usable;
     }
 
-    public void updateInfo(String employeeId, String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, LocalDate birthDate
-            , int dayOff) {
-        this.employeeId = employeeId;
+    public void updateInfo(String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, LocalDate birthDate) {
         this.password = password;
         this.name = name;
         this.deptCode = deptCode;
@@ -120,7 +118,6 @@ public class User implements UserDetails {
         this.email = email;
         this.tel = tel;
         this.birthDate = birthDate;
-        this.dayOff = dayOff;
     }
 
     public void updatePassword(String password){
