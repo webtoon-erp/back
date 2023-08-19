@@ -2,6 +2,9 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.LogoutAccessToken;
 import com.erp.webtoon.domain.RefreshToken;
+import com.erp.webtoon.dto.user.QualificationDeleteRequestDto;
+import com.erp.webtoon.dto.user.QualificationModifyRequestDto;
+import com.erp.webtoon.dto.user.QualificationModifyResponseDto;
 import com.erp.webtoon.dto.token.LogoutResponseDto;
 import com.erp.webtoon.token.LogoutAccessTokenService;
 import com.erp.webtoon.token.RefreshTokenService;
@@ -109,15 +112,15 @@ public class UserService {
     }
 
     /**
-     * 회원 수정
+     * 회원 수정(사번이랑, 연차빼고)
      */
     @Transactional
     public void update(UserUpdateDto dto) {
         User updateUser = userRepository.findByEmployeeId(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
-        updateUser.updateInfo(dto.getEmployeeId(), dto.getPassword(), dto.getName(), dto.getDeptCode(), dto.getDeptName(), dto.getTeamNum(), dto.getPosition(),
-                dto.getEmail(), dto.getTel(), dto.getBirthDate(), dto.getDayOff());
+        updateUser.updateInfo(dto.getPassword(), dto.getName(), dto.getDeptCode(), dto.getDeptName(), dto.getTeamNum(), dto.getPosition(),
+                dto.getEmail(), dto.getTel(), dto.getBirthDate());
     }
 
     /**
@@ -136,13 +139,13 @@ public class UserService {
     /**
      * 자격증 추가 (인사팀에서 진행)
      */
-    public List<RegisterQualificationResponse> registerQualification(List<QualificationRequestDto> qualificationRequestDtoList){
+    @Transactional
+    public List<RegisterQualificationResponse> registerQualification(List<QualificationRequestDto> qualificationRequestList){
         List<RegisterQualificationResponse> registerqualificationList = new ArrayList<>();
         List<Qualification> qualificationList = new ArrayList<>();
 
-        for (QualificationRequestDto qualificationRequestDto : qualificationRequestDtoList) {
+        for (QualificationRequestDto qualificationRequestDto : qualificationRequestList) {
             Qualification qualification = qualificationRepository.save(Qualification.builder()
-                    .sortSequence(qualificationRequestDto.getSortSequence())
                     .qlfcDate(qualificationRequestDto.getQlfcDate())
                     .content(qualificationRequestDto.getContent())
                     .qlfcType(qualificationRequestDto.getQlfcType())
@@ -164,6 +167,38 @@ public class UserService {
         }
 
         return registerqualificationList;
+    }
+
+    /**
+     * 자격증 수정
+     */
+    @Transactional
+    public List<QualificationModifyResponseDto> updateQualification(List<QualificationModifyRequestDto> qualificationRequestList) {
+        List<QualificationModifyResponseDto> modifyQualifications = new ArrayList<>();
+
+        for (QualificationModifyRequestDto qualificationModifyRequestDto : qualificationRequestList) {
+            QualificationModifyRequestDto requestDto = qualificationModifyRequestDto.updateInfo(qualificationModifyRequestDto.getEmployeeId(), qualificationModifyRequestDto.getQlfcType(),
+                    qualificationModifyRequestDto.getContent(), qualificationModifyRequestDto.getQlfcDate(), qualificationModifyRequestDto.getQlfcPay());
+
+            QualificationModifyResponseDto response = QualificationModifyResponseDto.builder()
+                    .qualificationId(requestDto.getQualificationId())
+                    .modifiedAt(LocalDate.now())
+                    .build();
+
+            modifyQualifications.add(response);
+        }
+
+        return modifyQualifications;
+    }
+
+    /**
+     * 자격증 삭제
+     */
+    @Transactional
+    public void deleteQualification(List<QualificationDeleteRequestDto> deleteRequestList) {
+        for (QualificationDeleteRequestDto deleteRequest : deleteRequestList) {
+            qualificationRepository.deleteById(deleteRequest.getQualificationId());
+        }
     }
 
     /**

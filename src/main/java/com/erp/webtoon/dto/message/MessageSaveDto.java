@@ -1,7 +1,6 @@
 package com.erp.webtoon.dto.message;
 
 import com.erp.webtoon.domain.Message;
-import com.erp.webtoon.domain.Program;
 import com.erp.webtoon.domain.User;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 public class MessageSaveDto {
 
     @NotBlank
-    private String msgType;     // 메세지 타입
+    private String channel;     // 메세지 타입
 
     @NotBlank
     private String content;     // 메세지 내용
@@ -25,9 +24,10 @@ public class MessageSaveDto {
     private String rcvEmpId;
 
     private String sendEmpId;
+
     public Message toEntity(User rcvUser, User sendUser) {
         return Message.builder()
-                .msgType(msgType)
+                .msgType(channel)
                 .content(content)
                 .refId(refId)
                 .programId(programId)
