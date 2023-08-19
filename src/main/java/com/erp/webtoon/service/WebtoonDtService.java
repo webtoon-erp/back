@@ -163,7 +163,8 @@ public class WebtoonDtService {
 
         String originContent = feedbackMsg.getContent();
         dto.setContent(webtoon.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
-        messageService.addMsg(feedbackMsg);
+        Message message = dto.toEntity(sendUser);
+        messageService.addMsg(message);
     }
 
 }
