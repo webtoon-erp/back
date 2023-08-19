@@ -194,6 +194,7 @@ public class UserService {
     /**
      * 자격증 삭제
      */
+    @Transactional
     public void deleteQualification(List<QualificationDeleteRequestDto> deleteRequestList) {
         for (QualificationDeleteRequestDto deleteRequest : deleteRequestList) {
             qualificationRepository.deleteById(deleteRequest.getQualificationId());
