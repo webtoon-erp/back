@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
@@ -29,11 +30,11 @@ public class WebtoonService {
      * 등록 웹툰 생성
      */
     @Transactional
-    public Long save(WebtoonRequestDto dto) throws IOException {
+    public Long save(WebtoonRequestDto dto, MultipartFile thumbnailFile) throws IOException {
         Webtoon webtoon = dto.toEntity();
 
-        if(dto.getThumbnailFile() != null) {
-            File uploadfile = fileService.save(dto.getThumbnailFile());
+        if(thumbnailFile != null) {
+            File uploadfile = fileService.save(thumbnailFile);
             uploadfile.updateFileWebtoon(webtoon);
             webtoon.getFiles().add(uploadfile);
         }
@@ -159,7 +160,8 @@ public class WebtoonService {
     /**
      * 등록 웹툰 수정
      */
-    public void update(Long webtoonId, WebtoonUpdaateDto dto) throws IOException {
+    @Transactional
+    public void update(Long webtoonId, MultipartFile file, WebtoonUpdaateDto dto) throws IOException {
         Webtoon findWebtoon = webtoonRepository.findById(webtoonId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 웹툰입니다."));
 
@@ -168,12 +170,12 @@ public class WebtoonService {
 
         //파일 업데이트
         //만약 파일을 업데이트 하는 경우
-        if (dto.getUploadFile() != null) {
+        if (file != null) {
             // 기존의 저장된 가장 최근의 파일 상태 변경
-            File file = findWebtoon.getFiles().get(-1);
-            fileService.changeStat(file);
+            File oldFile = findWebtoon.getFiles().get(findWebtoon.getFiles().size()-1);
+            fileService.changeStat(oldFile.getId());
 
-            File uploadFile = fileService.save(dto.getUploadFile());
+            File uploadFile = fileService.save(file);
             uploadFile.updateFileWebtoon(findWebtoon);
             findWebtoon.getFiles().add(uploadFile);
         }

@@ -62,7 +62,6 @@ public class RequestService {
 
         for(int i = 0; i < requestDto.getRequestDts().size(); i++){
             RequestDt requestDt = RequestDt.builder()
-                    .sortSequence(requestDto.getRequestDts().get(i).getSortSequence())
                     .content(requestDto.getRequestDts().get(i).getContent())
                     .count(requestDto.getRequestDts().get(i).getCount())
                     .cost(requestDto.getRequestDts().get(i).getCost())
@@ -139,6 +138,20 @@ public class RequestService {
     }
 
     /**
+     * 요청 삭제 기능
+     */
+    @Transactional
+    public void deleteRequest(List<RequestDeleteDto> requestIds) {
+        for (RequestDeleteDto requestDelete : requestIds) {
+            Request request = requestRepository.findById(requestDelete.getRequestId())
+                    .orElseThrow(() -> new EntityNotFoundException("요청이 존재하지 않습니다."));
+            if(request.getStep() == 1) {
+                requestRepository.deleteById(requestDelete.getRequestId());
+            }
+        }
+    }
+
+    /**
      * 사원별 개인 요청 리스트 조회 기능
      */
     public List<RequestListResponseDto> searchUserList(String employeeId) {
@@ -188,6 +201,7 @@ public class RequestService {
     /**
      * 코멘트 등록 기능
      */
+    @Transactional
     public CommentResponseDto registerComment(MessageSaveDto dto) throws IOException{
         User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
@@ -214,6 +228,7 @@ public class RequestService {
         List<Message> commentList = messageService.getMessageListByRefId(requestId);
 
         return commentList.stream()
+                .filter(message -> message.getRcvUser() == null)
                 .map(comment -> CommentListDto.builder()
                         .content(comment.getContent())
                         .sendUserDeptName(comment.getSendUser().getDeptName())
@@ -226,6 +241,7 @@ public class RequestService {
     /**
      * 코멘트 삭제 기능
      */
+    @Transactional
     public void deleteComment(Long messageId){
         Message message = messageRepository.findById(messageId).orElseThrow(() -> new EntityNotFoundException("No Such Message"));
         message.changeStat('D');
@@ -242,7 +258,7 @@ public class RequestService {
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
         MessageSaveDto dto = MessageSaveDto.builder()
-                .msgType("it")
+                .channel("it")
                 .content("새로운 요청이 접수되었습니다.")
                 .rcvEmpId(rcvUser.getEmployeeId())
                 .sendEmpId(sendUser.getEmployeeId())
@@ -268,7 +284,7 @@ public class RequestService {
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
         MessageSaveDto dto = MessageSaveDto.builder()
-                .msgType("dm")
+                .channel("dm")
                 .content("서비스 요청의 진행 단계가 변경 되었습니다.")
                 .rcvEmpId(rcvUser.getEmployeeId())
                 .sendEmpId(sendUser.getEmployeeId())

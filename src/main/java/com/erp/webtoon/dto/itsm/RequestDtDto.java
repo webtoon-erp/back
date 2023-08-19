@@ -6,7 +6,6 @@ import lombok.Data;
 @Builder
 @Data
 public class RequestDtDto {
-    private int sortSequence; // 정렬번호
 
     private String content; // 상세 내용
 

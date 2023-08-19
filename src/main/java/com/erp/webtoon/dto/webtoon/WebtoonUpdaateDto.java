@@ -26,5 +26,5 @@ public class WebtoonUpdaateDto {
     @NotBlank
     private String keyword; //키워드
 
-    private MultipartFile uploadFile;   //썸네일 파일
+    //private MultipartFile uploadFile;   //썸네일 파일
 }

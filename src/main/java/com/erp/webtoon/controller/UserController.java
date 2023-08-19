@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -92,6 +93,23 @@ public class UserController {
     @PostMapping("/qualification")
     public List<RegisterQualificationResponse> registerQualification(@RequestBody List<QualificationRequestDto> qualificationRequestDtoList) {
         return userService.registerQualification(qualificationRequestDtoList);
+    }
+
+    /**
+     * 자격증 수정
+     */
+    @PatchMapping("/qualification")
+    public List<QualificationModifyResponseDto> modifyQualification(@RequestBody List<QualificationModifyRequestDto> qualificationModifyRequestDtoList) {
+        return userService.updateQualification(qualificationModifyRequestDtoList);
+    }
+
+    /**
+     * 자격증 삭제
+     */
+    @DeleteMapping("/qualification")
+    public ResponseEntity deleteQualification(@RequestBody List<QualificationDeleteRequestDto> qualificationDeleteRequestDtoList) {
+        userService.deleteQualification(qualificationDeleteRequestDtoList);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
 

@@ -8,10 +8,10 @@ import com.erp.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +30,7 @@ public class WebtoonDtService {
     /**
      * 회차 임시 업로드 (최초 등록)
      */
-    public void upload(WebtoonDtRequestDto dto) throws IOException {
+    public void upload(WebtoonDtRequestDto dto, MultipartFile episodeFile) throws IOException {
         Webtoon findWebtoon = webtoonRepository.findById(dto.getWebtoonId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 웹툰입니다."));
 
@@ -45,8 +45,8 @@ public class WebtoonDtService {
         newWebtoonDt.setWebtoon(findWebtoon);
 
         //파일 저장
-        if(!dto.getUploadFile().isEmpty()) {
-            File uploadFile = fileService.save(dto.getUploadFile());
+        if(episodeFile != null) {
+            File uploadFile = fileService.save(episodeFile);
             uploadFile.updateFileWebtoonDt(newWebtoonDt);
             newWebtoonDt.getFiles().add(uploadFile);
         }
@@ -67,6 +67,7 @@ public class WebtoonDtService {
     /**
      * 회차 개별 조회
      */
+    @Transactional(readOnly = true)
     public WebtoonDtResponseDto showOne(Long webtoonDtId) {
         WebtoonDt findWebtoonDt = webtoonDtRepository.findById(webtoonDtId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회차입니다."));
@@ -76,8 +77,9 @@ public class WebtoonDtService {
 
         return WebtoonDtResponseDto.builder()
                 .episodeNum(findWebtoonDt.getEpisodeNum())
+                .subTitle(findWebtoonDt.getSubTitle())
                 .content(findWebtoonDt.getContent())
-                .fileName(findWebtoonDt.getFiles().get(-1).getFileName())
+                .fileName(findWebtoonDt.getFiles().get(findWebtoonDt.getFiles().size()-1).getFileName())
                 .feedbackList(feedbackList)
                 .build();
     }
@@ -85,7 +87,7 @@ public class WebtoonDtService {
     /**
      * 회차 수정
      */
-    public void update(Long webtoonDtId, WebtoonDtUpdateDto dto) throws IOException {
+    public void update(Long webtoonDtId, WebtoonDtUpdateDto dto, MultipartFile episodeFile) throws IOException {
         WebtoonDt findWebtoonDt = webtoonDtRepository.findById(webtoonDtId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회차입니다."));
 
@@ -99,12 +101,12 @@ public class WebtoonDtService {
 
             //파일 업데이트
             //만약 파일을 업데이트 하는 경우
-            if (!dto.getUploadFile().isEmpty()) {
+            if (episodeFile != null) {
                 // 기존의 저장된 가장 최근의 파일 상태 변경
-                File file = findWebtoonDt.getFiles().get(-1);
-                fileService.changeStat(file);
+                File file = findWebtoonDt.getFiles().get(findWebtoonDt.getFiles().size()-1);
+                fileService.changeStat(file.getId());
 
-                File uploadFile = fileService.save(dto.getUploadFile());
+                File uploadFile = fileService.save(episodeFile);
                 uploadFile.updateFileWebtoonDt(findWebtoonDt);
                 findWebtoonDt.getFiles().add(uploadFile);
             }
