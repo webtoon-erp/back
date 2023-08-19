@@ -19,8 +19,6 @@ public class WebtoonDtRequestDto {
 
     private String employeeId; // 담당자
 
-    private MultipartFile uploadFile;   // 업로드 파일;
-
     public WebtoonDt toEntity() {
         return WebtoonDt.builder()
                 .subTitle(subTitle)

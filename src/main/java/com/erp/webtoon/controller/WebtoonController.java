@@ -14,6 +14,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -32,8 +34,8 @@ public class WebtoonController {
      * 웹툰 등록
      */
     @PostMapping("/webtoon")
-    public ResponseEntity save(@RequestBody WebtoonRequestDto dto) throws IOException {
-        Long id = webtoonService.save(dto);
+    public ResponseEntity save(@RequestPart("dto") WebtoonRequestDto dto, @RequestPart("file") MultipartFile file) throws IOException {
+        Long id = webtoonService.save(dto, file);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/webtoon"));
@@ -59,13 +61,12 @@ public class WebtoonController {
      * 특정 웹툰 조회
      */
     @GetMapping("/webtoon/{webtoonId}")
-    public ResponseEntity<Result> getWebtoon(@PathVariable("webtoonId") Long webtoonId) throws MalformedURLException {
+    public ResponseEntity getWebtoon(@PathVariable("webtoonId") Long webtoonId) throws MalformedURLException {
         WebtoonResponseDto webtoon = webtoonService.getOneWebtoon(webtoonId);
 
         // 썸네일 이미지 조회
         UrlResource resource = new UrlResource("file:" + fileService.getFullPath(webtoon.getThumbnailFileName()));
-
-        return ResponseEntity.ok(new Result(resource, webtoon));
+        return ResponseEntity.ok(new Result(resource.getURL(), webtoon));
 
     }
 
@@ -119,11 +120,15 @@ public class WebtoonController {
      * 웹툰 수정
      */
     @PutMapping("/webtoon/{webtoonId}")
-    public ResponseEntity update(@PathVariable Long webtoonId, @RequestBody WebtoonUpdaateDto dto) throws IOException {
-        webtoonService.update(webtoonId, dto);
+    public ResponseEntity update(@PathVariable Long webtoonId, @RequestPart("dto") WebtoonUpdaateDto dto, @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        webtoonService.update(webtoonId,file, dto);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/webtoon/{webtoonId}"));
+        URI location = UriComponentsBuilder.newInstance()
+                .path("/webtoon/{webtoonId}")
+                .buildAndExpand(webtoonId).toUri();
+
+        headers.setLocation(location);
 
         return new ResponseEntity(headers, HttpStatus.MOVED_PERMANENTLY);
     }

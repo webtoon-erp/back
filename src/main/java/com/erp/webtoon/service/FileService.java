@@ -42,8 +42,11 @@ public class FileService {
     /**
      * 파일 상태 변경 -> Y/N
      */
-    public void changeStat(File file) {
-        file.changeStat();
+    public void changeStat(Long fileId) {
+        File findFile = fileRepository.findById(fileId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 파일입니다."));
+
+        findFile.changeStat();
     }
 
     /**
