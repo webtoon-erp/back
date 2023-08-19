@@ -216,6 +216,7 @@ public class RequestService {
 
         String originContent = feedbackMsg.getContent();
         dto.setContent(request.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
+        Message message = dto.toEntity(null, sendUser);
         messageService.addMsg(feedbackMsg);
 
         return CommentResponseDto.builder().messageId(feedbackMsg.getId()).createdAt(LocalDate.now()).build();
