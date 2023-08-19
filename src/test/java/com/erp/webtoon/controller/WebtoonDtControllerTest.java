@@ -1,8 +1,10 @@
 package com.erp.webtoon.controller;
 
+import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.domain.WebtoonDt;
+import com.erp.webtoon.dto.webtoon.FeedbackSaveDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtUpdateDto;
@@ -29,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -220,6 +223,49 @@ class WebtoonDtControllerTest {
         mockMvc.perform(delete("/webtoonDt/{webtoonDtId}", newWebtoonDt.getId())
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isMovedPermanently())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("피드백 등록")
+    void test6() throws Exception {
+        //given
+        User newUser = User.builder()
+                .employeeId("20232023")
+                .name("규규")
+                .position("과장")
+                .build();
+
+        userRepository.save(newUser);
+
+        Webtoon newWebtoon = Webtoon.builder()
+                .title("웹툰입니다.")
+                .intro("인트로입니다.")
+                .artist("작가입니다.")
+                .build();
+
+        webtoonRepository.save(newWebtoon);
+
+        FeedbackSaveDto feedbackSaveDto = new FeedbackSaveDto();
+        feedbackSaveDto.setMsgType("webtoon");
+        feedbackSaveDto.setContent("멋져요");
+        feedbackSaveDto.setRefId(newWebtoon.getId());
+        feedbackSaveDto.setProgramId(null);
+        feedbackSaveDto.setSendEmpId("20232023");
+
+        String dto = objectMapper.writeValueAsString(feedbackSaveDto);
+
+        //expected
+        mockMvc.perform(post("/webtoonDt/feedBack")
+                        .content(dto)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].content").value("멋져요"))
+                .andExpect(jsonPath("$[0].sendUserName").value("규규"))
+                .andExpect(jsonPath("$[0].sendUserEmployeeId").value("20232023"))
+                .andExpect(jsonPath("$[1].content").value("웹툰입니다.에 피드백이 등록되었습니다. \n\n멋져요"))
+                .andExpect(jsonPath("$[1].sendUserName").value("규규"))
+                .andExpect(jsonPath("$[1].sendUserEmployeeId").value("20232023"))
                 .andDo(print());
     }
 }
