@@ -67,6 +67,7 @@ public class WebtoonDtService {
     /**
      * 회차 개별 조회
      */
+    @Transactional(readOnly = true)
     public WebtoonDtResponseDto showOne(Long webtoonDtId) {
         WebtoonDt findWebtoonDt = webtoonDtRepository.findById(webtoonDtId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회차입니다."));
