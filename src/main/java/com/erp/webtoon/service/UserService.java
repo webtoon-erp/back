@@ -112,15 +112,15 @@ public class UserService {
     }
 
     /**
-     * 회원 수정
+     * 회원 수정(사번이랑, 연차빼고)
      */
     @Transactional
     public void update(UserUpdateDto dto) {
         User updateUser = userRepository.findByEmployeeId(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
-        updateUser.updateInfo(dto.getEmployeeId(), dto.getPassword(), dto.getName(), dto.getDeptCode(), dto.getDeptName(), dto.getTeamNum(), dto.getPosition(),
-                dto.getEmail(), dto.getTel(), dto.getBirthDate(), dto.getDayOff());
+        updateUser.updateInfo(dto.getPassword(), dto.getName(), dto.getDeptCode(), dto.getDeptName(), dto.getTeamNum(), dto.getPosition(),
+                dto.getEmail(), dto.getTel(), dto.getBirthDate());
     }
 
     /**
