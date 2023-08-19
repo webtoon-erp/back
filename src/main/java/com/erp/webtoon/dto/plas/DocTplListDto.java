@@ -7,6 +7,8 @@ import lombok.Data;
 @Builder
 public class DocTplListDto {
 
+    private Long id;
+
     private String templateName;    // 템플릿 이름
 
     private String intro; // 설명

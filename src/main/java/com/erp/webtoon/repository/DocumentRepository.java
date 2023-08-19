@@ -9,6 +9,6 @@ import java.util.List;
 public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     List<Document> findAllByWriteUser(User user);
-    List<Document> findAllByWriteUserIn(List<User> userList);
+    List<Document> findAllByWriteUserInAndStatNot(List<User> userList, char stat);
 
 }

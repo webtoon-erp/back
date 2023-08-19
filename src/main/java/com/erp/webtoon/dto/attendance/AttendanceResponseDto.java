@@ -1,11 +1,11 @@
-package com.erp.webtoon.dto.attendece;
+package com.erp.webtoon.dto.attendance;
 
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class AttendenceResponseDto {
+public class AttendanceResponseDto {
 
     private String weeklyTotalTime; // 이번주 누적 근무 시간
 
@@ -15,6 +15,6 @@ public class AttendenceResponseDto {
 
     private String monthlyOverTime; // 이번달 초과 근무 시간
 
-    private List<IndividualAttenedenceListDto> attendenceList; // 개인 근태 목록
+    private List<IndividualAttendanceListDto> attendanceList; // 개인 근태 목록
 
 }

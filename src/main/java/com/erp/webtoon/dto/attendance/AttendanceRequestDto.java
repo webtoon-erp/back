@@ -1,6 +1,6 @@
-package com.erp.webtoon.dto.attendece;
+package com.erp.webtoon.dto.attendance;
 
-import com.erp.webtoon.domain.Attendence;
+import com.erp.webtoon.domain.Attendance;
 import com.erp.webtoon.domain.User;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Data
 @Builder
-public class AttendenceRequestDto {
+public class AttendanceRequestDto {
 
     @Builder.Default
     private int attendMonth = LocalDate.now().getMonthValue(); // 기준월
@@ -28,8 +28,8 @@ public class AttendenceRequestDto {
     @NotBlank
     private String employeeId;
 
-    public Attendence toEntity(User user) {
-        return Attendence.builder()
+    public Attendance toEntity(User user) {
+        return Attendance.builder()
                 .attendMonth(attendMonth)
                 .attendDate(attendDate)
                 .attendType(attendType)
