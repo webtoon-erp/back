@@ -69,7 +69,7 @@ public class PayService {
         }
 
         // 가장 최근의 급여 정보
-        PayMonthDto payMonthDto = new PayMonthDto(findUser.getPays().get(-1));
+        PayMonthDto payMonthDto = new PayMonthDto(findUser.getPays().get(findUser.getPays().size() - 1));
         payMonthDto.setQualSalary(findUser.getQualifications());
 
         //해당 유저의 지금까지 받았던 지급 정보
@@ -83,6 +83,7 @@ public class PayService {
                 .payList(payList)
                 .qualificationList(qualificationDtos)
                 .build();
+
     }
 
     /**
@@ -98,7 +99,7 @@ public class PayService {
             PayAllListResponseDto dto = new PayAllListResponseDto(user);
 
             if(!user.getPays().isEmpty()) {
-                dto.addPayInfo(user.getPays().get(-1));
+                dto.addPayInfo(user.getPays().get(user.getPays().size()-1));
             }
             payList.add(dto);
         }
@@ -113,7 +114,7 @@ public class PayService {
         User findUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
 
-        findUser.getPays().get(-1).updatePay(dto.getYearSalary(), dto.getAddSalary(), dto.getPayDate());
+        findUser.getPays().get(findUser.getPays().size()-1).updatePay(dto.getYearSalary(), dto.getAddSalary(), dto.getPayDate());
     }
 
     /**
@@ -124,7 +125,7 @@ public class PayService {
         User findUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
 
-        findUser.getPays().get(-1).updateAccount(dto.getBankAccount());
+        findUser.getPays().get(findUser.getPays().size()-1).updateAccount(dto.getBankAccount());
     }
 
     /**
@@ -136,7 +137,7 @@ public class PayService {
             User findUser = userRepository.findByEmployeeId(dto.getEmployeeId())
                     .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사원입니다."));
 
-            findUser.getPays().get(-1).updatePayDate(dto.getPayDate());
+            findUser.getPays().get(findUser.getPays().size()-1).updatePayDate(dto.getPayDate());
         }
     }
 
