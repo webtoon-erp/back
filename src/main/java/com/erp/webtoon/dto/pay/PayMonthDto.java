@@ -27,7 +27,8 @@ public class PayMonthDto {
     }
 
     public void setQualSalary(List<Qualification> qualifications) {
-        qualifications.stream()
-                .map(qualification -> this.qualSalary += qualification.getQlfcPay());
+        this.qualSalary = qualifications.stream()
+                .mapToInt(q -> q.getQlfcPay())
+                .sum();
     }
 }
