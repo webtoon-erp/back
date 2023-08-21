@@ -197,7 +197,7 @@ public class PlasService {
             if (documentRcv.getUser() == user && documentRcv.getStat() == 'Y') {
                 documentRcv.changeStat('C'); // 완료 상태로 변경
 
-                if (i != approvers.size() - 1) { // 현재 결재자가 최종 결재자일 경우 다음 결재자 업데이트
+                if (i != approvers.size() - 1) { // 현재 결재자가 최종 결재자가 아닐 경우 다음 결재자 업데이트
                     DocumentRcv nextDocumentRcv = approvers.get(i + 1);
                     nextDocumentRcv.changeStat('Y');
 
