@@ -32,9 +32,6 @@ public class DocumentResponseDto {
 
     private List<DocumentRcvResponseDto> documentRcvResponses;
 
-    private List<DocumentDataDto>  documentDataResponses;
-
-
-
+    private List<DocumentDataDto> documentDataResponses;
 
 }

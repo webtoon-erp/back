@@ -27,7 +27,7 @@ public class AttendanceController {
         개인 근태 조회
      */
     @PostMapping("/attendance/individual/{employeeId}")
-    public AttendanceResponseDto individualAttendance(@PathVariable String employeeId){
+    public AttendanceResponseDto individualAttendance(@PathVariable String employeeId) {
         return attendanceService.getIndividualAttendance(employeeId);
     }
 

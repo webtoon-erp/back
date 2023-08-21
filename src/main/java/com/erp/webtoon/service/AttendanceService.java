@@ -55,7 +55,7 @@ public class AttendanceService {
         dto.setWeeklyOverTime(attendanceRepository.findIndividualWeeklyOverTime(user.getId()));
         dto.setMonthlyTotalTime(attendanceRepository.findIndividualMonthlyTotalTime(user.getId()));
         dto.setMonthlyOverTime(attendanceRepository.findIndividualMonthlyOverTime(user.getId()));
-        dto.setAttendanceList( attendanceRepository.findIndividualAttendance(user));
+        dto.setAttendanceList(attendanceRepository.findIndividualAttendance(user));
 
         return dto;
 
@@ -158,13 +158,13 @@ public class AttendanceService {
         List<Attendance> attendances = attendanceRepository.findByAttendDateAndAttendType(currentDate, attendType);
 
         long count = attendances.stream()
-                        .filter(this::isOnTime)
-                        .count();
+                .filter(this::isOnTime)
+                .count();
 
         List<User> userList = attendances.stream()
-                                .filter(this::isOnTime)
-                                .map(Attendance::getUser)
-                                .collect(Collectors.toList());
+                .filter(this::isOnTime)
+                .map(Attendance::getUser)
+                .collect(Collectors.toList());
 
         return new AttendanceResult(count, userListToDtoList(userList));
     }
@@ -177,13 +177,13 @@ public class AttendanceService {
         List<Attendance> attendances = attendanceRepository.findByAttendDateAndAttendType(currentDate, attendType);
 
         long count = attendances.stream()
-                        .filter(attendance -> !isOnTime(attendance))
-                        .count();
+                .filter(attendance -> !isOnTime(attendance))
+                .count();
 
         List<User> userList = attendances.stream()
-                                .filter(attendance -> !isOnTime(attendance))
-                                .map(Attendance::getUser)
-                                .collect(Collectors.toList());
+                .filter(attendance -> !isOnTime(attendance))
+                .map(Attendance::getUser)
+                .collect(Collectors.toList());
 
         return new AttendanceResult(count, userListToDtoList(userList));
     }
@@ -220,7 +220,7 @@ public class AttendanceService {
         if (currentTime.isAfter(LocalTime.of(18, 10))) {
             // 출근한 직원 (지각 포함)
             List<Attendance> startAttendances = attendanceRepository.findByAttendDateAndAttendType(currentDate, "START");
-            if (startAttendances == null)  return new AttendanceResult();
+            if (startAttendances == null) return new AttendanceResult();
             List<User> startAttendancesUserList = startAttendances.stream().map(Attendance::getUser).collect(Collectors.toList());
 
             long count = startAttendances.size() - getOnTimeEndAttendances().getCount();
@@ -229,8 +229,7 @@ public class AttendanceService {
             userList.removeAll(getOnTimeEndAttendances().getUserList());
 
             return new AttendanceResult(count, userList);
-        }
-        else {
+        } else {
             return new AttendanceResult();
         }
     }
@@ -244,7 +243,7 @@ public class AttendanceService {
 
         // 출근한 직원 수 (지각 포함)
         List<Attendance> startAttendances = attendanceRepository.findByAttendDateAndAttendType(currentDate, "START");
-        if (startAttendances == null)  return new AttendanceResult(allUserList.size(), userListToDtoList(allUserList));
+        if (startAttendances == null) return new AttendanceResult(allUserList.size(), userListToDtoList(allUserList));
         List<User> startAttendancesUserList = startAttendances.stream().map(Attendance::getUser).collect(Collectors.toList());
 
         long count = allUserList.size() - startAttendances.size() - getDayOffAttendances().getCount();
@@ -286,7 +285,7 @@ public class AttendanceService {
         List<User> userList = userRepository.findAllByDeptCode(deptCode);
         List<Attendance> attendances = attendanceRepository.findByAttendMonthAndAttendTypeAndUserIn(currentMonth, attendType, userList);
 
-        if (attendances.isEmpty())  return "00:00:00";
+        if (attendances.isEmpty()) return "00:00:00";
 
         Duration totalOverTime = attendances.stream()
                 .map(this::calculateOverTime)
@@ -321,7 +320,7 @@ public class AttendanceService {
     // 연장근무 시간 합계
     private String sumOvertime(List<Attendance> attendances) {
 
-        if (attendances.isEmpty())  return "00:00:00";
+        if (attendances.isEmpty()) return "00:00:00";
 
         Duration totalOverTime = attendances.stream()
                 .map(this::calculateOverTime)
@@ -336,7 +335,7 @@ public class AttendanceService {
     }
 
     // USER -> TotalAttendanceUserListDto
-    private List<TotalAttendanceUserListDto> userListToDtoList (List<User> userList) {
+    private List<TotalAttendanceUserListDto> userListToDtoList(List<User> userList) {
 
         return userList.stream()
                 .map(user -> TotalAttendanceUserListDto.builder()

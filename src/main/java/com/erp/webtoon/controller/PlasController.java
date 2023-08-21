@@ -23,19 +23,27 @@ public class PlasController {
 
     // 전자결재 문서 저장
     @PostMapping("/doc")
-    public void save(@RequestBody DocumentRequestDto dto) throws IOException { plasService.addDoc(dto); }
+    public void save(@RequestBody DocumentRequestDto dto) throws IOException {
+        plasService.addDoc(dto);
+    }
 
     // 연차 사용 신청 등록
     @PostMapping("/doc/dayOff")
-    public void registerDayOff(@RequestBody DayOffDocumentRequestDto dto) { plasService.addDayOffDoc(dto); }
+    public void registerDayOff(@RequestBody DayOffDocumentRequestDto dto) {
+        plasService.addDayOffDoc(dto);
+    }
 
     // 전자결재 문서 삭제
     @DeleteMapping("/doc/{documentId}")
-    public void delete(@PathVariable Long documentId) { plasService.deleteDoc(documentId); }
+    public void delete(@PathVariable Long documentId) {
+        plasService.deleteDoc(documentId);
+    }
 
     // 전자결재 문서 상신
     @PostMapping("/doc/{documentId}")
-    public void send(@PathVariable Long documentId) { plasService.sendDoc(documentId); }
+    public void send(@PathVariable Long documentId) {
+        plasService.sendDoc(documentId);
+    }
 
     // 전자결재 문서 승인
     @PostMapping("/doc/{documentId}/{employeeId}")

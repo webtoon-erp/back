@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface DocumentRcvRepository extends JpaRepository<DocumentRcv, Long> {
 
     List<DocumentRcv> findAllByUserAndReceiveTypeAndDocument_StatNot(User user, String rcvType, char stat);
+
     Optional<DocumentRcv> findByDocumentAndReceiveTypeAndSortSequence(Document document, String receiveType, int sortSequence);
 
 }

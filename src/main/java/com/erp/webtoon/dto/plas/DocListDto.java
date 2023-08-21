@@ -1,6 +1,5 @@
 package com.erp.webtoon.dto.plas;
 
-import com.erp.webtoon.domain.User;
 import lombok.Builder;
 import lombok.Data;
 
