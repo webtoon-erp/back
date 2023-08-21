@@ -26,10 +26,9 @@ class PayServiceTest {
     private UserRepository userRepository;
 
     @Test
-    @DisplayName("급여 등록")
-    void saveTest() {
+    @DisplayName("월 급여 등록")
+    void save1() {
         //given
-        //회원 먼저 등록
         User user = User.builder()
                 .employeeId("2000")
                 .build();
@@ -40,18 +39,18 @@ class PayServiceTest {
         dto.setEmployeeId("2000");
         dto.setYearSalary(100000);
         dto.setAddSalary(20000);
+        dto.setBankAccount("000-000-000-000");
         dto.setPayDate(LocalDate.now());
-        dto.toEntity();
 
         //when
         payService.save(dto);
 
         //then
-        assertEquals(1L, userRepository.count());
         assertEquals(1L, payRepository.count());
-
         Pay pay = payRepository.findAll().get(0);
         assertEquals(20000, pay.getAddPay());
         assertEquals(100000, pay.getSalary());
+        assertEquals("000-000-000-000", pay.getBankAccount());
+        assertEquals(LocalDate.now(), pay.getPayDate());
     }
 }
