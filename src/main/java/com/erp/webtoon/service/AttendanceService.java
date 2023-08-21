@@ -5,7 +5,9 @@ import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.attendance.*;
 import com.erp.webtoon.repository.AttendanceRepository;
 import com.erp.webtoon.repository.UserRepository;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -130,6 +132,8 @@ public class AttendanceService {
     }
 
     // 근태 결과 클래스
+    @Getter
+    @Setter
     private static class AttendanceResult {
         private long count;
         private List<TotalAttendanceUserListDto> userList;
@@ -141,22 +145,6 @@ public class AttendanceService {
 
         public AttendanceResult(long count, List<TotalAttendanceUserListDto> userList) {
             this.count = count;
-            this.userList = userList;
-        }
-
-        public long getCount() {
-            return count;
-        }
-
-        public void setCount(long count) {
-            this.count = count;
-        }
-
-        public List<TotalAttendanceUserListDto> getUserList() {
-            return userList;
-        }
-
-        public void setUserList(List<TotalAttendanceUserListDto> userList) {
             this.userList = userList;
         }
 
