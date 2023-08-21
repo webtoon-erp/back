@@ -15,12 +15,6 @@ public class PlasController {
 
     private final PlasService plasService;
 
-    // 템플릿 리스트 조회
-    @GetMapping("/doc/templateList")
-    public List<DocTplListDto> templateList() {
-        return plasService.getTemplateList();
-    }
-
     // 결재자 / 참조자 조회 기능
     @GetMapping("/doc/appvLineList")
     public List<AppvLineListDto> appvLineList() {

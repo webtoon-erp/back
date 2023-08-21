@@ -20,29 +20,11 @@ import java.util.stream.Collectors;
 public class PlasService {
 
     private final DocumentRepository documentRepository;
-    private final DocumentTplRepository documentTplRepository;
     private final DocumentRcvRepository documentRcvRepository;
     private final DocumentDataRepository documentDataRepository;
     private final UserRepository userRepository;
     private final FileService fileService;
     private final MessageService messageService;
-
-    /*
-        템플릿 조회
-    */
-    @Transactional(readOnly = true)
-    public List<DocTplListDto> getTemplateList() {
-        List<DocumentTpl> templateList = documentTplRepository.findAll();
-
-        return templateList.stream()
-                .map(template -> DocTplListDto.builder()
-                        .id(template.getId())
-                        .templateName(template.getTemplateName())
-                        .intro(template.getIntro())
-                        .template(template.getTemplate())
-                        .build())
-                .collect(Collectors.toList());
-    }
 
     /*
         결재자 / 참조자 조회
@@ -108,7 +90,7 @@ public class PlasService {
     public List<DocListDto> docStreamToList(List<Document> documentList) {
         return documentList.stream()
                 .map(doc -> DocListDto.builder()
-                        .templateName(doc.getDocumentTpl().getTemplateName())
+                        .templateName(doc.getTemplateName())
                         .title(doc.getTitle())
                         .reg_date(doc.getRegDate())
                         .writeDeptName(doc.getWriteUser().getDeptName())
@@ -123,13 +105,11 @@ public class PlasService {
         전자결재 문서 저장
      */
     public void addDoc(DocumentRequestDto dto) throws IOException {
-        DocumentTpl documentTpl = documentTplRepository.findById(dto.getDocumentTpId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 템플릿 정보입니다."));
 
         User writeUser = userRepository.findByEmployeeId(dto.getWriteEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 작성자 정보입니다."));
 
-        Document document = dto.toEntity(documentTpl, writeUser);
+        Document document = dto.toEntity(writeUser);
 
         // 문서 DATA 저장
         if (!dto.getDocumentDataRequests().isEmpty()) {
@@ -256,7 +236,7 @@ public class PlasService {
                 .title(document.getTitle())
                 .content(document.getContent())
                 .regDate(document.getRegDate())
-                .templateName(document.getDocumentTpl().getTemplateName())
+                .templateName(document.getTemplateName())
                 .writeUserDeptName(document.getWriteUser().getDeptName())
                 .writeUserTeamNum(document.getWriteUser().getTeamNum())
                 .writeUserPosition(document.getWriteUser().getPosition())

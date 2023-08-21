@@ -1,6 +1,5 @@
 package com.erp.webtoon.dto.plas;
 import com.erp.webtoon.domain.Document;
-import com.erp.webtoon.domain.DocumentTpl;
 import com.erp.webtoon.domain.User;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +27,7 @@ public class DocumentRequestDto {
     private List<MultipartFile> uploadFiles;
 
     @NotNull
-    private Long documentTpId;
+    private String templateName;
 
     @NotBlank
     private String writeEmployeeId; // 작성자ID
@@ -37,13 +36,13 @@ public class DocumentRequestDto {
 
     private List<DocumentDataDto> documentDataRequests;
 
-    public Document toEntity(DocumentTpl documentTpl, User writeUser) {
+    public Document toEntity(User writeUser) {
         return Document.builder()
                 .title(title)
                 .content(content)
                 .stat('N')
                 .regDate(regDate)
-                .documentTpl(documentTpl)
+                .templateName(templateName)
                 .writeUser(writeUser)
                 .build();
     }

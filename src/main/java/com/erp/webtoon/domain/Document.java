@@ -30,12 +30,10 @@ public class Document {
 
     private LocalDateTime regDate; // 작성일시
 
+    private String templateName; // 템플릿 이름
+
     @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
     private List<File> files = new ArrayList<>();   // 참조된 파일들
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doc_tpl_id")
-    private DocumentTpl documentTpl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "user_id" , name = "write_user_id")
@@ -48,12 +46,12 @@ public class Document {
     private List<DocumentData> documentDataList = new ArrayList<>();   // 데이터 목록
 
     @Builder
-    public Document(String title, String content, char stat, LocalDateTime regDate, DocumentTpl documentTpl, User writeUser) {
+    public Document(String title, String content, char stat, LocalDateTime regDate, String templateName, User writeUser) {
         this.title = title;
         this.content = content;
         this.stat = stat;
         this.regDate = regDate;
-        this.documentTpl = documentTpl;
+        this.templateName = templateName;
         this.writeUser = writeUser;
     }
 
