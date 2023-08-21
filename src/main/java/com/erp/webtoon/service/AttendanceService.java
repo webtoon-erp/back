@@ -355,6 +355,7 @@ public class AttendanceService {
                         .deptName(user.getDeptName())
                         .teamNum(user.getTeamNum())
                         .position(user.getPosition())
+                        .employeeId(user.getEmployeeId())
                         .name(user.getName())
                         .tel(user.getTel())
                         .email(user.getEmail())
