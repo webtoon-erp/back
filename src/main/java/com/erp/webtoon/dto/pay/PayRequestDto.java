@@ -34,6 +34,6 @@ public class PayRequestDto {
                 .addPay(addSalary)
                 .bankAccount(bankAccount)
                 .payDate(payDate)
-                .payYN(false).build();
+                .build();
     }
 }
