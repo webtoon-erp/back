@@ -11,8 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,7 +81,7 @@ public class PlasService {
         List<DocumentRcv> myDocumentRcvList = documentRcvRepository.findAllByUserAndReceiveTypeAndDocument_StatNot(appvUser, rcvType, 'N');
 
         List<Document> myAppvDocList = myDocumentRcvList.stream()
-                                            .map(DocumentRcv::getDocument).collect(Collectors.toList());
+                .map(DocumentRcv::getDocument).collect(Collectors.toList());
 
         return docStreamToList(myAppvDocList);
     }
@@ -134,7 +133,7 @@ public class PlasService {
 
         // 파일 저장
         if (!dto.getUploadFiles().isEmpty()) {
-            for (MultipartFile file: dto.getUploadFiles()) {
+            for (MultipartFile file : dto.getUploadFiles()) {
                 File saveFile = fileService.save(file);
                 saveFile.updateFileDocument(document);
                 document.getFiles().add(saveFile);
@@ -146,14 +145,40 @@ public class PlasService {
     }
 
     /*
+        연차 사용 신청 등록
+     */
+    public void addDayOffDoc(DayOffDocumentRequestDto dto) {
+
+        User writeUser = userRepository.findByEmployeeId(dto.getWriteEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 작성자 정보입니다."));
+
+        // 문서 저장
+        Document document = dto.toDocumentEntity(writeUser);
+        documentRepository.save(document);
+
+        // 문서 Data 저장
+        DocumentData documentData = dto.toDocDataEntity(document);
+        documentDataRepository.save(documentData);
+
+        // 문서 결재선 저장 - 해당 부서 & 팀 최고 결재자
+        User appvUser = getAppvUser(writeUser);
+        DocumentRcv documentRcv = dto.toDocRcvEntity(document, appvUser);
+        documentRcvRepository.save(documentRcv);
+
+        String content = "새 전자결재 문서가 상신되었습니다. 문서명 - " + document.getTitle();
+        sendMsg(document.getId(), appvUser, writeUser, content);
+
+    }
+
+    /*
         전자결재 문서 삭제
      */
     public void deleteDoc(Long documentId) {
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 입니다."));
 
-        if (document.getStat() == 'Y')  documentRepository.delete(document);
-        else  throw new RuntimeException("이미 상신이나 완료된 문서는 삭제할 수 없습니다.");
+        if (document.getStat() == 'Y') documentRepository.delete(document);
+        else throw new RuntimeException("이미 상신이나 완료된 문서는 삭제할 수 없습니다.");
     }
 
     /*
@@ -204,8 +229,7 @@ public class PlasService {
                     // 다음 결재자 알림
                     String content = "새 전자결재 문서가 상신되었습니다. 문서명 - " + document.getTitle();
                     sendMsg(documentId, nextDocumentRcv.getUser(), document.getWriteUser(), content);
-                }
-                else { // 현재 결재자가 최종 결재자일 경우 문서 업데이트
+                } else { // 현재 결재자가 최종 결재자일 경우 문서 업데이트
                     document.changeStat('C'); // 완료 상태로 변경
 
                     // 문서 완료 시 문서 작성자 알림
@@ -259,5 +283,18 @@ public class PlasService {
 
         Message message = messageSaveDto.toEntity(rcvUser, sendUser);
         messageService.addMsg(message);
+    }
+
+    private User getAppvUser(User writeUser) {
+
+        List<User> sameDeptUsers = userRepository.findByDeptCodeAndTeamNum(writeUser.getDeptCode(), writeUser.getTeamNum());
+
+        List<String> userOrders = List.of("사원", "대리", "차장", "과장", "부장");
+
+        User appvUser = sameDeptUsers.stream()
+                .max(Comparator.comparingInt(user -> userOrders.indexOf(user.getPosition())))
+                .orElseThrow(() -> new NoSuchElementException("해당 직원이 속한 팀의 최고 결재선 정보가 존재하지 않습니다."));
+
+        return appvUser;
     }
 }

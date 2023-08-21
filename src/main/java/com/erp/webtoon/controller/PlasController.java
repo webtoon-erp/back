@@ -25,6 +25,10 @@ public class PlasController {
     @PostMapping("/doc")
     public void save(@RequestBody DocumentRequestDto dto) throws IOException { plasService.addDoc(dto); }
 
+    // 연차 사용 신청 등록
+    @PostMapping("/doc/dayOff")
+    public void registerDayOff(@RequestBody DayOffDocumentRequestDto dto) { plasService.addDayOffDoc(dto); }
+
     // 전자결재 문서 삭제
     @DeleteMapping("/doc/{documentId}")
     public void delete(@PathVariable Long documentId) { plasService.deleteDoc(documentId); }
