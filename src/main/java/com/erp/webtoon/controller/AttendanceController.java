@@ -11,6 +11,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/attendance")
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
@@ -18,24 +19,24 @@ public class AttendanceController {
     /*
         출근 & 퇴근
      */
-    @PostMapping("/attendance")
-    public void attendanceAdd(@RequestBody AttendanceRequestDto dto) throws IOException {
+    @PostMapping
+    public void addAttendanceRecord(@RequestBody AttendanceRequestDto dto) throws IOException {
         attendanceService.addAttendance(dto);
     }
 
     /*
         개인 근태 조회
      */
-    @PostMapping("/attendance/individual/{employeeId}")
-    public AttendanceResponseDto individualAttendance(@PathVariable String employeeId) {
+    @GetMapping("/individual/{employeeId}")
+    public AttendanceResponseDto getIndividualAttendance(@PathVariable String employeeId) {
         return attendanceService.getIndividualAttendance(employeeId);
     }
 
     /*
         전체 근태 조회
      */
-    @GetMapping("/attendance/total")
-    public TotalAttendanceResponseDto totalAttendance() {
+    @GetMapping("/total")
+    public TotalAttendanceResponseDto getTotalAttendance() {
         return attendanceService.getTotalAttendance();
     }
 
