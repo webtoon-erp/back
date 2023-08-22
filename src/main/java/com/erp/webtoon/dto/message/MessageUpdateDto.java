@@ -12,7 +12,7 @@ public class MessageUpdateDto {
     private Long id;
 
     @NotBlank
-    private char stat;
+    private char stat; // 읽음 -> R, 삭제 -> N
 
     public Message toEntity() {
         return Message.builder()
