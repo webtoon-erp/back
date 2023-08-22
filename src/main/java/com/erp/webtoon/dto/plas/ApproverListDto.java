@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class AppvLineListDto {
+public class ApproverListDto {
 
     private String name;    // 이름
 

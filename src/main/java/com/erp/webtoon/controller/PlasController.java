@@ -16,68 +16,68 @@ public class PlasController {
     private final PlasService plasService;
 
     // 결재자 / 참조자 조회 기능
-    @GetMapping("/doc/appvLineList")
-    public List<AppvLineListDto> appvLineList() {
-        return plasService.getAppvLineList();
+    @GetMapping("/approvers")
+    public List<ApproverListDto> getApprovers() {
+        return plasService.getApproverList();
     }
 
     // 전자결재 문서 저장
-    @PostMapping("/doc")
+    @PostMapping("/documents")
     public void save(@RequestBody DocumentRequestDto dto) throws IOException {
         plasService.addDoc(dto);
     }
 
     // 연차 사용 신청 등록
-    @PostMapping("/doc/dayOff")
+    @PostMapping("/documents/dayOff")
     public void registerDayOff(@RequestBody DayOffDocumentRequestDto dto) {
         plasService.addDayOffDoc(dto);
     }
 
     // 전자결재 문서 삭제
-    @DeleteMapping("/doc/{documentId}")
+    @DeleteMapping("/documents/{documentId}")
     public void delete(@PathVariable Long documentId) {
         plasService.deleteDoc(documentId);
     }
 
     // 전자결재 문서 상신
-    @PostMapping("/doc/{documentId}")
-    public void send(@PathVariable Long documentId) {
-        plasService.sendDoc(documentId);
+    @PatchMapping("/documents/{documentId}")
+    public void submit(@PathVariable Long documentId) {
+        plasService.submitDoc(documentId);
     }
 
     // 전자결재 문서 승인
-    @PostMapping("/doc/{documentId}/{employeeId}")
+    @PatchMapping("/documents/{documentId}/{employeeId}")
     public void approve(@PathVariable Long documentId, @PathVariable String employeeId) {
         plasService.approveDoc(documentId, employeeId);
     }
 
     // 내 문서 조회
-    @GetMapping("/list/myDoc/{employeeId}")
-    public List<DocListDto> myDocList(@PathVariable String employeeId) {
+    @GetMapping("/documents/my/{employeeId}")
+    public List<DocListDto> getMyDocuments(@PathVariable String employeeId) {
         return plasService.getMyDocList(employeeId);
     }
 
     // 내 부서 문서 조회
-    @GetMapping("/list/myDeptDoc/{deptCode}")
-    public List<DocListDto> myDeptDocList(@PathVariable String deptCode) {
+    @GetMapping("/documents/myDept/{deptCode}")
+    public List<DocListDto> getMyDeptDocuments(@PathVariable String deptCode) {
         return plasService.getMyDeptDocList(deptCode);
     }
 
     // 내 결제 대기 문서 조회
-    @GetMapping("/list/myAppvDoc/{employeeId}")
-    public List<DocListDto> myAppvDocList(@PathVariable String employeeId) {
+    @GetMapping("/documents/myAppv/{employeeId}")
+    public List<DocListDto> getMyAppvDocuments(@PathVariable String employeeId) {
         return plasService.getMyAppvOrCCDocList("APPV", employeeId);
     }
 
     // 내 참조 문서 조회
-    @GetMapping("/list/myCCDoc/{employeeId}")
-    public List<DocListDto> myCCDocist(@PathVariable String employeeId) {
+    @GetMapping("/documents/myCC/{employeeId}")
+    public List<DocListDto> getMyCCDocuments(@PathVariable String employeeId) {
         return plasService.getMyAppvOrCCDocList("CC", employeeId);
     }
 
     // 전자결재 문서 상세 조회
-    @GetMapping("/{documentId}")
-    public DocumentResponseDto getDocument(@PathVariable Long documentId) {
+    @GetMapping("/documents/{documentId}")
+    public DocumentResponseDto getDocumentDetails(@PathVariable Long documentId) {
         return plasService.getDocument(documentId);
     }
 
