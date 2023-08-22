@@ -47,7 +47,8 @@ public class MessageService {
                         .content(message.getContent())
                         .refId(message.getRefId())
                         .programId(message.getProgramId())
-                        .sendUser(message.getSendUser())
+                        .sendEmployeeId(message.getSendUser().getEmployeeId())
+                        .sendName(message.getSendUser().getUsername())
                         .build())
                 .collect(Collectors.toList());
     }
