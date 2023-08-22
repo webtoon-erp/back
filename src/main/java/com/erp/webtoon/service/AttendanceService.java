@@ -1,6 +1,7 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Attendance;
+import com.erp.webtoon.domain.Document;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.attendance.*;
 import com.erp.webtoon.repository.AttendanceRepository;
@@ -39,6 +40,21 @@ public class AttendanceService {
         Attendance attendance = dto.toEntity(user);
         attendanceRepository.save(attendance);
 
+    }
+
+    /*
+        연차 등록
+     */
+    public void addDayOff(LocalDateTime dayOffDate, User user) {
+
+        Attendance attendance = Attendance.builder()
+                .attendMonth(dayOffDate.getMonthValue())
+                .attendDate(dayOffDate.toString())
+                .attendType("DAYOFF")
+                .user(user)
+                .build();
+
+        attendanceRepository.save(attendance);
     }
 
     /*

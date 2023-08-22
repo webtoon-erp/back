@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,7 @@ public class PlasService {
     private final UserRepository userRepository;
     private final FileService fileService;
     private final MessageService messageService;
+    private final AttendanceService attendanceService;
 
     /*
         결재자 / 참조자 조회
@@ -242,7 +244,13 @@ public class PlasService {
             }
         }
 
-        if (!approved) {
+        if (approved) {
+            if (document.getTemplateName().equals("연차사용신청서")) {
+                LocalDateTime dayOffDate = document.getDocumentDataList().get(0).getFromDate();
+                attendanceService.addDayOff(dayOffDate, document.getWriteUser());
+            }
+        }
+        else {
             throw new RuntimeException("해당 사용자의 승인 권한 아직 없거나 이미 처리되었습니다.");
         }
 
