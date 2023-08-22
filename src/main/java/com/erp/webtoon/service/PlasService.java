@@ -31,11 +31,11 @@ public class PlasService {
         결재자 / 참조자 조회
     */
     @Transactional(readOnly = true)
-    public List<AppvLineListDto> getAppvLineList() {
+    public List<ApproverListDto> getApproverList() {
         List<User> appvLineList = userRepository.findAll();
 
         return appvLineList.stream()
-                .map(user -> AppvLineListDto.builder()
+                .map(user -> ApproverListDto.builder()
                         .name(user.getName())
                         .deptName(user.getDeptName())
                         .teamNum(user.getTeamNum())
@@ -186,7 +186,7 @@ public class PlasService {
     /*
         전자결재 문서 상신
      */
-    public void sendDoc(Long documentId) {
+    public void submitDoc(Long documentId) {
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 입니다."));
 
