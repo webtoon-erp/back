@@ -50,7 +50,7 @@ public class PlasService {
     @Transactional(readOnly = true)
     public List<DocListDto> getMyDocList(String employeeId) {
         User writeUser = userRepository.findByEmployeeId(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException("문서 작성 직원의 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 직원의 정보가 존재하지 않습니다."));
 
         List<Document> myDocList = documentRepository.findAllByWriteUser(writeUser);
 
@@ -78,7 +78,7 @@ public class PlasService {
     public List<DocListDto> getMyAppvOrCCDocList(String rcvType, String employeeId) {
 
         User appvUser = userRepository.findByEmployeeId(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException("사용자 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 직원의 정보가 존재하지 않습니다."));
 
         List<DocumentRcv> myDocumentRcvList = documentRcvRepository.findAllByUserAndReceiveTypeAndDocument_StatNot(appvUser, rcvType, 'N');
 
@@ -182,7 +182,7 @@ public class PlasService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 입니다."));
 
         if (document.getStat() == 'Y') documentRepository.delete(document);
-        else throw new RuntimeException("이미 상신이나 완료된 문서는 삭제할 수 없습니다.");
+        else throw new IllegalStateException("이미 상신이나 완료된 문서는 삭제할 수 없습니다.");
     }
 
     /*
@@ -196,7 +196,7 @@ public class PlasService {
 
         // 1번 결재자 조회
         DocumentRcv documentRcv = documentRcvRepository.findByDocumentAndReceiveTypeAndSortSequence(document, "APPV", 1)
-                .orElseThrow(() -> new EntityNotFoundException("해당 문서에 결재자가 존재하지 않습니다."));
+                .orElseThrow(() -> new NoSuchElementException("해당 문서에 결재자가 존재하지 않습니다."));
 
         documentRcv.changeStat('Y');
 
@@ -253,7 +253,7 @@ public class PlasService {
             }
         }
         else {
-            throw new RuntimeException("해당 사용자의 승인 권한 아직 없거나 이미 처리되었습니다.");
+            throw new IllegalStateException("해당 사용자의 승인 권한 아직 없거나 이미 처리되었습니다.");
         }
 
     }
