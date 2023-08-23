@@ -66,6 +66,10 @@ public class PlasService {
 
         List<User> myDeptUserList = userRepository.findAllByDeptCode(deptCode);
 
+        if (myDeptUserList.isEmpty()) {
+            throw new IllegalArgumentException("올바르지 않은 부서코드 입니다.");
+        }
+
         List<Document> myDeptDocList = documentRepository.findAllByWriteUserInAndStatNot(myDeptUserList, 'N');
 
         return docStreamToList(myDeptDocList);
