@@ -1,10 +1,9 @@
 package com.erp.webtoon.controller;
 
+import com.erp.webtoon.dto.common.ErrorResponseDto;
 import com.erp.webtoon.dto.plas.*;
 import com.erp.webtoon.service.PlasService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +43,7 @@ public class PlasController {
             return ResponseEntity.ok().build();
         }
         catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
         }
     }
 
@@ -62,7 +61,7 @@ public class PlasController {
             return ResponseEntity.ok().build();
         }
         catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
         }
     }
 
@@ -80,7 +79,7 @@ public class PlasController {
             return ResponseEntity.ok(dtos);
         }
         catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
         }
 
     }
@@ -101,16 +100,6 @@ public class PlasController {
     @GetMapping("/documents/{documentId}")
     public DocumentResponseDto getDocumentDetails(@PathVariable Long documentId) {
         return plasService.getDocument(documentId);
-    }
-
-    @Getter
-    @Setter
-    private static class ErrorResponse {
-        private String message;
-
-        public ErrorResponse(String message) {
-            this.message = message;
-        }
     }
 
 }
