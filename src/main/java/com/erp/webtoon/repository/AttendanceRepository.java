@@ -80,6 +80,9 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     // 전체 근태 조회
     List<Attendance> findByAttendDateAndAttendType(String attendDate, String attendType);
 
+    // 조건 : 기준일, 근태타입, 유저
+    List<Attendance> findByAttendDateAndAttendTypeAndUser(String attendDate, String attendType, User user);
+
     // 조건 : 기준월, 근태타입
     List<Attendance> findByAttendMonthAndAttendType(int attendMonth, String attendType);
 
