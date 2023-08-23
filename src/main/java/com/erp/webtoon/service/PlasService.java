@@ -89,6 +89,7 @@ public class PlasService {
     }
 
     public List<DocListDto> docStreamToList(List<Document> documentList) {
+
         return documentList.stream()
                 .map(doc -> DocListDto.builder()
                         .templateName(doc.getTemplateName())
@@ -96,7 +97,8 @@ public class PlasService {
                         .reg_date(doc.getRegDate())
                         .writeDeptName(doc.getWriteUser().getDeptName())
                         .writeUsername(doc.getWriteUser().getUsername())
-                        .documentRcvNames(doc.getRcvNames())
+                        .currentApprover(doc.getCurrentApprover())
+                        .lastApprover(doc.getLastApprover())
                         .stat(doc.getStat())
                         .build())
                 .collect(Collectors.toList());

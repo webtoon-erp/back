@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -57,11 +56,30 @@ public class Document {
 
 
     //수신자 목록의 이름 불러오기
-    public List<String> getRcvNames() {
+//    public List<String> getRcvNames() {
+//        return documentRcvs.stream()
+//                .map(documentRcv -> documentRcv.getUser().getName())
+//                .collect(Collectors.toList());
+//    }
+
+    // 결재대기자 찾기
+    public String getCurrentApprover() {
         return documentRcvs.stream()
-                .map(documentRcv -> documentRcv.getUser().getName())
-                .collect(Collectors.toList());
+                .filter(documentRcv -> documentRcv.getReceiveType().equals("APPV") && documentRcv.getStat() == 'Y')
+                .findFirst()
+                .map(documentRcv -> documentRcv.getUser().getUsername())
+                .orElse("");
     }
+
+    // 최종결재자 찾기
+    public String getLastApprover() {
+        return documentRcvs.stream()
+                .filter(documentRcv -> documentRcv.getReceiveType().equals("APPV"))
+                .max(Comparator.comparingInt(DocumentRcv::getSortSequence))
+                .map(documentRcv -> documentRcv.getUser().getUsername())
+                .orElse("");
+    }
+
 
     public void changeStat(char stat) { this.stat = stat; }
 

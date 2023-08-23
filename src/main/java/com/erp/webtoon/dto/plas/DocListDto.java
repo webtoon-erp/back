@@ -21,7 +21,9 @@ public class DocListDto {
 
     private String writeUsername;   // 작성자
 
-    private List<String> documentRcvNames; // 수신자 목록
+    private String currentApprover; // 결재대기자
+
+    private String lastApprover; // 최종결재자
 
     private char stat;  // 상태
 
