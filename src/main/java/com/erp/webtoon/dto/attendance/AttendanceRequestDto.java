@@ -2,8 +2,10 @@ package com.erp.webtoon.dto.attendance;
 
 import com.erp.webtoon.domain.Attendance;
 import com.erp.webtoon.domain.User;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.validation.constraints.NotBlank;
@@ -12,6 +14,8 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AttendanceRequestDto {
 
     @Builder.Default
