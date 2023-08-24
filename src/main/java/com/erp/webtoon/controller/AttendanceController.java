@@ -35,7 +35,7 @@ public class AttendanceController {
     /*
         개인 근태 조회
      */
-    @GetMapping("/individual/{employeeId}")
+    @GetMapping("/{employeeId}")
     public AttendanceResponseDto getIndividualAttendance(@PathVariable String employeeId) {
         return attendanceService.getIndividualAttendance(employeeId);
     }
