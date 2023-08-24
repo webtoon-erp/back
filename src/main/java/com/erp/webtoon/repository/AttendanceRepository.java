@@ -14,16 +14,16 @@ import java.util.List;
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
-    @Query("SELECT FUNCTION('WEEK', a1.attendDate, 3), a1.attendDate, a1.attendTime, a2.attendTime, " +
-            "FUNCTION('SEC_TO_TIME', FUNCTION('TIMESTAMPDIFF', 'SECOND', a1.attendTime, a2.attendTime)) " +
-            "FROM Attendance a1, Attendance a2 " +
-            "WHERE a1.attendType = 'START' " +
-            "AND a2.attendType = 'END' " +
-            "AND a1.attendDate = a2.attendDate " +
-            "AND a1.user = a2.user " +
-            "AND FUNCTION('MONTH', a1.attendDate) = FUNCTION('MONTH', CURRENT_TIMESTAMP) " +
-            "AND a1.user = :user")
-    List<IndividualAttendanceListDto> findIndividualAttendance(@Param("user") User user);
+    @Query(value = "SELECT WEEK(START.attend_date, 3) AS week, START.attend_date AS attendDate, START.attend_time AS startTime, END.attend_time AS endTime, " +
+            "SEC_TO_TIME(TIMESTAMPDIFF(SECOND, START.attend_time, END.attend_time)) AS totalTime " +
+            "FROM attendance START, attendance END " +
+            "WHERE START.attend_date = END.attend_date " +
+            "AND START.user_id = END.user_id " +
+            "AND START.attend_type = 'START'" +
+            "AND END.attend_type = 'END'" +
+            "AND START.attend_month = MONTH(NOW()) " +
+            "AND START.user_id = :userId", nativeQuery = true)
+    List<IndividualAttendanceListDto> findIndividualAttendance(@Param("userId") User user);
 
     // 개인 이번주 누적 근무시간
     @Query(value = "SELECT SUM(TIMESTAMPDIFF(SECOND, START.attend_time, END.attend_time)) " +

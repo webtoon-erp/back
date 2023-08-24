@@ -1,20 +1,17 @@
 package com.erp.webtoon.dto.attendance;
 
-import lombok.Data;
-
 import java.time.LocalDateTime;
 
-@Data
-public class IndividualAttendanceListDto {
+public interface IndividualAttendanceListDto {
 
-    private int week; // 주차
+    int getWeek(); // 주차
 
-    private String attendDate;  //  기준일
+    String getAttendDate();  //  기준일
 
-    private LocalDateTime startTime;  // 시작시간
+    LocalDateTime getStartTime();  // 시작시간
 
-    private LocalDateTime endTime;  // 종료시간
+    LocalDateTime getEndTime();  // 종료시간
 
-    private int totalTime; // 총 근무시간
+    String getTotalTime(); // 총 근무시간
 
 }
