@@ -120,12 +120,19 @@ public class AttendanceService {
 
         return TotalAttendanceSummaryDto.builder()
                 .totalUserCnt(userRepository.countAllBy())
+                .totalUserList(userListToDtoList(userRepository.findAll()))
                 .onTimeStartUserCnt(getOnTimeStartAttendances().getCount())
+                .onTimeStartUserList(getOnTimeStartAttendances().getUserList())
                 .lateStartUserCnt(getLateStartAttendances().getCount())
+                .lateStartUserList(getLateStartAttendances().getUserList())
                 .notStartUserCnt(getNotStartAttendances().getCount())
+                .notStartUserList(getNotStartAttendances().getUserList())
                 .dayOffUserCnt(getDayOffAttendances().getCount())
+                .dayOffUserList(getDayOffAttendances().getUserList())
                 .onTimeEndUserCnt(getOnTimeEndAttendances().getCount())
+                .onTimeEndUserList(getOnTimeEndAttendances().getUserList())
                 .notEndUserCnt(getNotEndAttendances().getCount())
+                .notEndUserList(getNotEndAttendances().getUserList())
                 .build();
 
     }
