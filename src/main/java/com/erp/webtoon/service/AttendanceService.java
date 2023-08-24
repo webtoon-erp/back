@@ -37,14 +37,20 @@ public class AttendanceService {
         User user = userRepository.findByEmployeeId(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 직원의 정보가 존재하지 않습니다."));
 
-        List<Attendance> attendanceHis = attendanceRepository.findByAttendDateAndAttendTypeAndUser(dto.getAttendDate(), "START", user);
+        List<Attendance> startHis = attendanceRepository.findByAttendDateAndAttendTypeAndUser(dto.getAttendDate(), "START", user);
+        List<Attendance> endHis = attendanceRepository.findByAttendDateAndAttendTypeAndUser(dto.getAttendDate(), "END", user);
 
 
-        if (dto.getAttendType().equals("START") && !attendanceHis.isEmpty()) {
+        if (dto.getAttendType().equals("START") && !startHis.isEmpty()) {
             throw new IllegalStateException("이미 오늘 출근 정보를 등록하였습니다.");
         }
-        else if (dto.getAttendType().equals("END") && attendanceHis.isEmpty()) {
-            throw new IllegalStateException("오늘 등록된 출근 정보가 있어야 퇴근 정보를 등록할 수 있습니다.");
+        else if (dto.getAttendType().equals("END")) {
+            if (startHis.isEmpty()) {
+                throw new IllegalStateException("오늘 등록된 출근 정보가 있어야 퇴근 정보를 등록할 수 있습니다.");
+            }
+            else if (!endHis.isEmpty()) {
+                throw new IllegalStateException("이미 오늘 퇴근 정보를 등록하였습니다.");
+            }
         }
 
         Attendance attendance = dto.toEntity(user);
