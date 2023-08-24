@@ -83,14 +83,24 @@ public class AttendanceService {
 
         AttendanceResponseDto dto = new AttendanceResponseDto();
 
-        dto.setWeeklyTotalTime(attendanceRepository.findIndividualWeeklyTotalTime(user.getId()));
-        dto.setWeeklyOverTime(attendanceRepository.findIndividualWeeklyOverTime(user.getId()));
-        dto.setMonthlyTotalTime(attendanceRepository.findIndividualMonthlyTotalTime(user.getId()));
-        dto.setMonthlyOverTime(attendanceRepository.findIndividualMonthlyOverTime(user.getId()));
+        dto.setWeeklyTotalTime(convertSecondsToTimeFormat(attendanceRepository.findIndividualWeeklyTotalTime(user.getId())));
+        dto.setWeeklyOverTime(convertSecondsToTimeFormat(attendanceRepository.findIndividualWeeklyOverTime(user.getId())));
+        dto.setMonthlyTotalTime(convertSecondsToTimeFormat(attendanceRepository.findIndividualMonthlyTotalTime(user.getId())));
+        dto.setMonthlyOverTime(convertSecondsToTimeFormat(attendanceRepository.findIndividualMonthlyOverTime(user.getId())));
         dto.setAttendanceList(attendanceRepository.findIndividualAttendance(user));
 
         return dto;
 
+    }
+
+    public String convertSecondsToTimeFormat(Long totalSeconds) {
+        if (totalSeconds == null)  return "00:00:00";
+
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
     /*
