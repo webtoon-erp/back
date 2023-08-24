@@ -7,7 +7,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import javax.persistence.EntityListeners;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,9 +31,6 @@ public class AttendanceRequestDto {
     @NotBlank
     private String attendType;  // 근태타입
 
-    @CreationTimestamp
-    private LocalDateTime attendTime; // 시간
-
     @NotBlank
     private String employeeId;
 
@@ -38,7 +39,6 @@ public class AttendanceRequestDto {
                 .attendMonth(attendMonth)
                 .attendDate(attendDate)
                 .attendType(attendType)
-                .attendTime(attendTime)
                 .user(user)
                 .build();
     }
