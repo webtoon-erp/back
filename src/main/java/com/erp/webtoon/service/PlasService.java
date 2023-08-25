@@ -289,7 +289,7 @@ public class PlasService {
 
     private void sendMsg(Long documentId, User rcvUser, User sendUser, String content) {
         MessageSaveDto messageSaveDto = MessageSaveDto.builder()
-                .channel("dm")
+                .channel("DM")
                 .content(content)
                 .refId(documentId)
                 .programId("plas")

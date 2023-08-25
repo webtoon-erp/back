@@ -259,7 +259,7 @@ public class RequestService {
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
         MessageSaveDto dto = MessageSaveDto.builder()
-                .channel("it")
+                .channel("IT")
                 .content("새로운 요청이 접수되었습니다.")
                 .rcvEmpId(rcvUser.getEmployeeId())
                 .sendEmpId(sendUser.getEmployeeId())
@@ -285,7 +285,7 @@ public class RequestService {
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
         MessageSaveDto dto = MessageSaveDto.builder()
-                .channel("dm")
+                .channel("DM")
                 .content("서비스 요청의 진행 단계가 변경 되었습니다.")
                 .rcvEmpId(rcvUser.getEmployeeId())
                 .sendEmpId(sendUser.getEmployeeId())

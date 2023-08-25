@@ -78,7 +78,7 @@ public class MessageService {
     public void addMsg(Message message) {
         messageRepository.save(message);
 
-        if (message.getMsgType().equals("dm")) {
+        if (message.getMsgType().equals("DM")) {
             // dm일 경우 수신자의 사번을 전달
             slackService.sendSlackChannel(message.getContent(), message.getRcvUser().getEmployeeId());
         } else {

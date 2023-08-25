@@ -33,19 +33,19 @@ public class SlackService {
 
         // 채널 분기
         switch (channel) {
-            case "test":
+            case "TEST":
                 channelAddress = SlackConstant.TEST_CHANNEL; // 테스트
                 break;
 
-            case "all":
+            case "ALL":
                 channelAddress = SlackConstant.ALL_CHANNEL;  // 전체 알림
                 break;
 
-            case "webtoon":
+            case "WEBTOON":
                 channelAddress = SlackConstant.WT_CHANNEL;   // 웹툰
                 break;
 
-            case "it":
+            case "IT":
                 channelAddress = SlackConstant.IT_CHANNEL;   // IT팀
                 break;
 
