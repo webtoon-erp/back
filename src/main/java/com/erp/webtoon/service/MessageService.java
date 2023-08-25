@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,8 @@ public class MessageService {
         messageList.addAll(messageList3);
 
         return messageList.stream()
+                .sorted(Comparator.comparing(Message::getCreatedDate).reversed())
+                .limit(5)
                 .map(message -> MessageListDto.builder()
                         .content(message.getContent())
                         .refId(message.getRefId())
