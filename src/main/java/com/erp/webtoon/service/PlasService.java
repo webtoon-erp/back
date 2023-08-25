@@ -186,7 +186,7 @@ public class PlasService {
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 입니다."));
 
-        if (document.getStat() == 'Y') documentRepository.delete(document);
+        if (document.getStat() == 'N') documentRepository.delete(document);
         else throw new IllegalStateException("이미 상신이나 완료된 문서는 삭제할 수 없습니다.");
     }
 
