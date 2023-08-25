@@ -348,4 +348,32 @@ class PayServiceTest {
         assertEquals("토익", payQualificationDto2.getName());
         assertEquals(10000, payQualificationDto2.getMoney());
     }
+
+    @Test
+    @DisplayName("급여 지급 여부 수정")
+    void test8() {
+        //given
+        User user = User.builder()
+                .employeeId("2000")
+                .build();
+
+        userRepository.save(user);
+
+        PayRequestDto dto = new PayRequestDto();
+        dto.setEmployeeId("2000");
+        dto.setYearSalary(100000);
+        dto.setAddSalary(20000);
+        dto.setBankAccount("000-000-000-000");
+        dto.setPayDate(LocalDate.now());
+
+        payService.save(dto);
+
+        //when
+        payService.update(payRepository.findAll().get(0).getId());
+
+        //then
+        assertEquals(1L, payRepository.count());
+        Pay pay = payRepository.findAll().get(0);
+        assertEquals(true, pay.isPayYN());
+    }
 }
