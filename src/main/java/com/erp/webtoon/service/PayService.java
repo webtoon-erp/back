@@ -147,11 +147,13 @@ public class PayService {
      * 자격 수당 수정
      */
     @Transactional
-    public void saveQualPay(Long qualId, QualificationPayRequestDto dto) {
-        Qualification findQual = qualificationRepository.findById(qualId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 자격증입니다."));
+    public void saveQualPay(List<QualificationPayRequestDto> dtos) {
+        for (QualificationPayRequestDto dto : dtos) {
+            Qualification findQual = qualificationRepository.findById(dto.getQualId())
+                    .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 자격증입니다."));
 
-        findQual.updateQlfcPay(dto.getQualPay());
+            findQual.updateQlfcPay(dto.getQualPay());
+        }
     }
 
     /**

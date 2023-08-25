@@ -79,9 +79,9 @@ public class PayController {
     /**
      * 자격 수당 등록
      */
-    @PutMapping("/pays/{qualId}")
-    public ResponseEntity updateQualPay(@PathVariable Long qualId, @RequestBody QualificationPayRequestDto dto) {
-        payService.saveQualPay(qualId, dto);
+    @PutMapping("/pays/qual")
+    public ResponseEntity updateQualPay(@RequestBody List<QualificationPayRequestDto> dtos) {
+        payService.saveQualPay(dtos);
 
         return new ResponseEntity(HttpStatus.OK);
     }
