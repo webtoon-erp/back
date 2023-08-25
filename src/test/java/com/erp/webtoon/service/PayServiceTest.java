@@ -229,4 +229,57 @@ class PayServiceTest {
         assertEquals("000-000-000-111", pay.getBankAccount());
         assertEquals(LocalDate.now(), pay.getPayDate());
     }
+
+    @Test
+    @DisplayName("지급일 여러명 수정")
+    void test6() {
+        //given
+        List<User> userList = IntStream.range(1, 6)
+                .mapToObj(i -> User.builder()
+                        .employeeId("100" + i)
+                        .deptName("부서" + i)
+                        .teamNum(i)
+                        .name("규규" + i).build())
+                .collect(Collectors.toList());
+        userRepository.saveAll(userList);
+
+        PayRequestDto dto1 = new PayRequestDto();
+        dto1.setEmployeeId("1001");
+        dto1.setYearSalary(100000);
+        dto1.setAddSalary(20000);
+        dto1.setBankAccount("000-000-000-111");
+        dto1.setPayDate(LocalDate.of(2023, 8, 10));
+
+        PayRequestDto dto2 = new PayRequestDto();
+        dto2.setEmployeeId("1003");
+        dto2.setYearSalary(7000);
+        dto2.setAddSalary(10000);
+        dto2.setBankAccount("000-000-000-333");
+        dto2.setPayDate(LocalDate.of(2023, 7, 15));
+
+        payService.save(dto1);
+        payService.save(dto2);
+
+        List<PayDateUpdateListDto> dtos = new ArrayList<>();
+
+        PayDateUpdateListDto update1 = new PayDateUpdateListDto();
+        update1.setEmployeeId("1001");
+        update1.setPayDate(LocalDate.now());
+
+        PayDateUpdateListDto update2 = new PayDateUpdateListDto();
+        update2.setEmployeeId("1003");
+        update2.setPayDate(LocalDate.now());
+
+        dtos.add(update1);
+        dtos.add(update2);
+
+        //when
+        payService.updateAllPayDate(dtos);
+
+        //then
+        assertEquals(5L, userRepository.count());
+        assertEquals(LocalDate.now(), payRepository.findAll().get(0).getPayDate());
+        assertEquals(LocalDate.now(), payRepository.findAll().get(1).getPayDate());
+    }
+
 }
