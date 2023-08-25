@@ -77,7 +77,7 @@ public class PlasService {
     }
 
     /*
-        내 결재대기 & 참조 문서 조회
+        내 결재 & 참조 문서 조회
     */
     @Transactional(readOnly = true)
     public List<DocListDto> getMyAppvOrCCDocList(String rcvType, String employeeId) {

@@ -90,7 +90,7 @@ public class PlasController {
 
     }
 
-    // 내 결제 대기 문서 조회
+    // 내 결재 문서 조회 -> 결재 완료 + 결재 대기 조회
     @GetMapping("/documents/myAppv/{employeeId}")
     public List<DocListDto> getMyAppvDocuments(@PathVariable String employeeId) {
         return plasService.getMyAppvOrCCDocList("APPV", employeeId);
