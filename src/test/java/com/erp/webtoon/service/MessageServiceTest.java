@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -55,6 +56,25 @@ public class MessageServiceTest {
         assertEquals("DM", savedMessage.getMsgType());
         assertEquals("Test DM message", savedMessage.getContent());
     }
+
+    @Test
+    void testAddMsg_OtherMessageType() {
+        // Given
+        Message message = Message.builder()
+                .msgType("IT")
+                .content("Test IT message")
+                .build();
+
+        // When
+        messageService.addMsg(message);
+
+        // Then
+        Message savedMessage = messageRepository.findById(message.getId()).orElse(null);
+        assertNotNull(savedMessage);
+        assertEquals("IT", savedMessage.getMsgType());
+        assertEquals("Test IT message", savedMessage.getContent());
+    }
+
 
 
 }
