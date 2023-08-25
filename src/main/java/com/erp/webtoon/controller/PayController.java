@@ -64,7 +64,7 @@ public class PayController {
     @PutMapping("/pays/account/{employeeId}")
     public ResponseEntity updateAccount(@PathVariable String employeeId, @RequestBody PayAccountUpdateDto dto) {
         payService.updateAccount(employeeId, dto);
-        return new ResponseEntity(redirect(employeeId), HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(redirect(employeeId));
     }
 
     /**
