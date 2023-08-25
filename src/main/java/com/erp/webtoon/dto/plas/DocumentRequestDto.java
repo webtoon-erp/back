@@ -22,9 +22,6 @@ public class DocumentRequestDto {
     @NotBlank
     private String content;
 
-    @CreationTimestamp
-    private LocalDateTime regDate; // 작성일시
-
     private List<MultipartFile> uploadFiles;
 
     @NotNull
@@ -42,7 +39,6 @@ public class DocumentRequestDto {
                 .title(title)
                 .content(content)
                 .stat('N')
-                .regDate(regDate)
                 .templateName(templateName)
                 .writeUser(writeUser)
                 .build();

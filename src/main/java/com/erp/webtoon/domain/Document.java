@@ -6,6 +6,8 @@ import com.erp.webtoon.dto.plas.DocumentRcvResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 @Entity
 @Getter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +30,7 @@ public class Document {
 
     private char stat; // N : 임시 , Y : 상신 , C : 완료
 
+    @CreatedDate
     private LocalDateTime regDate; // 작성일시
 
     private String templateName; // 템플릿 이름
