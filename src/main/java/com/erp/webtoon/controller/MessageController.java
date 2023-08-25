@@ -1,7 +1,6 @@
 package com.erp.webtoon.controller;
 
 import com.erp.webtoon.dto.message.MessageListDto;
-import com.erp.webtoon.dto.message.MessageUpdateDto;
 import com.erp.webtoon.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +25,9 @@ public class MessageController {
     /*
         메시지 상태 변경
      */
-    @PatchMapping("/updateStat")
-    public void updateMessageStatus(@RequestBody MessageUpdateDto dto) {
-        messageService.modifyStat(dto);
+    @PatchMapping("/{messageId}/{stat}")
+    public void updateMessageStatus(@PathVariable Long messageId, @PathVariable char stat) {
+        messageService.modifyStat(messageId, stat);
     }
 
 }

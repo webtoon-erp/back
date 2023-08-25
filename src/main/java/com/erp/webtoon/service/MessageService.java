@@ -59,9 +59,10 @@ public class MessageService {
         - 읽음 -> R
         - 삭제 -> N
     */
-    public void modifyStat(MessageUpdateDto dto) {
-        Message message = dto.toEntity();
-        char stat = message.getStat();
+    public void modifyStat(Long messageId, char stat) {
+        Message message = messageRepository.findById(messageId)
+                        .orElseThrow(() -> new EntityNotFoundException("해당 메시지가 존재하지 않습니다."));
+
         message.changeStat(stat);
     }
 
