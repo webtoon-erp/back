@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,10 +51,11 @@ public class PayController {
     /**
      * 월 급여 수정
      */
-    @PutMapping("/pays/{employeeId}")
+    @PutMapping("/pays/month/{employeeId}")
     public ResponseEntity update(@PathVariable String employeeId, @RequestBody PayMonthUpdateDto dto) {
         payService.updateMonthPay(employeeId, dto);
-        return new ResponseEntity(redirect(employeeId), HttpStatus.MOVED_PERMANENTLY);
+
+        return ResponseEntity.ok(redirect(employeeId));
     }
 
     /**
@@ -83,13 +86,15 @@ public class PayController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    private HttpHeaders redirect(String employeeId) {
+    private Map<String, URI> redirect(String employeeId) {
         HttpHeaders headers = new HttpHeaders();
-        URI location = UriComponentsBuilder.newInstance()
+        URI uri = UriComponentsBuilder.newInstance()
                 .path("/pays/{employeeId}")
                 .buildAndExpand(employeeId).toUri();
 
-        headers.setLocation(location);
-        return headers;
+        Map<String, URI> location = new HashMap<>();
+        location.put("uri", uri);
+
+        return location;
     }
 }
