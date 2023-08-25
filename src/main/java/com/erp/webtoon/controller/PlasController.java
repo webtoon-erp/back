@@ -49,8 +49,14 @@ public class PlasController {
 
     // 전자결재 문서 상신
     @PatchMapping("/documents/{documentId}")
-    public void submit(@PathVariable Long documentId) {
-        plasService.submitDoc(documentId);
+    public ResponseEntity submit(@PathVariable Long documentId) {
+        try {
+            plasService.submitDoc(documentId);
+            return ResponseEntity.ok().build();
+        }
+        catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
+        }
     }
 
     // 전자결재 문서 승인
