@@ -188,4 +188,36 @@ class PayControllerTest {
                 .andExpect(jsonPath("$.uri").value("/pays/2000"))
                 .andDo(print());
     }
+
+    @Test
+    @DisplayName("계좌 수정")
+    void test5() throws Exception {
+        //given
+        User user = User.builder()
+                .employeeId("2000")
+                .build();
+
+        userRepository.save(user);
+
+        PayRequestDto dto = new PayRequestDto();
+        dto.setEmployeeId("2000");
+        dto.setYearSalary(100000);
+        dto.setAddSalary(20000);
+        dto.setBankAccount("000-000-000-000");
+        dto.setPayDate(LocalDate.of(2020, 8, 10));
+
+        payService.save(dto);
+
+        PayAccountUpdateDto payAccountUpdateDto = new PayAccountUpdateDto();
+        payAccountUpdateDto.setBankAccount("000-000-000-111");
+
+        //expected
+        mockMvc.perform(put("/pays/account/{employeeId}", "2000")
+                        .content(objectMapper.writeValueAsString(payAccountUpdateDto))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uri").value("/pays/2000"))
+                .andDo(print());
+    }
+
 }
