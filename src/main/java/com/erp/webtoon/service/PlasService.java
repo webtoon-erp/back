@@ -119,6 +119,9 @@ public class PlasService {
 
         Document document = dto.toEntity(writeUser);
 
+        // 문서 저장
+        documentRepository.save(document);
+
         // 문서 DATA 저장
         if (!dto.getDocumentDataRequests().isEmpty()) {
             List<DocumentData> documentDataList = dto.getDocumentDataRequests().stream()
@@ -148,9 +151,6 @@ public class PlasService {
                 document.getFiles().add(saveFile);
             }
         }
-
-        // 문서 저장
-        documentRepository.save(document);
     }
 
     /*
