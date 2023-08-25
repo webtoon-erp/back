@@ -34,9 +34,9 @@ public class MessageService {
         User user = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
 
-        List<Message> messageList1 = messageRepository.findByMsgType("all");
-        List<Message> messageList2 = messageRepository.findByMsgType(user.getDeptCode());
-        List<Message> messageList3 = messageRepository.findByRcvUser(user);
+        List<Message> messageList1 = messageRepository.findByMsgTypeAndStat("all", 'Y');
+        List<Message> messageList2 = messageRepository.findByMsgTypeAndStat(user.getDeptCode(), 'Y');
+        List<Message> messageList3 = messageRepository.findByRcvUserAndStat(user, 'Y');
         List<Message> messageList = new ArrayList<>();
         messageList.addAll(messageList1);
         messageList.addAll(messageList2);
