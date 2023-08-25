@@ -74,6 +74,7 @@ public class PayService {
 
         //해당 유저의 지금까지 받았던 지급 정보
         List<PayListResponseDto> payList = findUser.getPays().stream()
+                .filter(pay -> pay.isPayYN() == true)
                 .map(PayListResponseDto::new)
                 .collect(Collectors.toList());
 
