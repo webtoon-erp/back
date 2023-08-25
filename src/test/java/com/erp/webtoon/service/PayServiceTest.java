@@ -3,6 +3,7 @@ package com.erp.webtoon.service;
 import com.erp.webtoon.domain.Pay;
 import com.erp.webtoon.domain.Qualification;
 import com.erp.webtoon.domain.User;
+import com.erp.webtoon.dto.pay.PayAllListResponseDto;
 import com.erp.webtoon.dto.pay.PayQualificationDto;
 import com.erp.webtoon.dto.pay.PayRequestDto;
 import com.erp.webtoon.dto.pay.PayResponseDto;
@@ -18,6 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -117,5 +120,46 @@ class PayServiceTest {
         PayQualificationDto payQualificationDto = searchDto.getQualificationList().get(0);
         assertEquals("정처기", payQualificationDto.getName());
         assertEquals(50000, payQualificationDto.getMoney());
+    }
+
+    @Test
+    @DisplayName("전제 급여 조회")
+    void test3() {
+        //given
+        List<User> userList = IntStream.range(1, 6)
+                .mapToObj(i -> User.builder()
+                        .employeeId("100" + i)
+                        .name("규규" + i).build())
+                .collect(Collectors.toList());
+
+
+        userRepository.saveAll(userList);
+
+        PayRequestDto dto1 = new PayRequestDto();
+        dto1.setEmployeeId("1001");
+        dto1.setYearSalary(100000);
+        dto1.setAddSalary(20000);
+        dto1.setBankAccount("000-000-000-111");
+        dto1.setPayDate(LocalDate.now());
+
+        PayRequestDto dto2 = new PayRequestDto();
+        dto2.setEmployeeId("1003");
+        dto2.setYearSalary(7000);
+        dto2.setAddSalary(10000);
+        dto2.setBankAccount("000-000-000-333");
+        dto2.setPayDate(LocalDate.now());
+
+        payService.save(dto1);
+        payService.save(dto2);
+
+        //when
+        List<PayAllListResponseDto> payAllListResponseDtos = payService.allPayList();
+
+        //then
+        assertEquals(5L, payAllListResponseDtos.size());
+        assertEquals("규규1", payAllListResponseDtos.get(0).getName());
+        assertEquals(8333, payAllListResponseDtos.get(0).getMonthPay());
+        assertEquals("규규3", payAllListResponseDtos.get(2).getName());
+        assertEquals(583, payAllListResponseDtos.get(2).getMonthPay());
     }
 }

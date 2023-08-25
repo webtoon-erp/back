@@ -2,6 +2,7 @@ package com.erp.webtoon.controller;
 
 import com.erp.webtoon.domain.Qualification;
 import com.erp.webtoon.domain.User;
+import com.erp.webtoon.dto.pay.PayAllListResponseDto;
 import com.erp.webtoon.dto.pay.PayQualificationDto;
 import com.erp.webtoon.dto.pay.PayRequestDto;
 import com.erp.webtoon.dto.pay.PayResponseDto;
@@ -18,6 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -113,5 +116,46 @@ class PayControllerTest {
                 .andExpect(jsonPath("$.monthPay.monthSalary").value(8333))
                 .andExpect(jsonPath("$.monthPay.qualSalary").value(50000))
                         .andDo(print());
+    }
+
+    @Test
+    @DisplayName("전제 급여 조회")
+    void test3() throws Exception {
+        //given
+        List<User> userList = IntStream.range(1, 6)
+                .mapToObj(i -> User.builder()
+                        .employeeId("100" + i)
+                        .name("규규" + i).build())
+                .collect(Collectors.toList());
+
+
+        userRepository.saveAll(userList);
+
+        PayRequestDto dto1 = new PayRequestDto();
+        dto1.setEmployeeId("1001");
+        dto1.setYearSalary(100000);
+        dto1.setAddSalary(20000);
+        dto1.setBankAccount("000-000-000-111");
+        dto1.setPayDate(LocalDate.now());
+
+        PayRequestDto dto2 = new PayRequestDto();
+        dto2.setEmployeeId("1003");
+        dto2.setYearSalary(7000);
+        dto2.setAddSalary(10000);
+        dto2.setBankAccount("000-000-000-333");
+        dto2.setPayDate(LocalDate.now());
+
+        payService.save(dto1);
+        payService.save(dto2);
+
+        //expected
+        mockMvc.perform(get("/pays/all")
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("규규1"))
+                .andExpect(jsonPath("$[0].monthPay").value(8333))
+                .andExpect(jsonPath("$[0].payStat").value(false))
+                .andDo(print());
+
     }
 }
