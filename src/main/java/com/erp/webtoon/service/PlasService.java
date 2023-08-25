@@ -210,7 +210,7 @@ public class PlasService {
         documentRcv.changeStat('Y');
 
         String content = "새 전자결재 문서가 상신되었습니다. 문서명 - " + document.getTitle();
-        sendMsg(documentId, document.getWriteUser(), documentRcv.getUser(), content);
+        sendMsg(documentId, documentRcv.getUser(), document.getWriteUser(), content);
     }
 
     /*
