@@ -1,11 +1,9 @@
 package com.erp.webtoon.controller;
 
+import com.erp.webtoon.domain.Pay;
 import com.erp.webtoon.domain.Qualification;
 import com.erp.webtoon.domain.User;
-import com.erp.webtoon.dto.pay.PayAllListResponseDto;
-import com.erp.webtoon.dto.pay.PayQualificationDto;
-import com.erp.webtoon.dto.pay.PayRequestDto;
-import com.erp.webtoon.dto.pay.PayResponseDto;
+import com.erp.webtoon.dto.pay.*;
 import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.service.PayService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,8 +22,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -157,5 +154,38 @@ class PayControllerTest {
                 .andExpect(jsonPath("$[0].payStat").value(false))
                 .andDo(print());
 
+    }
+
+    @Test
+    @DisplayName("월 급여 수정")
+    void test4() throws Exception {
+        //given
+        User user = User.builder()
+                .employeeId("2000")
+                .build();
+
+        userRepository.save(user);
+
+        PayRequestDto dto = new PayRequestDto();
+        dto.setEmployeeId("2000");
+        dto.setYearSalary(100000);
+        dto.setAddSalary(20000);
+        dto.setBankAccount("000-000-000-000");
+        dto.setPayDate(LocalDate.of(2020, 8, 10));
+
+        payService.save(dto);
+
+        PayMonthUpdateDto payMonthUpdateDto = new PayMonthUpdateDto();
+        payMonthUpdateDto.setYearSalary(200000);
+        payMonthUpdateDto.setAddSalary(50000);
+        payMonthUpdateDto.setPayDate(LocalDate.now());
+
+        //expected
+        mockMvc.perform(put("/pays/month/{employeeId}", "2000")
+                        .content(objectMapper.writeValueAsString(payMonthUpdateDto))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uri").value("/pays/2000"))
+                .andDo(print());
     }
 }

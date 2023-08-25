@@ -3,10 +3,7 @@ package com.erp.webtoon.service;
 import com.erp.webtoon.domain.Pay;
 import com.erp.webtoon.domain.Qualification;
 import com.erp.webtoon.domain.User;
-import com.erp.webtoon.dto.pay.PayAllListResponseDto;
-import com.erp.webtoon.dto.pay.PayQualificationDto;
-import com.erp.webtoon.dto.pay.PayRequestDto;
-import com.erp.webtoon.dto.pay.PayResponseDto;
+import com.erp.webtoon.dto.pay.*;
 import com.erp.webtoon.dto.user.QualificationRequestDto;
 import com.erp.webtoon.repository.PayRepository;
 import com.erp.webtoon.repository.UserRepository;
@@ -161,5 +158,41 @@ class PayServiceTest {
         assertEquals(8333, payAllListResponseDtos.get(0).getMonthPay());
         assertEquals("규규3", payAllListResponseDtos.get(2).getName());
         assertEquals(583, payAllListResponseDtos.get(2).getMonthPay());
+    }
+
+    @Test
+    @DisplayName("월 급여 수정")
+    void test4() {
+        //given
+        User user = User.builder()
+                .employeeId("2000")
+                .build();
+
+        userRepository.save(user);
+
+        PayRequestDto dto = new PayRequestDto();
+        dto.setEmployeeId("2000");
+        dto.setYearSalary(100000);
+        dto.setAddSalary(20000);
+        dto.setBankAccount("000-000-000-000");
+        dto.setPayDate(LocalDate.of(2020, 8, 10));
+
+        payService.save(dto);
+
+        PayMonthUpdateDto payMonthUpdateDto = new PayMonthUpdateDto();
+        payMonthUpdateDto.setYearSalary(200000);
+        payMonthUpdateDto.setAddSalary(50000);
+        payMonthUpdateDto.setPayDate(LocalDate.now());
+
+        //when
+        payService.updateMonthPay("2000", payMonthUpdateDto);
+
+        //then
+        assertEquals(1L, payRepository.count());
+        Pay pay = payRepository.findAll().get(0);
+        assertEquals(50000, pay.getAddPay());
+        assertEquals(200000, pay.getSalary());
+        assertEquals("000-000-000-000", pay.getBankAccount());
+        assertEquals(LocalDate.now(), pay.getPayDate());
     }
 }
