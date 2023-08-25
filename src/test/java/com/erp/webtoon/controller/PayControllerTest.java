@@ -4,9 +4,11 @@ import com.erp.webtoon.domain.Pay;
 import com.erp.webtoon.domain.Qualification;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.pay.*;
+import com.erp.webtoon.repository.PayRepository;
 import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.service.PayService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,11 @@ class PayControllerTest {
 
     @Autowired
     private PayService payService;
+
+    @BeforeEach
+    void clean() {
+        userRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("월 급여 등록")
