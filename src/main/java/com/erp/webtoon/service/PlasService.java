@@ -196,12 +196,12 @@ public class PlasService {
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 입니다."));
 
-        document.changeStat('Y');
-
-        // 1번 결재자 조회
-        DocumentRcv documentRcv = documentRcvRepository.findByDocumentAndReceiveTypeAndSortSequence(document, "APPV", 1)
+        DocumentRcv documentRcv = document.getDocumentRcvs().stream()
+                .filter(rcv -> rcv.getReceiveType().equals("APPV") && rcv.getSortSequence() == 1)
+                .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("해당 문서에 결재자가 존재하지 않습니다."));
 
+        document.changeStat('Y');
         documentRcv.changeStat('Y');
 
         String content = "새 전자결재 문서가 상신되었습니다. 문서명 - " + document.getTitle();
