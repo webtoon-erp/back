@@ -282,4 +282,70 @@ class PayServiceTest {
         assertEquals(LocalDate.now(), payRepository.findAll().get(1).getPayDate());
     }
 
+    @Test
+    @DisplayName("자격 수당 수정")
+    void test7() {
+        //given
+        User user = User.builder()
+                .employeeId("2000")
+                .name("규규")
+                .deptName("인사과")
+                .build();
+
+        List<Qualification> qualList = new ArrayList<>();
+        Qualification qualification1 = Qualification.builder()
+                .qlfcType("정처기")
+                .content(null)
+                .qlfcPay(0)
+                .qlfcDate(LocalDate.now())
+                .user(user)
+                .build();
+        qualList.add(qualification1);
+        Qualification qualification2 = Qualification.builder()
+                .qlfcType("토익")
+                .content(null)
+                .qlfcPay(0)
+                .qlfcDate(LocalDate.now())
+                .user(user)
+                .build();
+        qualList.add(qualification2);
+        user.registerQualification(qualList);
+
+        userRepository.save(user);
+
+        PayRequestDto dto = new PayRequestDto();
+        dto.setEmployeeId("2000");
+        dto.setYearSalary(100000);
+        dto.setAddSalary(20000);
+        dto.setBankAccount("000-000-000-000");
+        dto.setPayDate(LocalDate.now());
+
+        payService.save(dto);
+
+        List<QualificationPayRequestDto> dtos = new ArrayList<>();
+
+        QualificationPayRequestDto update1 = new QualificationPayRequestDto();
+        update1.setQualId(qualification1.getId());
+        update1.setQualPay(50000);
+
+        QualificationPayRequestDto update2 = new QualificationPayRequestDto();
+        update2.setQualId(qualification2.getId());
+        update2.setQualPay(10000);
+
+        dtos.add(update1);
+        dtos.add(update2);
+
+        //when
+        payService.saveQualPay(dtos);
+        PayResponseDto searchDto = payService.search("2000");
+
+        //then
+        assertEquals(60000, searchDto.getMonthPay().getQualSalary());
+        PayQualificationDto payQualificationDto1 = searchDto.getQualificationList().get(0);
+        PayQualificationDto payQualificationDto2= searchDto.getQualificationList().get(1);
+        assertEquals("정처기", payQualificationDto1.getName());
+        assertEquals(50000, payQualificationDto1.getMoney());
+        assertEquals("토익", payQualificationDto2.getName());
+        assertEquals(10000, payQualificationDto2.getMoney());
+    }
 }

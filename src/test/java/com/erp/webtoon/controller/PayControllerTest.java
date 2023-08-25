@@ -270,4 +270,56 @@ class PayControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
     }
+
+    @Test
+    @DisplayName("자격 수당 등록")
+    void test7() throws Exception {
+        //given
+        User user = User.builder()
+                .employeeId("2000")
+                .name("규규")
+                .deptName("인사과")
+                .build();
+
+        List<Qualification> qualList = new ArrayList<>();
+        Qualification qualification1 = Qualification.builder()
+                .qlfcType("정처기")
+                .content(null)
+                .qlfcPay(0)
+                .qlfcDate(LocalDate.now())
+                .user(user)
+                .build();
+        qualList.add(qualification1);
+        Qualification qualification2 = Qualification.builder()
+                .qlfcType("토익")
+                .content(null)
+                .qlfcPay(0)
+                .qlfcDate(LocalDate.now())
+                .user(user)
+                .build();
+        qualList.add(qualification2);
+        user.registerQualification(qualList);
+
+        userRepository.save(user);
+
+        List<QualificationPayRequestDto> dtos = new ArrayList<>();
+
+        QualificationPayRequestDto update1 = new QualificationPayRequestDto();
+        update1.setQualId(qualification1.getId());
+        update1.setQualPay(50000);
+
+        QualificationPayRequestDto update2 = new QualificationPayRequestDto();
+        update2.setQualId(qualification2.getId());
+        update2.setQualPay(10000);
+
+        dtos.add(update1);
+        dtos.add(update2);
+
+        //expected
+        mockMvc.perform(put("/pays/qual")
+                        .content(objectMapper.writeValueAsString(dtos))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 }
