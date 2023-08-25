@@ -70,7 +70,7 @@ public class PayController {
     /**
      * 지급일 여러명 수정
      */
-    @PutMapping("/pays/payDate")
+    @PutMapping("/pays/date")
     public ResponseEntity updatePayDate(@RequestBody List<PayDateUpdateListDto> dtos) {
         payService.updateAllPayDate(dtos);
         return new ResponseEntity(HttpStatus.OK);
