@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PlasService {
 
     private final DocumentRepository documentRepository;
@@ -265,6 +266,7 @@ public class PlasService {
     /*
        전자결재 문서 상세 조회
      */
+    @Transactional(readOnly = true)
     public DocumentResponseDto getDocument(Long documentId) {
 
         Document document = documentRepository.findById(documentId)
