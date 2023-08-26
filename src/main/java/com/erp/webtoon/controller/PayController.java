@@ -79,7 +79,7 @@ public class PayController {
     /**
      * 자격 수당 등록
      */
-    @PutMapping("/pays/qual")
+    @PutMapping("/pays/qualification")
     public ResponseEntity updateQualPay(@RequestBody List<QualificationPayRequestDto> dtos) {
         payService.saveQualPay(dtos);
 

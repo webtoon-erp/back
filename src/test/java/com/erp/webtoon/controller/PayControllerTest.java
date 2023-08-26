@@ -323,7 +323,7 @@ class PayControllerTest {
         dtos.add(update2);
 
         //expected
-        mockMvc.perform(put("/pays/qual")
+        mockMvc.perform(put("/pays/qualification")
                         .content(objectMapper.writeValueAsString(dtos))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
