@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
-    List<Message> findByMsgType(String msgType);
+    List<Message> findByMsgTypeAndStat(String msgType, char stat);
 
-    List<Message> findByRcvUser(User rcvUser);
+    List<Message> findByRcvUserAndStat(User rcvUser, char stat);
 
     List<Message> findByRefId(Long refId);
 

@@ -1,8 +1,10 @@
 package com.erp.webtoon.controller;
 
+import com.erp.webtoon.dto.common.ErrorResponseDto;
 import com.erp.webtoon.dto.plas.*;
 import com.erp.webtoon.service.PlasService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -15,63 +17,94 @@ public class PlasController {
 
     private final PlasService plasService;
 
-    // 템플릿 리스트 조회
-    @GetMapping("/doc/templateList")
-    public List<DocTplListDto> templateList() {
-        return plasService.getTemplateList();
-    }
-
     // 결재자 / 참조자 조회 기능
-    @GetMapping("/doc/appvLineList")
-    public List<AppvLineListDto> appvLineList() {
-        return plasService.getAppvLineList();
+    @GetMapping("/approvers")
+    public List<ApproverListDto> getApprovers() {
+        return plasService.getApproverList();
     }
 
     // 전자결재 문서 저장
-    @PostMapping("/doc")
-    public void save(@RequestBody DocumentRequestDto dto) throws IOException { plasService.addDoc(dto); }
+    @PostMapping("/documents")
+    public void save(@RequestBody DocumentRequestDto dto) throws IOException {
+        plasService.addDoc(dto);
+    }
+
+    // 연차 사용 신청 등록
+    @PostMapping("/documents/dayOff")
+    public void registerDayOff(@RequestBody DayOffDocumentRequestDto dto) {
+        plasService.addDayOffDoc(dto);
+    }
 
     // 전자결재 문서 삭제
-    @DeleteMapping("/doc/{documentId}")
-    public void delete(@PathVariable Long documentId) { plasService.deleteDoc(documentId); }
+    @DeleteMapping("/documents/{documentId}")
+    public ResponseEntity delete(@PathVariable Long documentId) {
+        try {
+            plasService.deleteDoc(documentId);
+            return ResponseEntity.ok().build();
+        }
+        catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
+        }
+    }
 
     // 전자결재 문서 상신
-    @PostMapping("/doc/{documentId}")
-    public void send(@PathVariable("documentId") Long documentId) { plasService.sendDoc(documentId); }
+    @PatchMapping("/documents/{documentId}")
+    public ResponseEntity submit(@PathVariable Long documentId) {
+        try {
+            plasService.submitDoc(documentId);
+            return ResponseEntity.ok().build();
+        }
+        catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
+        }
+    }
 
     // 전자결재 문서 승인
-    @PostMapping("/doc/{documentId}/{employeeId}")
-    public void approve(@PathVariable Long documentId, @PathVariable String employeeId) {
-        plasService.approveDoc(documentId, employeeId);
+    @PatchMapping("/documents/{documentId}/{employeeId}")
+    public ResponseEntity approve(@PathVariable Long documentId, @PathVariable String employeeId) {
+        try {
+            plasService.approveDoc(documentId, employeeId);
+            return ResponseEntity.ok().build();
+        }
+        catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
+        }
     }
 
     // 내 문서 조회
-    @GetMapping("/list/myDoc/{employeeId}")
-    public List<DocListDto> myDocList(@PathVariable("employeeId") String employeeId) {
+    @GetMapping("/documents/my/{employeeId}")
+    public List<DocListDto> getMyDocuments(@PathVariable String employeeId) {
         return plasService.getMyDocList(employeeId);
     }
 
     // 내 부서 문서 조회
-    @GetMapping("/list/myDeptDoc/{deptCode}")
-    public List<DocListDto> myDeptDocList(@PathVariable("deptCode") String deptCode) {
-        return plasService.getMyDeptDocList(deptCode);
+    @GetMapping("/documents/myDept/{deptCode}")
+    public ResponseEntity getMyDeptDocuments(@PathVariable String deptCode) {
+        try {
+            List<DocListDto> dtos = plasService.getMyDeptDocList(deptCode);
+            return ResponseEntity.ok(dtos);
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
+        }
+
     }
 
-    // 내 결제 대기 문서 조회
-    @GetMapping("/list/myAppvDoc/{employeeId}")
-    public List<DocListDto> myAppvDocList(@PathVariable("employeeId") String employeeId) {
+    // 내 결재 문서 조회 -> 결재 완료 + 결재 대기 조회
+    @GetMapping("/documents/myAppv/{employeeId}")
+    public List<DocListDto> getMyAppvDocuments(@PathVariable String employeeId) {
         return plasService.getMyAppvOrCCDocList("APPV", employeeId);
     }
 
     // 내 참조 문서 조회
-    @GetMapping("/list/myCCDoc/{employeeId}")
-    public List<DocListDto> myCCDocist(@PathVariable("employeeId") String employeeId) {
+    @GetMapping("/documents/myCC/{employeeId}")
+    public List<DocListDto> getMyCCDocuments(@PathVariable String employeeId) {
         return plasService.getMyAppvOrCCDocList("CC", employeeId);
     }
 
     // 전자결재 문서 상세 조회
-    @GetMapping("/{documentId}")
-    public DocumentResponseDto getDocument(@PathVariable("documentId") Long documentId) {
+    @GetMapping("/documents/{documentId}")
+    public DocumentResponseDto getDocumentDetails(@PathVariable Long documentId) {
         return plasService.getDocument(documentId);
     }
 

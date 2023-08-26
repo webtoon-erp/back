@@ -3,14 +3,17 @@ package com.erp.webtoon.controller;
 import com.erp.webtoon.dto.attendance.AttendanceRequestDto;
 import com.erp.webtoon.dto.attendance.AttendanceResponseDto;
 import com.erp.webtoon.dto.attendance.TotalAttendanceResponseDto;
+import com.erp.webtoon.dto.common.ErrorResponseDto;
 import com.erp.webtoon.service.AttendanceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/attendance")
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
@@ -18,24 +21,30 @@ public class AttendanceController {
     /*
         출근 & 퇴근
      */
-    @PostMapping("/attendance")
-    public void attendanceAdd(@RequestBody AttendanceRequestDto dto) throws IOException {
-        attendanceService.addAttendance(dto);
+    @PostMapping
+    public ResponseEntity addAttendanceRecord(@RequestBody AttendanceRequestDto dto) throws IOException {
+        try {
+            attendanceService.addAttendance(dto);
+            return ResponseEntity.ok().build();
+        }
+        catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
+        }
     }
 
     /*
         개인 근태 조회
      */
-    @PostMapping("/attendance/individual/{employeeId}")
-    public AttendanceResponseDto individualAttendance(@PathVariable("employeeId") String employeeId){
+    @GetMapping("/{employeeId}")
+    public AttendanceResponseDto getIndividualAttendance(@PathVariable String employeeId) {
         return attendanceService.getIndividualAttendance(employeeId);
     }
 
     /*
         전체 근태 조회
      */
-    @GetMapping("/attendance/total")
-    public TotalAttendanceResponseDto totalAttendance() {
+    @GetMapping("/total")
+    public TotalAttendanceResponseDto getTotalAttendance() {
         return attendanceService.getTotalAttendance();
     }
 

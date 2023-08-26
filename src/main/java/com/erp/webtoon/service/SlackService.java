@@ -16,6 +16,7 @@ import com.slack.api.methods.SlackApiException;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -26,25 +27,25 @@ public class SlackService {
     @Value(value = "${slack.token}")
     String slackToken;
 
-    public void sendSlackChannel(String message, String channel){
+    public void sendSlackChannel(String message, String channel) {
 
         String channelAddress = "";
 
         // 채널 분기
         switch (channel) {
-            case "test":
+            case "TEST":
                 channelAddress = SlackConstant.TEST_CHANNEL; // 테스트
                 break;
 
-            case "all":
+            case "ALL":
                 channelAddress = SlackConstant.ALL_CHANNEL;  // 전체 알림
                 break;
 
-            case "webtoon":
+            case "WEBTOON":
                 channelAddress = SlackConstant.WT_CHANNEL;   // 웹툰
                 break;
 
-            case "it":
+            case "IT":
                 channelAddress = SlackConstant.IT_CHANNEL;   // IT팀
                 break;
 
@@ -52,7 +53,7 @@ public class SlackService {
                 channelAddress = getSlackIDByEmail(findUserEmail(channel));  // 개인DM
         }
 
-        try{
+        try {
             MethodsClient methods = Slack.getInstance().methods(slackToken);
 
             ChatPostMessageRequest request = ChatPostMessageRequest
@@ -73,7 +74,7 @@ public class SlackService {
 
         String slackID = "";
 
-        try{
+        try {
             MethodsClient methods = Slack.getInstance().methods(slackToken);
 
             UsersLookupByEmailRequest request = UsersLookupByEmailRequest
@@ -81,7 +82,7 @@ public class SlackService {
                     .email(email)
                     .build();
 
-            UsersLookupByEmailResponse response =  methods.usersLookupByEmail(request);
+            UsersLookupByEmailResponse response = methods.usersLookupByEmail(request);
 
             log.info("Slack " + email + " 을 사용하는 멤버ID 찾음");
 
@@ -93,6 +94,7 @@ public class SlackService {
 
         return slackID;
     }
+
     public String findUserEmail(String employeeId) {
         User user = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 직원의 사번이 존재하지 않습니다."));

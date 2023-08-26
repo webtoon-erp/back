@@ -11,6 +11,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmployeeId(String employeeId);
     Optional<User> findByEmail(String email);
     List<User> findAllByDeptCode(String deptCode);
+    List<User> findByDeptCodeAndTeamNum(String deptCode, int teamNum);
+
     // 전체 직원 수 조회
     Long countAllBy();
 

@@ -6,16 +6,18 @@ import com.erp.webtoon.dto.plas.DocumentRcvResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,14 +30,13 @@ public class Document {
 
     private char stat; // N : 임시 , Y : 상신 , C : 완료
 
+    @CreatedDate
     private LocalDateTime regDate; // 작성일시
+
+    private String templateName; // 템플릿 이름
 
     @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
     private List<File> files = new ArrayList<>();   // 참조된 파일들
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doc_tpl_id")
-    private DocumentTpl documentTpl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "user_id" , name = "write_user_id")
@@ -48,22 +49,41 @@ public class Document {
     private List<DocumentData> documentDataList = new ArrayList<>();   // 데이터 목록
 
     @Builder
-    public Document(String title, String content, char stat, LocalDateTime regDate, DocumentTpl documentTpl, User writeUser) {
+    public Document(String title, String content, char stat, LocalDateTime regDate, String templateName, User writeUser) {
         this.title = title;
         this.content = content;
         this.stat = stat;
         this.regDate = regDate;
-        this.documentTpl = documentTpl;
+        this.templateName = templateName;
         this.writeUser = writeUser;
     }
 
 
     //수신자 목록의 이름 불러오기
-    public List<String> getRcvNames() {
+//    public List<String> getRcvNames() {
+//        return documentRcvs.stream()
+//                .map(documentRcv -> documentRcv.getUser().getName())
+//                .collect(Collectors.toList());
+//    }
+
+    // 결재대기자 찾기
+    public String getCurrentApprover() {
         return documentRcvs.stream()
-                .map(documentRcv -> documentRcv.getUser().getName())
-                .collect(Collectors.toList());
+                .filter(documentRcv -> documentRcv.getReceiveType().equals("APPV") && documentRcv.getStat() == 'Y')
+                .findFirst()
+                .map(documentRcv -> documentRcv.getUser().getUsername())
+                .orElse("");
     }
+
+    // 최종결재자 찾기
+    public String getLastApprover() {
+        return documentRcvs.stream()
+                .filter(documentRcv -> documentRcv.getReceiveType().equals("APPV"))
+                .max(Comparator.comparingInt(DocumentRcv::getSortSequence))
+                .map(documentRcv -> documentRcv.getUser().getUsername())
+                .orElse("");
+    }
+
 
     public void changeStat(char stat) { this.stat = stat; }
 

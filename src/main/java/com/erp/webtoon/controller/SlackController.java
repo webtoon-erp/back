@@ -18,7 +18,7 @@ public class SlackController {
     SlackService slackService;
 
     @GetMapping("/slack/{channel}")
-    public void test(@PathVariable String channel){
+    public void test(@PathVariable String channel) {
 
         log.info("슬랙 test 채널 테스트");
 
