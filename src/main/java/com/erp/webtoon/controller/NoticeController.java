@@ -87,26 +87,6 @@ public class NoticeController {
         return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
     }
 
-
-    /**
-     * 업로드한 파일 다운로드
-     */
-    @GetMapping("/download/{noticeId}/{fileId}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable("noticeId") Long noticeId, @PathVariable("fileId") Long fileId) throws MalformedURLException {
-        File findFile = fileService.find(fileId);
-
-        String originName = findFile.getOriginName();
-        String fileName = findFile.getFileName();
-
-        UrlResource resource = new UrlResource("file:" + fileService.getFullPath(fileName));
-
-        String encodeFileName = UriUtils.encode(originName, StandardCharsets.UTF_8);
-        String contentDisposition = "attachment; filename=\"" + encodeFileName + "\"";
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-                .body(resource);
-    }
-
     private HttpHeaders redirect() {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/notice"));
