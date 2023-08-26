@@ -17,7 +17,4 @@ public class NoticeUpdateDto {
     private String title;
     @NotBlank
     private String  content;
-
-    List<MultipartFile> uploadFiles = new ArrayList<>();
-
 }

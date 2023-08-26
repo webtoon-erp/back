@@ -112,7 +112,7 @@ public class NoticeService {
     /**
      * 공지사항 수정
      */
-    public void update(Long noticeId, NoticeUpdateDto dto) throws IOException {
+    public List<Long> update(Long noticeId, NoticeUpdateDto dto, List<MultipartFile> files) throws IOException {
         Notice findNotice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 공지사항입니다."));
 
@@ -125,13 +125,17 @@ public class NoticeService {
         }
         findNotice.getFiles().clear();
 
+        List<Long> fileList = new ArrayList<>();
+
         //해당 공지사항에 새롭게 추가
-        if (!dto.getUploadFiles().isEmpty()) {
-            for (MultipartFile file: dto.getUploadFiles()) {
+        if (!files.isEmpty()) {
+            for (MultipartFile file: files) {
                 File saveFile = fileService.save(file);
                 findNotice.getFiles().add(saveFile);
+                fileList.add(saveFile.getId());
             }
         }
+        return fileList;
     }
 
     /**
