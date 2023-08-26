@@ -1,15 +1,16 @@
 package com.erp.webtoon.controller;
 
 import com.erp.webtoon.dto.notice.*;
-import com.erp.webtoon.service.FileService;
+
 import com.erp.webtoon.service.NoticeService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.io.IOException;
 import java.net.URI;
@@ -26,10 +27,10 @@ public class NoticeController {
      * 공지사항 등록 -> 등록 후 어디로?
      */
     @PostMapping("/notice")
-    public ResponseEntity save(@RequestPart NoticeRequestDto dto, @RequestPart("files")List<MultipartFile> files) throws IOException {
+    public ResponseEntity<Result> save(@RequestPart NoticeRequestDto dto, @RequestPart("files")List<MultipartFile> files) throws IOException {
         List<Long> fileIds = noticeService.save(dto, files);
 
-        return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(new Result(redirect(), fileIds));
     }
 
     /**
@@ -67,10 +68,10 @@ public class NoticeController {
      * 공지사항 수정 (리다이렉트)
      */
     @PutMapping("/notice/{noticeId}")
-    public ResponseEntity update(@PathVariable Long noticeId, @RequestPart NoticeUpdateDto dto, @RequestPart List<MultipartFile> files ) throws IOException {
+    public ResponseEntity<Result> update(@PathVariable Long noticeId, @RequestPart NoticeUpdateDto dto, @RequestPart List<MultipartFile> files ) throws IOException {
         List<Long> fileIds = noticeService.update(noticeId, dto, files);
 
-        return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(new Result(redirect(), fileIds));
     }
 
 
@@ -80,12 +81,18 @@ public class NoticeController {
     @DeleteMapping("/notice/{noticeId}")
     public ResponseEntity delete(@PathVariable Long noticeId) {
         noticeService.delete(noticeId);
-        return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
+
+        return ResponseEntity.ok(new Result(redirect(), null));
     }
 
-    private HttpHeaders redirect() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/notice"));
-        return headers;
+    private URI redirect() {
+        return URI.create("/notice");
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private T url;
+        private T info;
     }
 }
