@@ -1,23 +1,19 @@
 package com.erp.webtoon.controller;
 
-import com.erp.webtoon.domain.File;
 import com.erp.webtoon.dto.notice.*;
-import com.erp.webtoon.service.FileService;
+
 import com.erp.webtoon.service.NoticeService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriUtils;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -25,16 +21,16 @@ import java.util.List;
 public class NoticeController {
 
     private final NoticeService noticeService;
-    private final FileService fileService;
+
 
     /**
      * 공지사항 등록 -> 등록 후 어디로?
      */
     @PostMapping("/notice")
-    public ResponseEntity save(@RequestBody NoticeRequestDto dto) throws IOException {
-        noticeService.save(dto);
+    public ResponseEntity<Result> save(@RequestPart NoticeRequestDto dto, @RequestPart("files")List<MultipartFile> files) throws IOException {
+        List<Long> fileIds = noticeService.save(dto, files);
 
-        return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(new Result(redirect(), fileIds));
     }
 
     /**
@@ -72,9 +68,10 @@ public class NoticeController {
      * 공지사항 수정 (리다이렉트)
      */
     @PutMapping("/notice/{noticeId}")
-    public ResponseEntity update(@PathVariable Long noticeId, @RequestBody NoticeUpdateDto dto) throws IOException {
-        noticeService.update(noticeId, dto);
-        return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
+    public ResponseEntity<Result> update(@PathVariable Long noticeId, @RequestPart NoticeUpdateDto dto, @RequestPart List<MultipartFile> files ) throws IOException {
+        List<Long> fileIds = noticeService.update(noticeId, dto, files);
+
+        return ResponseEntity.ok(new Result(redirect(), fileIds));
     }
 
 
@@ -84,32 +81,18 @@ public class NoticeController {
     @DeleteMapping("/notice/{noticeId}")
     public ResponseEntity delete(@PathVariable Long noticeId) {
         noticeService.delete(noticeId);
-        return new ResponseEntity<>(redirect(), HttpStatus.MOVED_PERMANENTLY);
+
+        return ResponseEntity.ok(new Result(redirect(), null));
     }
 
-
-    /**
-     * 업로드한 파일 다운로드
-     */
-    @GetMapping("/download/{noticeId}/{fileId}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable("noticeId") Long noticeId, @PathVariable("fileId") Long fileId) throws MalformedURLException {
-        File findFile = fileService.find(fileId);
-
-        String originName = findFile.getOriginName();
-        String fileName = findFile.getFileName();
-
-        UrlResource resource = new UrlResource("file:" + fileService.getFullPath(fileName));
-
-        String encodeFileName = UriUtils.encode(originName, StandardCharsets.UTF_8);
-        String contentDisposition = "attachment; filename=\"" + encodeFileName + "\"";
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-                .body(resource);
+    private URI redirect() {
+        return URI.create("/notice");
     }
 
-    private HttpHeaders redirect() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/notice"));
-        return headers;
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private T url;
+        private T info;
     }
 }

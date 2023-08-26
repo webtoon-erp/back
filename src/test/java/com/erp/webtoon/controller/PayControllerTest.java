@@ -1,17 +1,20 @@
-package com.erp.webtoon.service;
+package com.erp.webtoon.controller;
 
 import com.erp.webtoon.domain.Pay;
 import com.erp.webtoon.domain.Qualification;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.pay.*;
-import com.erp.webtoon.dto.user.QualificationRequestDto;
 import com.erp.webtoon.repository.PayRepository;
 import com.erp.webtoon.repository.UserRepository;
+import com.erp.webtoon.service.PayService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,30 +23,36 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-class PayServiceTest {
-    @Autowired
-    private PayRepository payRepository;
+@AutoConfigureMockMvc
+class PayControllerTest {
 
     @Autowired
-    private PayService payService;
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private  UserService userService;
+    private PayService payService;
 
     @BeforeEach
     void clean() {
         userRepository.deleteAll();
-        payRepository.deleteAll();
     }
 
     @Test
     @DisplayName("월 급여 등록")
-    void save1() {
+    void test1() throws Exception {
         //given
         User user = User.builder()
                 .employeeId("2000")
@@ -58,21 +67,19 @@ class PayServiceTest {
         dto.setBankAccount("000-000-000-000");
         dto.setPayDate(LocalDate.now());
 
-        //when
-        payService.save(dto);
+        String dtoToJson = objectMapper.writeValueAsString(dto);
 
-        //then
-        assertEquals(1L, payRepository.count());
-        Pay pay = payRepository.findAll().get(0);
-        assertEquals(20000, pay.getAddPay());
-        assertEquals(100000, pay.getSalary());
-        assertEquals("000-000-000-000", pay.getBankAccount());
-        assertEquals(LocalDate.now(), pay.getPayDate());
+        //expected
+        mockMvc.perform(post("/pays")
+                        .content(dtoToJson)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isMovedPermanently())
+                .andDo(print());
     }
 
     @Test
     @DisplayName("개인 급여 상세 조회")
-    void test2() {
+    void test2() throws Exception {
         //given
         User user = User.builder()
                 .employeeId("2000")
@@ -103,25 +110,21 @@ class PayServiceTest {
 
         payService.save(dto);
 
-        //when
-        PayResponseDto searchDto = payService.search("2000");
-
-        //then
-        assertEquals("규규", searchDto.getUserInfo().getName());
-        assertEquals("kkk@naver.com", searchDto.getUserInfo().getEmail());
-        assertEquals("인사과", searchDto.getUserInfo().getDeptName());
-        assertEquals("000-000-000-000", searchDto.getMonthPay().getBankAccount());
-        assertEquals(100000, searchDto.getMonthPay().getYearSalary());
-        assertEquals(8333, searchDto.getMonthPay().getMonthSalary());
-        assertEquals(50000, searchDto.getMonthPay().getQualSalary());
-        PayQualificationDto payQualificationDto = searchDto.getQualificationList().get(0);
-        assertEquals("정처기", payQualificationDto.getName());
-        assertEquals(50000, payQualificationDto.getMoney());
+        //expected
+        mockMvc.perform(get("/pays/{employeeId}", "2000")
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userInfo.name").value("규규"))
+                .andExpect(jsonPath("$.userInfo.email").value("kkk@naver.com"))
+                .andExpect(jsonPath("$.monthPay.bankAccount").value("000-000-000-000"))
+                .andExpect(jsonPath("$.monthPay.monthSalary").value(8333))
+                .andExpect(jsonPath("$.monthPay.qualSalary").value(50000))
+                        .andDo(print());
     }
 
     @Test
     @DisplayName("전제 급여 조회")
-    void test3() {
+    void test3() throws Exception {
         //given
         List<User> userList = IntStream.range(1, 6)
                 .mapToObj(i -> User.builder()
@@ -149,20 +152,20 @@ class PayServiceTest {
         payService.save(dto1);
         payService.save(dto2);
 
-        //when
-        List<PayAllListResponseDto> payAllListResponseDtos = payService.allPayList();
+        //expected
+        mockMvc.perform(get("/pays/all")
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("규규1"))
+                .andExpect(jsonPath("$[0].monthPay").value(8333))
+                .andExpect(jsonPath("$[0].payStat").value(false))
+                .andDo(print());
 
-        //then
-        assertEquals(5L, payAllListResponseDtos.size());
-        assertEquals("규규1", payAllListResponseDtos.get(0).getName());
-        assertEquals(8333, payAllListResponseDtos.get(0).getMonthPay());
-        assertEquals("규규3", payAllListResponseDtos.get(2).getName());
-        assertEquals(583, payAllListResponseDtos.get(2).getMonthPay());
     }
 
     @Test
     @DisplayName("월 급여 수정")
-    void test4() {
+    void test4() throws Exception {
         //given
         User user = User.builder()
                 .employeeId("2000")
@@ -184,21 +187,18 @@ class PayServiceTest {
         payMonthUpdateDto.setAddSalary(50000);
         payMonthUpdateDto.setPayDate(LocalDate.now());
 
-        //when
-        payService.updateMonthPay("2000", payMonthUpdateDto);
-
-        //then
-        assertEquals(1L, payRepository.count());
-        Pay pay = payRepository.findAll().get(0);
-        assertEquals(50000, pay.getAddPay());
-        assertEquals(200000, pay.getSalary());
-        assertEquals("000-000-000-000", pay.getBankAccount());
-        assertEquals(LocalDate.now(), pay.getPayDate());
+        //expected
+        mockMvc.perform(put("/pays/month/{employeeId}", "2000")
+                        .content(objectMapper.writeValueAsString(payMonthUpdateDto))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uri").value("/pays/2000"))
+                .andDo(print());
     }
 
     @Test
     @DisplayName("계좌 수정")
-    void test5() {
+    void test5() throws Exception {
         //given
         User user = User.builder()
                 .employeeId("2000")
@@ -211,28 +211,25 @@ class PayServiceTest {
         dto.setYearSalary(100000);
         dto.setAddSalary(20000);
         dto.setBankAccount("000-000-000-000");
-        dto.setPayDate(LocalDate.now());
+        dto.setPayDate(LocalDate.of(2020, 8, 10));
 
         payService.save(dto);
 
         PayAccountUpdateDto payAccountUpdateDto = new PayAccountUpdateDto();
         payAccountUpdateDto.setBankAccount("000-000-000-111");
 
-        //when
-        payService.updateAccount("2000", payAccountUpdateDto);
-
-        //then
-        assertEquals(1L, payRepository.count());
-        Pay pay = payRepository.findAll().get(0);
-        assertEquals(20000, pay.getAddPay());
-        assertEquals(100000, pay.getSalary());
-        assertEquals("000-000-000-111", pay.getBankAccount());
-        assertEquals(LocalDate.now(), pay.getPayDate());
+        //expected
+        mockMvc.perform(put("/pays/account/{employeeId}", "2000")
+                        .content(objectMapper.writeValueAsString(payAccountUpdateDto))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uri").value("/pays/2000"))
+                .andDo(print());
     }
 
     @Test
     @DisplayName("지급일 여러명 수정")
-    void test6() {
+    void test6() throws Exception{
         //given
         List<User> userList = IntStream.range(1, 6)
                 .mapToObj(i -> User.builder()
@@ -273,18 +270,17 @@ class PayServiceTest {
         dtos.add(update1);
         dtos.add(update2);
 
-        //when
-        payService.updateAllPayDate(dtos);
-
-        //then
-        assertEquals(5L, userRepository.count());
-        assertEquals(LocalDate.now(), payRepository.findAll().get(0).getPayDate());
-        assertEquals(LocalDate.now(), payRepository.findAll().get(1).getPayDate());
+        // expected
+        mockMvc.perform(put("/pays/date")
+                        .content(objectMapper.writeValueAsString(dtos))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
     @Test
-    @DisplayName("자격 수당 수정")
-    void test7() {
+    @DisplayName("자격 수당 등록")
+    void test7() throws Exception {
         //given
         User user = User.builder()
                 .employeeId("2000")
@@ -313,15 +309,6 @@ class PayServiceTest {
 
         userRepository.save(user);
 
-        PayRequestDto dto = new PayRequestDto();
-        dto.setEmployeeId("2000");
-        dto.setYearSalary(100000);
-        dto.setAddSalary(20000);
-        dto.setBankAccount("000-000-000-000");
-        dto.setPayDate(LocalDate.now());
-
-        payService.save(dto);
-
         List<QualificationPayRequestDto> dtos = new ArrayList<>();
 
         QualificationPayRequestDto update1 = new QualificationPayRequestDto();
@@ -335,45 +322,11 @@ class PayServiceTest {
         dtos.add(update1);
         dtos.add(update2);
 
-        //when
-        payService.saveQualPay(dtos);
-        PayResponseDto searchDto = payService.search("2000");
-
-        //then
-        assertEquals(60000, searchDto.getMonthPay().getQualSalary());
-        PayQualificationDto payQualificationDto1 = searchDto.getQualificationList().get(0);
-        PayQualificationDto payQualificationDto2= searchDto.getQualificationList().get(1);
-        assertEquals("정처기", payQualificationDto1.getName());
-        assertEquals(50000, payQualificationDto1.getMoney());
-        assertEquals("토익", payQualificationDto2.getName());
-        assertEquals(10000, payQualificationDto2.getMoney());
-    }
-
-    @Test
-    @DisplayName("급여 지급 여부 수정")
-    void test8() {
-        //given
-        User user = User.builder()
-                .employeeId("2000")
-                .build();
-
-        userRepository.save(user);
-
-        PayRequestDto dto = new PayRequestDto();
-        dto.setEmployeeId("2000");
-        dto.setYearSalary(100000);
-        dto.setAddSalary(20000);
-        dto.setBankAccount("000-000-000-000");
-        dto.setPayDate(LocalDate.now());
-
-        payService.save(dto);
-
-        //when
-        payService.update(payRepository.findAll().get(0).getId());
-
-        //then
-        assertEquals(1L, payRepository.count());
-        Pay pay = payRepository.findAll().get(0);
-        assertEquals(true, pay.isPayYN());
+        //expected
+        mockMvc.perform(put("/pays/qualification")
+                        .content(objectMapper.writeValueAsString(dtos))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }

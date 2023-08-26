@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class NoticeService {
     /**
      * 공지사항 등록
      */
-    public void save(NoticeRequestDto dto) throws IOException {
+    public List<Long> save(NoticeRequestDto dto, List<MultipartFile> files) throws IOException {
         Notice notice = dto.toEntity();
 
         User writeUser = userRepository.findByEmployeeId(dto.getEmployeeId())
@@ -45,17 +46,20 @@ public class NoticeService {
 
         notice.setWriteUser(writeUser);
 
+        List<Long> fileList = new ArrayList<>();
         // 첨부파일이 1개 이상인 경우
         // 해당 첨부파일의 타입 지정해줘야함! -> 완료
-        if (!dto.getUploadFiles().isEmpty()) {
-            for (MultipartFile file: dto.getUploadFiles()) {
+        if (!files.isEmpty()) {
+            for (MultipartFile file: files) {
                 File saveFile = fileService.save(file);
                 saveFile.updateFileNotice(notice);
                 notice.getFiles().add(saveFile);
+                fileList.add(saveFile.getId());
             }
         }
 
         noticeRepository.save(notice);
+        return fileList;
     }
 
     /**
@@ -108,7 +112,7 @@ public class NoticeService {
     /**
      * 공지사항 수정
      */
-    public void update(Long noticeId, NoticeUpdateDto dto) throws IOException {
+    public List<Long> update(Long noticeId, NoticeUpdateDto dto, List<MultipartFile> files) throws IOException {
         Notice findNotice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 공지사항입니다."));
 
@@ -121,13 +125,17 @@ public class NoticeService {
         }
         findNotice.getFiles().clear();
 
+        List<Long> fileList = new ArrayList<>();
+
         //해당 공지사항에 새롭게 추가
-        if (!dto.getUploadFiles().isEmpty()) {
-            for (MultipartFile file: dto.getUploadFiles()) {
+        if (!files.isEmpty()) {
+            for (MultipartFile file: files) {
                 File saveFile = fileService.save(file);
                 findNotice.getFiles().add(saveFile);
+                fileList.add(saveFile.getId());
             }
         }
+        return fileList;
     }
 
     /**

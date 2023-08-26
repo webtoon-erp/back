@@ -7,15 +7,27 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 public class PayController {
 
     private final PayService payService;
+
+    /**
+     * 월 급여 등록
+     */
+    @PostMapping("/pays")
+    public ResponseEntity save(@RequestBody PayRequestDto dto) {
+        payService.save(dto);
+        return new ResponseEntity(redirect(dto.getEmployeeId()), HttpStatus.MOVED_PERMANENTLY);
+    }
 
     /**
      * 개인 급여 조회
@@ -37,21 +49,13 @@ public class PayController {
     }
 
     /**
-     * 월 급여 등록
-     */
-    @PostMapping("/pays")
-    public ResponseEntity save(@RequestBody PayRequestDto dto) {
-        payService.save(dto);
-        return new ResponseEntity(redirect(), HttpStatus.MOVED_PERMANENTLY);
-    }
-
-    /**
      * 월 급여 수정
      */
-    @PutMapping("/pays/{employeeId}")
+    @PutMapping("/pays/month/{employeeId}")
     public ResponseEntity update(@PathVariable String employeeId, @RequestBody PayMonthUpdateDto dto) {
         payService.updateMonthPay(employeeId, dto);
-        return new ResponseEntity(redirect(), HttpStatus.MOVED_PERMANENTLY);
+
+        return ResponseEntity.ok(redirect(employeeId));
     }
 
     /**
@@ -60,13 +64,13 @@ public class PayController {
     @PutMapping("/pays/account/{employeeId}")
     public ResponseEntity updateAccount(@PathVariable String employeeId, @RequestBody PayAccountUpdateDto dto) {
         payService.updateAccount(employeeId, dto);
-        return new ResponseEntity(redirect(), HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(redirect(employeeId));
     }
 
     /**
      * 지급일 여러명 수정
      */
-    @PutMapping("/pays/payDate")
+    @PutMapping("/pays/date")
     public ResponseEntity updatePayDate(@RequestBody List<PayDateUpdateListDto> dtos) {
         payService.updateAllPayDate(dtos);
         return new ResponseEntity(HttpStatus.OK);
@@ -75,17 +79,22 @@ public class PayController {
     /**
      * 자격 수당 등록
      */
-    @PutMapping("/pays/{qualId}")
-    public ResponseEntity updateQualPay(@PathVariable Long qualId, @RequestBody QualificationPayRequestDto dto) {
-        payService.saveQualPay(qualId, dto);
+    @PutMapping("/pays/qualification")
+    public ResponseEntity updateQualPay(@RequestBody List<QualificationPayRequestDto> dtos) {
+        payService.saveQualPay(dtos);
 
-        return new ResponseEntity(redirect(), HttpStatus.MOVED_PERMANENTLY);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
-    private HttpHeaders redirect() {
+    private Map<String, URI> redirect(String employeeId) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/pays/{employeeId}"));
-        return headers;
-    }
+        URI uri = UriComponentsBuilder.newInstance()
+                .path("/pays/{employeeId}")
+                .buildAndExpand(employeeId).toUri();
 
+        Map<String, URI> location = new HashMap<>();
+        location.put("uri", uri);
+
+        return location;
+    }
 }

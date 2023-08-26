@@ -18,8 +18,6 @@ public class Qualification {
     @Column(name = "qlfc_id")
     private Long id;
 
-    private Integer sortSequence; // 정렬번호
-
     private String qlfcType;    // 자격증 타입
 
     private String content;     // 내용 (자격증 상세)
@@ -37,13 +35,13 @@ public class Qualification {
     }
 
     @Builder
-    public Qualification(Long id, Integer sortSequence, String qlfcType, String content, LocalDate qlfcDate, int qlfcPay, User user) {
+    public Qualification(Long id, String qlfcType, String content, LocalDate qlfcDate, int qlfcPay, User user) {
         this.id = id;
-        this.sortSequence = sortSequence;
         this.qlfcType = qlfcType;
         this.content = content;
         this.qlfcDate = qlfcDate;
         this.qlfcPay = qlfcPay;
         this.user = user;
     }
+
 }

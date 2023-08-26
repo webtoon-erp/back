@@ -31,13 +31,12 @@ public class Pay {
     private User user;
 
     @Builder
-    public Pay(int salary, int addPay, String bankAccount, LocalDate payDate, boolean payYN, User user) {
+    public Pay(int salary, int addPay, String bankAccount, LocalDate payDate) {
         this.salary = salary;
         this.addPay = addPay;
         this.bankAccount = bankAccount;
         this.payDate = payDate;
-        this.payYN = payYN;
-        this.user = user;
+        this.payYN = false;
     }
 
     // 지급여부 수정

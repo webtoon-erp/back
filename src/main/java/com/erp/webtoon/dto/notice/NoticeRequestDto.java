@@ -27,8 +27,6 @@ public class NoticeRequestDto {
     @NotBlank
     private String content;
 
-    private List<MultipartFile> uploadFiles = new ArrayList<>();
-
     public Notice toEntity() {
         return Notice.builder()
                 .noticeType(noticeType)

@@ -1,11 +1,14 @@
 package com.erp.webtoon.service;
 
+import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.domain.Webtoon;
 import com.erp.webtoon.domain.WebtoonDt;
+import com.erp.webtoon.dto.webtoon.FeedbackSaveDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtUpdateDto;
+import com.erp.webtoon.repository.MessageRepository;
 import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.repository.WebtoonDtRepository;
 import com.erp.webtoon.repository.WebtoonRepository;
@@ -39,6 +42,9 @@ class WebtoonDtServiceTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MessageRepository messageRepository;
 
     @BeforeEach
     void clean() {
@@ -199,4 +205,41 @@ class WebtoonDtServiceTest {
         assertEquals(0L, webtoonDtRepository.count());
     }
 
+    @Test
+    @DisplayName("피드백 등록")
+    void test6() throws IOException {
+        //given
+        User newUser = User.builder()
+                .employeeId("20232023")
+                .name("규규")
+                .position("과장")
+                .build();
+
+        userRepository.save(newUser);
+
+        Webtoon newWebtoon = Webtoon.builder()
+                .title("웹툰입니다.")
+                .intro("인트로입니다.")
+                .artist("작가입니다.")
+                .build();
+
+        webtoonRepository.save(newWebtoon);
+
+        FeedbackSaveDto feedbackSaveDto = new FeedbackSaveDto();
+        feedbackSaveDto.setMsgType("webtoon");
+        feedbackSaveDto.setContent("멋져요");
+        feedbackSaveDto.setRefId(newWebtoon.getId());
+        feedbackSaveDto.setProgramId(null);
+        feedbackSaveDto.setSendEmpId("20232023");
+
+        //when
+        webtoonDtService.addFeedbackMsg(feedbackSaveDto);
+
+        //then
+        assertEquals(2L, messageRepository.count());
+        Message message_1 = messageRepository.findAll().get(0);
+        Message message_2 = messageRepository.findAll().get(1);
+        assertEquals("멋져요", message_1.getContent());
+        assertEquals("웹툰입니다.에 피드백이 등록되었습니다. \n\n멋져요", message_2.getContent());
+    }
 }

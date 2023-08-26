@@ -24,7 +24,7 @@ public class PayUserResponseDto {
 
     public PayUserResponseDto(User user) {
         this.employeeId = user.getEmployeeId();
-        this.name = user.getUsername();
+        this.name = user.getName();
         this.email = user.getEmail();
         this.deptName = user.getDeptName();
         this.position = user.getPosition();
