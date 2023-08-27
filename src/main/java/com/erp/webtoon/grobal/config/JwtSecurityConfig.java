@@ -1,4 +1,4 @@
-package com.erp.webtoon.config;
+package com.erp.webtoon.grobal.config;
 
 import com.erp.webtoon.filter.JwtAuthenticationFilter;
 import com.erp.webtoon.token.TokenProvider;
