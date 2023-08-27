@@ -6,8 +6,6 @@ import com.erp.webtoon.dto.user.QualificationDeleteRequestDto;
 import com.erp.webtoon.dto.user.QualificationModifyRequestDto;
 import com.erp.webtoon.dto.user.QualificationModifyResponseDto;
 import com.erp.webtoon.dto.token.LogoutResponseDto;
-import com.erp.webtoon.exception.EntityNotFound.EntityException;
-import com.erp.webtoon.exception.EntityNotFound.EntityExceptionType;
 import com.erp.webtoon.token.LogoutAccessTokenService;
 import com.erp.webtoon.token.RefreshTokenService;
 import com.erp.webtoon.token.TokenProvider;
@@ -36,6 +34,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +83,7 @@ public class UserService {
      */
     public UserResponseDto find(String employeeId) {
         User findUser = userRepository.findByEmployeeId(employeeId)
-                .orElseThrow(() -> new EntityException(EntityExceptionType.NOT_FOUND_EMPLOYEE));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
         List<Qualification> qualifications = findUser.getQualifications();
         List<QualificationResponseDto> qualificationList = new ArrayList<>();
@@ -118,7 +117,7 @@ public class UserService {
     @Transactional
     public void update(UserUpdateDto dto) {
         User updateUser = userRepository.findByEmployeeId(dto.getEmployeeId())
-                .orElseThrow(() -> new EntityException(EntityExceptionType.NOT_FOUND_EMPLOYEE));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
         updateUser.updateInfo(dto.getPassword(), dto.getName(), dto.getDeptCode(), dto.getDeptName(), dto.getTeamNum(), dto.getPosition(),
                 dto.getEmail(), dto.getTel(), dto.getBirthDate());
@@ -155,7 +154,7 @@ public class UserService {
             qualificationList.add(qualification);
 
             User user = userRepository.findByEmployeeId(qualificationRequestDto.getEmployeeId())
-                    .orElseThrow(() -> new EntityException(EntityExceptionType.NOT_FOUND_EMPLOYEE));
+                    .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
             user.registerQualification(qualificationList);
         }
 
@@ -210,7 +209,7 @@ public class UserService {
      */
     @Transactional
     public TokenResponseDto issueToken(String employeeId, String password) {
-        User user = userRepository.findByEmployeeId(employeeId).orElseThrow(() -> new EntityException(EntityExceptionType.NOT_FOUND_EMPLOYEE));
+        User user = userRepository.findByEmployeeId(employeeId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
         if(!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 잘못되었습니다.");
@@ -271,7 +270,7 @@ public class UserService {
      */
     public void updatePassword(String password, String userEmail){
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new EntityException(EntityExceptionType.NOT_FOUND_EMPLOYEE));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
         user.updatePassword(password);
     }
 
@@ -317,7 +316,7 @@ public class UserService {
         Long memberId = tokenProvider.parseToken(resolvedAccessToken);
 
         User user =  userRepository.findById(memberId).
-                orElseThrow(() -> new EntityException(EntityExceptionType.NOT_FOUND_EMPLOYEE));
+                orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getName() == null) {

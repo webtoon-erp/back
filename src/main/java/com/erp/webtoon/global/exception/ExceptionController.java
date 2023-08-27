@@ -8,11 +8,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.EntityNotFoundException;
+
 @RestControllerAdvice
 public class ExceptionController {
 
     /**
-     * EntityNotFound 예외 처리
+     * BaseException 예외 처리
      */
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ErrorResponse> handleException(BaseException exception) {
@@ -24,6 +26,22 @@ public class ExceptionController {
                 .build();
 
         return ResponseEntity.status(exType.getHttpStatus())
+                .body(body);
+    }
+
+    /**
+     * EntityNotFound 예외 처리
+     */
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(EntityNotFoundException exception) {
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(404)
+                .httpStatus(HttpStatus.NOT_FOUND)
+                .errorMessage(exception.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(body);
     }
 
