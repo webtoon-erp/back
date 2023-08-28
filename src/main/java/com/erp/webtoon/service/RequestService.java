@@ -72,6 +72,9 @@ public class RequestService {
 
         requestRepository.save(request);
 
+        //연관관계
+        request.updateUserRequest();
+
         //알림 발송
         addRequestMsg(request);
 

@@ -53,6 +53,12 @@ public class Request {
         this.step = step;
     }
 
+    //연관관계 매소드
+    public void updateUserRequest() {
+        this.reqUser.getRequests().add(this);
+        this.itUser.getItRequests().add(this);
+    }
+
     @Builder
     public Request(Long id, String reqType, String title, String content, int step, LocalDate dueDate, LocalDate doneDate, User reqUser, User itUser, List<File> files) {
         this.id = id;
