@@ -1,5 +1,6 @@
 package com.erp.webtoon.dto.itsm;
 
+import com.erp.webtoon.dto.file.FileResponseDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -26,7 +27,7 @@ public class RequestResponseDto {
 
     private String itUserId;    // 담당자 사번
 
-    private List<String> fileOriginName;
+    private List<FileResponseDto> files;
 
     private List<RequestDtResponseDto> requestDtList;
 }

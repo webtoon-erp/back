@@ -5,6 +5,7 @@ import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.Request;
 import com.erp.webtoon.domain.RequestDt;
 import com.erp.webtoon.domain.User;
+import com.erp.webtoon.dto.file.FileResponseDto;
 import com.erp.webtoon.dto.itsm.*;
 import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.repository.MessageRepository;
@@ -119,8 +120,8 @@ public class RequestService {
                 .collect(Collectors.toList());
 
         // 첨부파일 리스트
-        List<String> files = findRequest.getFiles().stream()
-                .map(file -> file.getOriginName())
+        List<FileResponseDto> files = findRequest.getFiles().stream()
+                .map(FileResponseDto::new)
                 .collect(Collectors.toList());
 
         return RequestResponseDto.builder()
@@ -132,7 +133,7 @@ public class RequestService {
                 .doneDate(findRequest.getDoneDate())
                 .reqUserId(findRequest.getReqUser().getEmployeeId())
                 .itUserId(findRequest.getItUser().getEmployeeId())
-                .fileOriginName(files)
+                .files(files)
                 .requestDtList(requestDtList)
                 .build();
     }
