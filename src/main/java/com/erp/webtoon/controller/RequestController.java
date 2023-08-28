@@ -66,7 +66,7 @@ public class RequestController {
     /**
      * 사원 별 과거 요청 리스트 조회
      */
-    @GetMapping("/request/{employeeId}")
+    @GetMapping("/request/list/{employeeId}")
     public ResponseEntity showUserReqList(@PathVariable String employeeId) {
         List<RequestListResponseDto> requestList = requestService.searchUserList(employeeId);
         return ResponseEntity.ok(requestList);
