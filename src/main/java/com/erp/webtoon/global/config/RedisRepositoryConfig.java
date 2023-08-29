@@ -1,4 +1,4 @@
-package com.erp.webtoon.config;
+package com.erp.webtoon.global.config;
 
 import lombok.RequiredArgsConstructor;
 
