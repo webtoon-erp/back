@@ -121,4 +121,45 @@ class RequestControllerTest {
                 .andExpect(jsonPath("$[2].reqUser").value("1"))
                 .andDo(print());
     }
+
+    @Test
+    @DisplayName("IT팀 과거 요청 전체 리스트 조회")
+    void test3() throws Exception {
+        //given
+        User user1 = User.builder()
+                .employeeId("1")
+                .deptName("IT")
+                .name("규규")
+                .build();
+        userRepository.save(user1);
+
+        User user2 = User.builder()
+                .employeeId("2")
+                .deptName("인사")
+                .name("현현")
+                .build();
+        userRepository.save(user2);
+
+        List<Request> requests = IntStream.range(1, 6)
+                .mapToObj(i -> Request.builder()
+                        .reqType("구매" + i)
+                        .title("제목" + i)
+                        .content("내용" + i)
+                        .step(1)
+                        .reqUser(user2)
+                        .itUser(user1)
+                        .build())
+                .collect(Collectors.toList());
+        for (Request request : requests) {
+            request.updateUserRequest();
+        }
+        requestRepository.saveAll(requests);
+
+        //expected
+        mockMvc.perform(get("/request/all/{employeeId}", "1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[1].title").value("제목2"))
+                .andExpect(jsonPath("$[1].itUser").value("1"))
+                .andDo(print());
+    }
 }

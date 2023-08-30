@@ -114,4 +114,49 @@ class RequestServiceTest {
         Assertions.assertEquals(1, dto.getStep());
         Assertions.assertEquals("1", dto.getReqUser());
     }
+
+    @Test
+    @DisplayName("IT팀 과거 요청 전체 리스트 조회")
+    void test3() throws IllegalAccessException {
+        //given
+        User user1 = User.builder()
+                .employeeId("1")
+                .deptName("IT")
+                .name("규규")
+                .build();
+        userRepository.save(user1);
+
+        User user2 = User.builder()
+                .employeeId("2")
+                .deptName("인사")
+                .name("현현")
+                .build();
+        userRepository.save(user2);
+
+        List<Request> requests = IntStream.range(1, 11)
+                .mapToObj(i -> Request.builder()
+                        .reqType("구매" + i)
+                        .title("제목" + i)
+                        .content("내용" + i)
+                        .step(1)
+                        .reqUser(user2)
+                        .itUser(user1)
+                        .build())
+                .collect(Collectors.toList());
+        for (Request request : requests) {
+            request.updateUserRequest();
+        }
+        requestRepository.saveAll(requests);
+
+        //when
+        List<RequestListResponseDto> responseDtos = requestService.searchAllList(user1.getEmployeeId());
+
+        //then
+        Assertions.assertEquals(10, requestRepository.count());
+        RequestListResponseDto dto = responseDtos.get(1);
+        Assertions.assertEquals("구매2", dto.getReqType());
+        Assertions.assertEquals("제목2", dto.getTitle());
+        Assertions.assertEquals(1, dto.getStep());
+        Assertions.assertEquals("2", dto.getReqUser());
+    }
 }
