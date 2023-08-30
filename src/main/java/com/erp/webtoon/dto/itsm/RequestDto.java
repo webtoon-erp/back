@@ -26,7 +26,5 @@ public class RequestDto {
 
     private String itUserId;    // 담당자 사번
 
-    private List<MultipartFile> files;   // 요청에 쓰이는 첨부파일들
-
     private List<RequestDtDto> requestDts;
 }

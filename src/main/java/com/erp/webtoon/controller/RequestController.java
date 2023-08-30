@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
@@ -29,13 +30,13 @@ public class RequestController {
     private final RequestService requestService;
 
     @PostMapping("/purchase-request")
-    public RequestRegisterResponseDto purchaseRequest(@RequestBody RequestDto requestDto) throws Exception {
-        return requestService.purchaseRequest(requestDto);
+    public RequestRegisterResponseDto purchaseRequest(@RequestPart("dto") RequestDto requestDto, @RequestPart("files")List<MultipartFile> files) throws Exception {
+        return requestService.purchaseRequest(requestDto, files);
     }
 
     @PostMapping("/request")
-    public RequestRegisterResponseDto Request(@RequestBody RequestDto requestDto) throws Exception {
-        return requestService.assistRequest(requestDto);
+    public RequestRegisterResponseDto Request(@RequestPart("dto") RequestDto requestDto, @RequestPart("files")List<MultipartFile> files) throws Exception {
+        return requestService.assistRequest(requestDto, files);
     }
 
     @GetMapping("/IT-manager")
