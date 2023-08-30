@@ -107,6 +107,23 @@ public class RequestService {
     }
 
     /**
+     * IT 담당자 리스트 조회 기능
+     */
+    public List<ItEmployeeResponseDto> searchItEmployee() {
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .filter(user -> user.getDeptName() == "IT")
+                .map(user -> ItEmployeeResponseDto.builder()
+                        .employeeId(user.getEmployeeId())
+                        .deptName(user.getDeptName() + user.getTeamNum())
+                        .position(user.getPosition())
+                        .name(user.getName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    /**
      * 요청 조회 기능
      */
     public RequestResponseDto search(Long requestId) {
