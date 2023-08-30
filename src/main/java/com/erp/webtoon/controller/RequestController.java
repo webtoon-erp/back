@@ -1,6 +1,7 @@
 package com.erp.webtoon.controller;
 
 
+import com.erp.webtoon.dto.itsm.ItEmployeeResponseDto;
 import com.erp.webtoon.dto.itsm.RequestListResponseDto;
 import com.erp.webtoon.dto.itsm.RequestResponseDto;
 import com.erp.webtoon.dto.itsm.RequestStepDto;
@@ -35,6 +36,11 @@ public class RequestController {
     @PostMapping("/request")
     public RequestRegisterResponseDto Request(@RequestBody RequestDto requestDto) throws Exception {
         return requestService.assistRequest(requestDto);
+    }
+
+    @GetMapping("/IT-manager")
+    public List<ItEmployeeResponseDto> findItManager() {
+        return requestService.searchItEmployee();
     }
 
     @DeleteMapping("/request")
