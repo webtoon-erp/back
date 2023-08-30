@@ -70,5 +70,11 @@ public class File {
         this.webtoonDt = webtoonDt;
     }
 
+    public void updateFileRequest(Request request) {
+        if (request != null) {
+            this.request = request;
+        }
+    }
+
     public void updateFileDocument(Document document) { this.document = document; }
 }
