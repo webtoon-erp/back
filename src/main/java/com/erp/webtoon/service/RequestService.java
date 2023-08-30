@@ -20,7 +20,6 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,25 +39,13 @@ public class RequestService {
      * 구매 요청 기능
      */
     @Transactional
-    public RequestRegisterResponseDto purchaseRequest(RequestDto requestDto) throws Exception {
+    public RequestRegisterResponseDto purchaseRequest(RequestDto requestDto, List<MultipartFile> files) throws Exception {
 
-        User reqUser = userRepository.findByEmployeeId(requestDto.getReqUserId())
-                .orElseThrow(() -> new EntityNotFoundException("발신자가 존재하지 않습니다."));
-        User itUser = userRepository.findByEmployeeId(requestDto.getItUserId())
-                .orElseThrow(() -> new EntityNotFoundException("수신자가 존재하지 않습니다."));
-        List<File> fileList = saveFile(requestDto);
+        User reqUser = getReqUser(requestDto);
+        User itUser = getItUser(requestDto);
 
-        Request request = Request.builder()
-                .reqType(requestDto.getReqType())
-                .title(requestDto.getTitle())
-                .content(requestDto.getContent())
-                .step(requestDto.getStep())
-                .dueDate(requestDto.getDueDate())
-                .doneDate(requestDto.getDueDate())
-                .reqUser(reqUser)
-                .itUser(itUser)
-                .files(fileList)
-                .build();
+        Request request = getRequest(requestDto, reqUser, itUser);
+        saveFiles(files, request);
 
         for(int i = 0; i < requestDto.getRequestDts().size(); i++){
             RequestDt requestDt = RequestDt.builder()
@@ -77,27 +64,19 @@ public class RequestService {
         return RequestRegisterResponseDto.builder().requestId(request.getId()).createdAt(LocalDateTime.now()).build();
     }
 
+
+
     /**
      * 업무 지원 요청 기능
      */
     @Transactional
-    public RequestRegisterResponseDto assistRequest(RequestDto requestDto) throws Exception {
-        User reqUser = userRepository.findByEmployeeId(requestDto.getReqUserId()).get();
-        User itUser = userRepository.findByEmployeeId(requestDto.getItUserId()).get();
-        List<File> fileList = saveFile(requestDto);
+    public RequestRegisterResponseDto assistRequest(RequestDto requestDto, List<MultipartFile> files) throws Exception {
 
-        Request request = Request.builder()
-                .reqType(requestDto.getReqType())
-                .title(requestDto.getTitle())
-                .content(requestDto.getContent())
-                .step(requestDto.getStep())
-                .dueDate(requestDto.getDueDate())
-                .doneDate(requestDto.getDueDate())
-                .reqUser(reqUser)
-                .itUser(itUser)
-                .files(fileList)
-                .build();
+        User reqUser = getReqUser(requestDto);
+        User itUser = getItUser(requestDto);
 
+        Request request = getRequest(requestDto, reqUser, itUser);
+        saveFiles(files, request);
         requestRepository.save(request);
 
         //알림 발송
@@ -105,6 +84,7 @@ public class RequestService {
 
         return RequestRegisterResponseDto.builder().requestId(request.getId()).createdAt(LocalDateTime.now()).build();
     }
+
 
     /**
      * IT 담당자 리스트 조회 기능
@@ -314,24 +294,38 @@ public class RequestService {
         messageService.addMsg(newMessage);
     }
 
-    /**
-     * 파일 업로드 기능
-     */
-    @Transactional
-    public List<File> saveFile(RequestDto requestDto) throws Exception {
-        List<MultipartFile> files = requestDto.getFiles();
-        List<File> result = new ArrayList<>();
-
-        try {
-            if (!requestDto.getFiles().isEmpty()) {
-                for (MultipartFile file1 : files) {
-                    File targetFile = fileService.save(file1);
-                    result.add(targetFile);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
+    private User getReqUser(RequestDto requestDto) {
+        return userRepository.findByEmployeeId(requestDto.getReqUserId())
+                .orElseThrow(() -> new EntityNotFoundException("발신자가 존재하지 않습니다."));
     }
+
+    private User getItUser(RequestDto requestDto) {
+        return userRepository.findByEmployeeId(requestDto.getItUserId())
+                .orElseThrow(() -> new EntityNotFoundException("수신자가 존재하지 않습니다."));
+    }
+
+    private Request getRequest(RequestDto requestDto, User reqUser, User itUser) {
+        return Request.builder()
+                .reqType(requestDto.getReqType())
+                .title(requestDto.getTitle())
+                .content(requestDto.getContent())
+                .step(requestDto.getStep())
+                .dueDate(requestDto.getDueDate())
+                .doneDate(requestDto.getDueDate())
+                .reqUser(reqUser)
+                .itUser(itUser)
+                .build();
+    }
+
+    private void saveFiles(List<MultipartFile> files, Request request) throws IOException {
+        if (!files.isEmpty()) {
+            for (MultipartFile file : files) {
+                File savedFile = fileService.save(file);
+                savedFile.updateFileRequest(request);
+                request.getFiles().add(savedFile);
+            }
+        }
+    }
+
+
 }
