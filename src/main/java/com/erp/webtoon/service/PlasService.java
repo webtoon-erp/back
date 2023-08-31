@@ -112,7 +112,7 @@ public class PlasService {
     /*
         전자결재 문서 저장
      */
-    public void addDoc(DocumentRequestDto dto) throws IOException {
+    public void addDoc(DocumentRequestDto dto, List<MultipartFile> files) throws IOException {
 
         User writeUser = userRepository.findByEmployeeId(dto.getWriteEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 작성자 정보입니다."));
@@ -123,7 +123,7 @@ public class PlasService {
         documentRepository.save(document);
 
         // 문서 DATA 저장
-        if (!dto.getDocumentDataRequests().isEmpty()) {
+        if (dto.getDocumentDataRequests() != null && !dto.getDocumentDataRequests().isEmpty()) {
             List<DocumentData> documentDataList = dto.getDocumentDataRequests().stream()
                     .map(dataRequestDto -> dataRequestDto.toEntity(document))
                     .collect(Collectors.toList());
@@ -131,7 +131,7 @@ public class PlasService {
         }
 
         // 문서 수신자 저장
-        if (!dto.getDocumentRcvRequests().isEmpty()) {
+        if (dto.getDocumentDataRequests() != null && !dto.getDocumentRcvRequests().isEmpty()) {
             List<DocumentRcv> documentRcvList = dto.getDocumentRcvRequests().stream()
                     .map(rcvRequestDto -> {
                         User rcvUser = userRepository.findByEmployeeId(rcvRequestDto.getRcvEmployeeId())
@@ -144,8 +144,8 @@ public class PlasService {
         }
 
         // 파일 저장
-        if (!dto.getUploadFiles().isEmpty()) {
-            for (MultipartFile file : dto.getUploadFiles()) {
+        if (!files.isEmpty()) {
+            for (MultipartFile file: files) {
                 File saveFile = fileService.save(file);
                 saveFile.updateFileDocument(document);
                 document.getFiles().add(saveFile);

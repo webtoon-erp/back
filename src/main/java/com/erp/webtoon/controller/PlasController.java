@@ -6,6 +6,7 @@ import com.erp.webtoon.service.PlasService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,8 +26,8 @@ public class PlasController {
 
     // 전자결재 문서 저장
     @PostMapping("/documents")
-    public void save(@RequestBody DocumentRequestDto dto) throws IOException {
-        plasService.addDoc(dto);
+    public void save(@RequestPart DocumentRequestDto dto, @RequestPart("files")List<MultipartFile> files) throws IOException {
+        plasService.addDoc(dto, files);
     }
 
     // 연차 사용 신청 등록
