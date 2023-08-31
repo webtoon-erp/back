@@ -51,15 +51,7 @@ public class ExceptionController {
      */
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ErrorResponse> handleNoSuchElementException(NoSuchElementException exception) {
-
-        ErrorResponse body = ErrorResponse.builder()
-                .code(404)
-                .httpStatus(HttpStatus.NOT_FOUND)
-                .errorMessage(exception.getMessage())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(body);
+        return handleException(HttpStatus.NOT_FOUND, exception);
     }
 
     /**
@@ -67,15 +59,7 @@ public class ExceptionController {
      */
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ErrorResponse> handleIllegalStateException(IllegalStateException exception) {
-
-        ErrorResponse body = ErrorResponse.builder()
-                .code(400)
-                .httpStatus(HttpStatus.BAD_REQUEST)
-                .errorMessage(exception.getMessage())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(body);
+        return handleException(HttpStatus.BAD_REQUEST, exception);
     }
 
     /**
@@ -83,15 +67,7 @@ public class ExceptionController {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
-
-        ErrorResponse body = ErrorResponse.builder()
-                .code(400)
-                .httpStatus(HttpStatus.BAD_REQUEST)
-                .errorMessage(exception.getMessage())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(body);
+        return handleException(HttpStatus.BAD_REQUEST, exception);
     }
 
     /**
@@ -109,6 +85,17 @@ public class ExceptionController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(body);
+    }
+
+    private ResponseEntity<ErrorResponse> handleException(HttpStatus httpStatus, Exception exception) {
+        ErrorResponse body = ErrorResponse.builder()
+                .code(httpStatus.value())
+                .httpStatus(httpStatus)
+                .errorMessage(exception.getMessage())
+                .build();
+
+        return ResponseEntity.status(httpStatus)
                 .body(body);
     }
 
