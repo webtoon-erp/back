@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class ExceptionController {
@@ -38,6 +39,54 @@ public class ExceptionController {
         ErrorResponse body = ErrorResponse.builder()
                 .code(404)
                 .httpStatus(HttpStatus.NOT_FOUND)
+                .errorMessage(exception.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(body);
+    }
+
+    /**
+     * NoSuchElement 예외 처리
+     */
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ErrorResponse> handleNoSuchElementException(NoSuchElementException exception) {
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(404)
+                .httpStatus(HttpStatus.NOT_FOUND)
+                .errorMessage(exception.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(body);
+    }
+
+    /**
+     * IllegalState 예외 처리
+     */
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalStateException(IllegalStateException exception) {
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(400)
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .errorMessage(exception.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(body);
+    }
+
+    /**
+     * IllegalArgument 예외 처리
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(400)
+                .httpStatus(HttpStatus.BAD_REQUEST)
                 .errorMessage(exception.getMessage())
                 .build();
 
