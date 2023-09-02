@@ -4,6 +4,7 @@ import com.erp.webtoon.domain.Request;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.itsm.RequestListResponseDto;
 import com.erp.webtoon.dto.itsm.RequestResponseDto;
+import com.erp.webtoon.dto.itsm.RequestStepDto;
 import com.erp.webtoon.repository.RequestRepository;
 import com.erp.webtoon.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -158,5 +159,44 @@ class RequestServiceTest {
         Assertions.assertEquals("제목2", dto.getTitle());
         Assertions.assertEquals(1, dto.getStep());
         Assertions.assertEquals("2", dto.getReqUser());
+    }
+
+    @Test
+    @DisplayName("요청 단계 변경 기능")
+    void test4() {
+        //given
+        User user1 = User.builder()
+                .employeeId("1")
+                .deptName("IT")
+                .name("규규")
+                .build();
+
+        User user2 = User.builder()
+                .employeeId("2")
+                .deptName("insa")
+                .name("현현")
+                .build();
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        Request request = Request.builder()
+                .reqType("구매")
+                .title("제목")
+                .content("내용")
+                .step(1)
+                .reqUser(user2)
+                .itUser(user1)
+                .build();
+        Request request1 = requestRepository.save(request);
+
+        RequestStepDto stepDto = new RequestStepDto();
+        stepDto.setStep(2);
+
+        //when
+        requestService.changeStep(request1.getId(), stepDto);
+
+        //then
+        assertEquals(2, requestRepository.findAll().get(0).getStep());
     }
 }
