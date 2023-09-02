@@ -227,42 +227,31 @@ public class PlasService {
         // 참조자 제외, 결제자만 조회
         List<DocumentRcv> approvers = document.getApprovers();
 
-        boolean approved = false;
+        DocumentRcv currentRcv = approvers.stream()
+                .filter(rcv -> rcv.getUser() == user && rcv.getStat() == 'Y')
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("해당 사용자의 승인 권한 아직 없거나 이미 처리되었습니다."));
 
-        for (int i = 0; i < approvers.size(); i++) {
-            DocumentRcv documentRcv = approvers.get(i);
+        currentRcv.changeStat('C');
 
-            if (documentRcv.getUser() == user && documentRcv.getStat() == 'Y') {
-                documentRcv.changeStat('C'); // 완료 상태로 변경
+        if (approvers.indexOf(currentRcv) != approvers.size() - 1) { // 현재 결재자가 최종 결재자가 아닐 경우 다음 결재자 업데이트
+            DocumentRcv nextRcv = approvers.get(approvers.indexOf(currentRcv) + 1);
+            nextRcv.changeStat('Y');
 
-                if (i != approvers.size() - 1) { // 현재 결재자가 최종 결재자가 아닐 경우 다음 결재자 업데이트
-                    DocumentRcv nextDocumentRcv = approvers.get(i + 1);
-                    nextDocumentRcv.changeStat('Y');
+            // 다음 결재자 알림
+            sendMsg(documentId, nextRcv.getUser(), document.getWriteUser(),
+                    "새 전자결재 문서가 상신되었습니다. 문서명 - " + document.getTitle());
+        } else {  // 현재 결재자가 최종 결재자일 경우 문서 업데이트
+            document.changeStat('C');
 
-                    // 다음 결재자 알림
-                    String content = "새 전자결재 문서가 상신되었습니다. 문서명 - " + document.getTitle();
-                    sendMsg(documentId, nextDocumentRcv.getUser(), document.getWriteUser(), content);
-                } else { // 현재 결재자가 최종 결재자일 경우 문서 업데이트
-                    document.changeStat('C'); // 완료 상태로 변경
-
-                    // 문서 완료 시 문서 작성자 알림
-                    String content = "전자결재 문서가 최종 승인 및 완료되었습니다. 문서명 - " + document.getTitle();
-                    sendMsg(documentId, document.getWriteUser(), documentRcv.getUser(), content);
-                }
-
-                approved = true;
-                break;
-            }
+            // 문서 완료 시 문서 작성자 알림
+            sendMsg(documentId, document.getWriteUser(), currentRcv.getUser(),
+                    "전자결재 문서가 최종 승인 및 완료되었습니다. 문서명 - " + document.getTitle());
         }
 
-        if (approved) {
-            if (document.getTemplateName().equals("연차사용신청서")) {
-                LocalDateTime dayOffDate = document.getDocumentDataList().get(0).getFromDate();
-                attendanceService.addDayOff(dayOffDate, document.getWriteUser());
-            }
-        }
-        else {
-            throw new IllegalStateException("해당 사용자의 승인 권한 아직 없거나 이미 처리되었습니다.");
+        if (document.getTemplateName().equals("연차사용신청서")) {
+            LocalDateTime dayOffDate = document.getDocumentDataList().get(0).getFromDate();
+            attendanceService.addDayOff(dayOffDate, document.getWriteUser());
         }
 
     }
