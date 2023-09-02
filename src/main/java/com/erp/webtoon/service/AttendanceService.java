@@ -1,7 +1,6 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Attendance;
-import com.erp.webtoon.domain.Document;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.attendance.*;
 import com.erp.webtoon.repository.AttendanceRepository;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,7 +30,7 @@ public class AttendanceService {
         출근 & 퇴근
      */
     @Transactional
-    public void addAttendance(AttendanceRequestDto dto) throws IOException {
+    public void addAttendance(AttendanceRequestDto dto) {
 
         User user = userRepository.findByEmployeeId(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 직원의 정보가 존재하지 않습니다."));
@@ -93,7 +91,7 @@ public class AttendanceService {
 
     }
 
-    public String convertSecondsToTimeFormat(Long totalSeconds) {
+    private String convertSecondsToTimeFormat(Long totalSeconds) {
         if (totalSeconds == null)  return "00:00:00";
 
         long hours = totalSeconds / 3600;
