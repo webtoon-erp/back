@@ -186,8 +186,11 @@ public class PlasService {
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 입니다."));
 
-        if (document.getStat() == 'N') documentRepository.delete(document);
-        else throw new IllegalStateException("이미 상신이나 완료된 문서는 삭제할 수 없습니다.");
+        if (document.getStat() == 'N') {
+            documentRepository.delete(document);
+        } else {
+            throw new IllegalStateException("이미 상신이나 완료된 문서는 삭제할 수 없습니다.");
+        }
     }
 
     /*
@@ -234,14 +237,16 @@ public class PlasService {
 
         currentRcv.changeStat('C');
 
-        if (approvers.indexOf(currentRcv) != approvers.size() - 1) { // 현재 결재자가 최종 결재자가 아닐 경우 다음 결재자 업데이트
+        if (approvers.indexOf(currentRcv) != approvers.size() - 1) {
+            // 현재 결재자가 최종 결재자가 아닐 경우 다음 결재자 업데이트
             DocumentRcv nextRcv = approvers.get(approvers.indexOf(currentRcv) + 1);
             nextRcv.changeStat('Y');
 
             // 다음 결재자 알림
             sendMsg(documentId, nextRcv.getUser(), document.getWriteUser(),
                     "새 전자결재 문서가 상신되었습니다. 문서명 - " + document.getTitle());
-        } else {  // 현재 결재자가 최종 결재자일 경우 문서 업데이트
+        } else {
+            // 현재 결재자가 최종 결재자일 경우 문서 업데이트
             document.changeStat('C');
 
             // 문서 완료 시 문서 작성자 알림
