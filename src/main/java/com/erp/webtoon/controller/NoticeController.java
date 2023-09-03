@@ -28,9 +28,9 @@ public class NoticeController {
      */
     @PostMapping("/notice")
     public ResponseEntity<Result> save(@RequestPart NoticeRequestDto dto, @RequestPart("files")List<MultipartFile> files) throws IOException {
-        List<Long> fileIds = noticeService.save(dto, files);
+        noticeService.save(dto, files);
 
-        return ResponseEntity.ok(new Result(redirect(), fileIds));
+        return ResponseEntity.ok(new Result(redirect(), null));
     }
 
     /**

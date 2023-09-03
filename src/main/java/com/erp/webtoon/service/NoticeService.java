@@ -3,6 +3,7 @@ package com.erp.webtoon.service;
 import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.Notice;
 import com.erp.webtoon.domain.User;
+import com.erp.webtoon.dto.file.FileResponseDto;
 import com.erp.webtoon.dto.notice.*;
 import com.erp.webtoon.repository.NoticeRepository;
 import com.erp.webtoon.repository.UserRepository;
@@ -34,7 +35,7 @@ public class NoticeService {
     /**
      * 공지사항 등록
      */
-    public List<Long> save(NoticeRequestDto dto, List<MultipartFile> files) throws IOException {
+    public void save(NoticeRequestDto dto, List<MultipartFile> files) throws IOException {
         Notice notice = dto.toEntity();
 
         User writeUser = userRepository.findByEmployeeId(dto.getEmployeeId())
@@ -46,7 +47,6 @@ public class NoticeService {
 
         notice.setWriteUser(writeUser);
 
-        List<Long> fileList = new ArrayList<>();
         // 첨부파일이 1개 이상인 경우
         // 해당 첨부파일의 타입 지정해줘야함! -> 완료
         if (!files.isEmpty()) {
@@ -54,12 +54,10 @@ public class NoticeService {
                 File saveFile = fileService.save(file);
                 saveFile.updateFileNotice(notice);
                 notice.getFiles().add(saveFile);
-                fileList.add(saveFile.getId());
             }
         }
 
         noticeRepository.save(notice);
-        return fileList;
     }
 
     /**
@@ -72,6 +70,10 @@ public class NoticeService {
         // 공지사항 조회수 증가
         findNotice.addReadCount();
 
+        List<FileResponseDto> dtos = findNotice.getFiles().stream()
+                .map(FileResponseDto::new)
+                .collect(Collectors.toList());
+
         return NoticeResponseDto.builder()
                 .title(findNotice.getTitle())
                 .content(findNotice.getContent())
@@ -79,7 +81,7 @@ public class NoticeService {
                 .noticeType(findNotice.getNoticeType())
                 .noticeDate(findNotice.getNoticeDate())
                 .name(findNotice.getUser().getName())
-                .originFileNames(findNotice.getFileNames())
+                .files(dtos)
                 .build();
     }
 
