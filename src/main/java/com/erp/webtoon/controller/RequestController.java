@@ -56,7 +56,7 @@ public class RequestController {
     }
 
     @GetMapping("/comment")
-    public List<CommentListDto> getAllComments(@RequestParam("requestId") Long requestId){
+    public List<CommentListDto> getAllComments(@RequestParam("requestId") Long requestId) {
         return requestService.getAllComments(requestId);
     }
 
@@ -98,7 +98,7 @@ public class RequestController {
     }
 
     @DeleteMapping("/comment")
-    public ResponseEntity deleteComment(@RequestParam("messageId") Long messageId){
+    public ResponseEntity deleteComment(@RequestParam("messageId") Long messageId) {
         requestService.deleteComment(messageId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

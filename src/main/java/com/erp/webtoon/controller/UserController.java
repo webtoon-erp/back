@@ -33,7 +33,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity add(@Valid @RequestBody UserRequestDto userRequestDto){
+    public ResponseEntity add(@Valid @RequestBody UserRequestDto userRequestDto) {
         userService.addNewCome(userRequestDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping("/sendPassword")
-    public String sendPassword(@RequestParam("userEmail") String userEmail){
+    public String sendPassword(@RequestParam("userEmail") String userEmail) {
         SlackRequestDto dto = userService.createMailAndChangePassword(userEmail);
 
         return "/users/login";

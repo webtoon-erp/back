@@ -52,7 +52,7 @@ public class TokenProvider {
         this.userDetailsService = userDetailsService;
     }
 
-    public TokenResponseDto generateToken(User user) throws Exception {
+    public TokenResponseDto generateToken(User user) {
         // 1. 토큰 생성
         String accessToken = createAccessToken(Long.parseLong(user.getEmployeeId()), user.getAuthorities());
         RefreshToken refreshToken = refreshTokenService.save(user.getId(), createRefreshToken());

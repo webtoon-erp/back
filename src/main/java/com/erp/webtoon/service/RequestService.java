@@ -199,7 +199,7 @@ public class RequestService {
      * 코멘트 등록 기능
      */
     @Transactional
-    public CommentResponseDto registerComment(MessageSaveDto dto) throws IOException{
+    public CommentResponseDto registerComment(MessageSaveDto dto) {
         User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
@@ -222,7 +222,7 @@ public class RequestService {
     /**
      * 코멘트 조회 기능
      */
-    public List<CommentListDto> getAllComments(Long requestId){
+    public List<CommentListDto> getAllComments(Long requestId) {
         List<Message> commentList = messageService.getMessageListByRefId(requestId);
 
         return commentList.stream()
@@ -240,7 +240,7 @@ public class RequestService {
      * 코멘트 삭제 기능
      */
     @Transactional
-    public void deleteComment(Long messageId){
+    public void deleteComment(Long messageId) {
         Message message = messageRepository.findById(messageId).orElseThrow(() -> new EntityNotFoundException("No Such Message"));
         message.changeStat('D');
     }
@@ -326,6 +326,4 @@ public class RequestService {
             }
         }
     }
-
-
 }
