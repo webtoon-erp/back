@@ -22,8 +22,6 @@ public class DocumentRequestDto {
     @NotBlank
     private String content;
 
-    private List<MultipartFile> uploadFiles;
-
     @NotNull
     private String templateName;
 

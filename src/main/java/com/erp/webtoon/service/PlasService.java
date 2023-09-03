@@ -38,8 +38,8 @@ public class PlasService {
         return appvLineList.stream()
                 .map(user -> ApproverListDto.builder()
                         .name(user.getName())
-                        .deptName(user.getDeptName())
-                        .teamNum(user.getTeamNum())
+                        .deptName(user.getDeptName() + user.getTeamNum())
+                        .employeeId(user.getEmployeeId())
                         .position(user.getPosition())
                         .build())
                 .collect(Collectors.toList());
@@ -112,7 +112,7 @@ public class PlasService {
     /*
         전자결재 문서 저장
      */
-    public void addDoc(DocumentRequestDto dto) throws IOException {
+    public void addDoc(DocumentRequestDto dto, List<MultipartFile> files) throws IOException {
 
         User writeUser = userRepository.findByEmployeeId(dto.getWriteEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 작성자 정보입니다."));
@@ -123,7 +123,7 @@ public class PlasService {
         documentRepository.save(document);
 
         // 문서 DATA 저장
-        if (!dto.getDocumentDataRequests().isEmpty()) {
+        if (dto.getDocumentDataRequests() != null && !dto.getDocumentDataRequests().isEmpty()) {
             List<DocumentData> documentDataList = dto.getDocumentDataRequests().stream()
                     .map(dataRequestDto -> dataRequestDto.toEntity(document))
                     .collect(Collectors.toList());
@@ -131,7 +131,7 @@ public class PlasService {
         }
 
         // 문서 수신자 저장
-        if (!dto.getDocumentRcvRequests().isEmpty()) {
+        if (dto.getDocumentDataRequests() != null && !dto.getDocumentRcvRequests().isEmpty()) {
             List<DocumentRcv> documentRcvList = dto.getDocumentRcvRequests().stream()
                     .map(rcvRequestDto -> {
                         User rcvUser = userRepository.findByEmployeeId(rcvRequestDto.getRcvEmployeeId())
@@ -144,8 +144,8 @@ public class PlasService {
         }
 
         // 파일 저장
-        if (!dto.getUploadFiles().isEmpty()) {
-            for (MultipartFile file : dto.getUploadFiles()) {
+        if (!files.isEmpty()) {
+            for (MultipartFile file: files) {
                 File saveFile = fileService.save(file);
                 saveFile.updateFileDocument(document);
                 document.getFiles().add(saveFile);
@@ -186,8 +186,11 @@ public class PlasService {
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 문서 입니다."));
 
-        if (document.getStat() == 'N') documentRepository.delete(document);
-        else throw new IllegalStateException("이미 상신이나 완료된 문서는 삭제할 수 없습니다.");
+        if (document.getStat() == 'N') {
+            documentRepository.delete(document);
+        } else {
+            throw new IllegalStateException("이미 상신이나 완료된 문서는 삭제할 수 없습니다.");
+        }
     }
 
     /*
@@ -227,42 +230,33 @@ public class PlasService {
         // 참조자 제외, 결제자만 조회
         List<DocumentRcv> approvers = document.getApprovers();
 
-        boolean approved = false;
+        DocumentRcv currentRcv = approvers.stream()
+                .filter(rcv -> rcv.getUser() == user && rcv.getStat() == 'Y')
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("해당 사용자의 승인 권한 아직 없거나 이미 처리되었습니다."));
 
-        for (int i = 0; i < approvers.size(); i++) {
-            DocumentRcv documentRcv = approvers.get(i);
+        currentRcv.changeStat('C');
 
-            if (documentRcv.getUser() == user && documentRcv.getStat() == 'Y') {
-                documentRcv.changeStat('C'); // 완료 상태로 변경
+        if (approvers.indexOf(currentRcv) != approvers.size() - 1) {
+            // 현재 결재자가 최종 결재자가 아닐 경우 다음 결재자 업데이트
+            DocumentRcv nextRcv = approvers.get(approvers.indexOf(currentRcv) + 1);
+            nextRcv.changeStat('Y');
 
-                if (i != approvers.size() - 1) { // 현재 결재자가 최종 결재자가 아닐 경우 다음 결재자 업데이트
-                    DocumentRcv nextDocumentRcv = approvers.get(i + 1);
-                    nextDocumentRcv.changeStat('Y');
+            // 다음 결재자 알림
+            sendMsg(documentId, nextRcv.getUser(), document.getWriteUser(),
+                    "새 전자결재 문서가 상신되었습니다. 문서명 - " + document.getTitle());
+        } else {
+            // 현재 결재자가 최종 결재자일 경우 문서 업데이트
+            document.changeStat('C');
 
-                    // 다음 결재자 알림
-                    String content = "새 전자결재 문서가 상신되었습니다. 문서명 - " + document.getTitle();
-                    sendMsg(documentId, nextDocumentRcv.getUser(), document.getWriteUser(), content);
-                } else { // 현재 결재자가 최종 결재자일 경우 문서 업데이트
-                    document.changeStat('C'); // 완료 상태로 변경
-
-                    // 문서 완료 시 문서 작성자 알림
-                    String content = "전자결재 문서가 최종 승인 및 완료되었습니다. 문서명 - " + document.getTitle();
-                    sendMsg(documentId, document.getWriteUser(), documentRcv.getUser(), content);
-                }
-
-                approved = true;
-                break;
-            }
+            // 문서 완료 시 문서 작성자 알림
+            sendMsg(documentId, document.getWriteUser(), currentRcv.getUser(),
+                    "전자결재 문서가 최종 승인 및 완료되었습니다. 문서명 - " + document.getTitle());
         }
 
-        if (approved) {
-            if (document.getTemplateName().equals("연차사용신청서")) {
-                LocalDateTime dayOffDate = document.getDocumentDataList().get(0).getFromDate();
-                attendanceService.addDayOff(dayOffDate, document.getWriteUser());
-            }
-        }
-        else {
-            throw new IllegalStateException("해당 사용자의 승인 권한 아직 없거나 이미 처리되었습니다.");
+        if (document.getTemplateName().equals("연차사용신청서")) {
+            LocalDateTime dayOffDate = document.getDocumentDataList().get(0).getFromDate();
+            attendanceService.addDayOff(dayOffDate, document.getWriteUser());
         }
 
     }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class ExceptionController {
@@ -46,6 +47,30 @@ public class ExceptionController {
     }
 
     /**
+     * NoSuchElement 예외 처리
+     */
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ErrorResponse> handleNoSuchElementException(NoSuchElementException exception) {
+        return handleException(HttpStatus.NOT_FOUND, exception);
+    }
+
+    /**
+     * IllegalState 예외 처리
+     */
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalStateException(IllegalStateException exception) {
+        return handleException(HttpStatus.BAD_REQUEST, exception);
+    }
+
+    /**
+     * IllegalArgument 예외 처리
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
+        return handleException(HttpStatus.BAD_REQUEST, exception);
+    }
+
+    /**
      * @Valid 예외 처리
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -60,6 +85,17 @@ public class ExceptionController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(body);
+    }
+
+    private ResponseEntity<ErrorResponse> handleException(HttpStatus httpStatus, Exception exception) {
+        ErrorResponse body = ErrorResponse.builder()
+                .code(httpStatus.value())
+                .httpStatus(httpStatus)
+                .errorMessage(exception.getMessage())
+                .build();
+
+        return ResponseEntity.status(httpStatus)
                 .body(body);
     }
 
