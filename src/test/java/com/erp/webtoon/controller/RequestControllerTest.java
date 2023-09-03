@@ -4,6 +4,7 @@ import com.erp.webtoon.domain.Request;
 import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.itsm.RequestListResponseDto;
 import com.erp.webtoon.dto.itsm.RequestResponseDto;
+import com.erp.webtoon.dto.itsm.RequestStepDto;
 import com.erp.webtoon.repository.RequestRepository;
 import com.erp.webtoon.repository.UserRepository;
 import com.erp.webtoon.service.RequestService;
@@ -26,6 +27,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -160,6 +162,46 @@ class RequestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[1].title").value("제목2"))
                 .andExpect(jsonPath("$[1].itUser").value("1"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("요청 단계 변경 기능")
+    void test4() throws Exception{
+        //given
+        User user1 = User.builder()
+                .employeeId("1")
+                .deptName("IT")
+                .name("규규")
+                .build();
+
+        User user2 = User.builder()
+                .employeeId("2")
+                .deptName("insa")
+                .name("현현")
+                .build();
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        Request request = Request.builder()
+                .reqType("구매")
+                .title("제목")
+                .content("내용")
+                .step(1)
+                .reqUser(user2)
+                .itUser(user1)
+                .build();
+        Request request1 = requestRepository.save(request);
+
+        RequestStepDto stepDto = new RequestStepDto();
+        stepDto.setStep(2);
+
+        //expected
+        mockMvc.perform(put("/request/step/{requestId}", request1.getId())
+                        .content(objectMapper.writeValueAsString(stepDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 }
