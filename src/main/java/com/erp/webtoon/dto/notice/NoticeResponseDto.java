@@ -1,5 +1,6 @@
 package com.erp.webtoon.dto.notice;
 
+import com.erp.webtoon.dto.file.FileResponseDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -22,6 +23,6 @@ public class NoticeResponseDto {
 
     private String name; // 작성자
 
-    private List<String> originFileNames; // 오리지널 파일명
+    private List<FileResponseDto> files; // 오리지널 파일명
 
 }

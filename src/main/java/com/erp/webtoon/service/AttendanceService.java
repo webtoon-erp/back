@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,7 +39,7 @@ public class AttendanceService {
         출근 & 퇴근
      */
     @Transactional
-    public void addAttendance(AttendanceRequestDto dto) throws IOException {
+    public void addAttendance(AttendanceRequestDto dto) {
 
         User user = userRepository.findByEmployeeId(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 직원의 정보가 존재하지 않습니다."));
@@ -51,12 +50,10 @@ public class AttendanceService {
 
         if (dto.getAttendType().equals("START") && !startHis.isEmpty()) {
             throw new IllegalStateException("이미 오늘 출근 정보를 등록하였습니다.");
-        }
-        else if (dto.getAttendType().equals("END")) {
+        } else if (dto.getAttendType().equals("END")) {
             if (startHis.isEmpty()) {
                 throw new IllegalStateException("오늘 등록된 출근 정보가 있어야 퇴근 정보를 등록할 수 있습니다.");
-            }
-            else if (!endHis.isEmpty()) {
+            } else if (!endHis.isEmpty()) {
                 throw new IllegalStateException("이미 오늘 퇴근 정보를 등록하였습니다.");
             }
         }
@@ -99,8 +96,10 @@ public class AttendanceService {
         return dto;
     }
 
-    public String convertSecondsToTimeFormat(Long totalSeconds) {
-        if (totalSeconds == null)  return "00:00:00";
+    private String convertSecondsToTimeFormat(Long totalSeconds) {
+        if (totalSeconds == null)  {
+            return "00:00:00";
+        }
 
         long hours = totalSeconds / 3600;
         long minutes = (totalSeconds % 3600) / 60;
@@ -272,7 +271,9 @@ public class AttendanceService {
         if (currentTime.isAfter(LocalTime.of(18, 10))) {
             // 출근한 직원 (지각 포함)
             List<Attendance> startAttendances = attendanceRepository.findByAttendDateAndAttendType(currentDate, "START");
-            if (startAttendances == null) return new AttendanceResult();
+            if (startAttendances == null) {
+                return new AttendanceResult();
+            }
             List<User> startAttendancesUserList = startAttendances.stream().map(Attendance::getUser).collect(Collectors.toList());
 
             long count = startAttendances.size() - getOnTimeEndAttendances().getCount();
@@ -295,7 +296,9 @@ public class AttendanceService {
 
         // 출근한 직원 수 (지각 포함)
         List<Attendance> startAttendances = attendanceRepository.findByAttendDateAndAttendType(currentDate, "START");
-        if (startAttendances == null) return new AttendanceResult(allUserList.size(), userListToDtoList(allUserList));
+        if (startAttendances == null) {
+            return new AttendanceResult(allUserList.size(), userListToDtoList(allUserList));
+        }
         List<User> startAttendancesUserList = startAttendances.stream().map(Attendance::getUser).collect(Collectors.toList());
 
         long count = allUserList.size() - startAttendances.size() - getDayOffAttendances().getCount();
@@ -337,7 +340,9 @@ public class AttendanceService {
         List<User> userList = userRepository.findAllByDeptCode(deptCode);
         List<Attendance> attendances = attendanceRepository.findByAttendMonthAndAttendTypeAndUserIn(currentMonth, attendType, userList);
 
-        if (attendances.isEmpty()) return "00:00:00";
+        if (attendances.isEmpty()) {
+            return "00:00:00";
+        }
 
         Duration totalOverTime = attendances.stream()
                 .map(this::calculateOverTime)
@@ -372,7 +377,9 @@ public class AttendanceService {
     // 연장근무 시간 합계
     private String sumOvertime(List<Attendance> attendances) {
 
-        if (attendances.isEmpty()) return "00:00:00";
+        if (attendances.isEmpty()) {
+            return "00:00:00";
+        }
 
         Duration totalOverTime = attendances.stream()
                 .map(this::calculateOverTime)

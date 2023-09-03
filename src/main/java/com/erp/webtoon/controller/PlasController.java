@@ -40,8 +40,8 @@ public class PlasController {
      * 전자결재 문서 저장
      */
     @PostMapping("/documents")
-    public void save(@RequestBody DocumentRequestDto dto) throws IOException {
-        plasService.addDoc(dto);
+    public void save(@RequestPart DocumentRequestDto dto, @RequestPart("files")List<MultipartFile> files) throws IOException {
+        plasService.addDoc(dto, files);
     }
 
     /**
@@ -56,42 +56,24 @@ public class PlasController {
      * 전자결재 문서 삭제
      */
     @DeleteMapping("/documents/{documentId}")
-    public ResponseEntity delete(@PathVariable Long documentId) {
-        try {
-            plasService.deleteDoc(documentId);
-            return ResponseEntity.ok().build();
-        }
-        catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
-        }
+    public void delete(@PathVariable Long documentId) {
+        plasService.deleteDoc(documentId);
     }
 
     /**
      * 전자결재 문서 상신
      */
     @PatchMapping("/documents/{documentId}")
-    public ResponseEntity submit(@PathVariable Long documentId) {
-        try {
-            plasService.submitDoc(documentId);
-            return ResponseEntity.ok().build();
-        }
-        catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
-        }
+    public void submit(@PathVariable Long documentId) {
+        plasService.submitDoc(documentId);
     }
 
     /**
      * 전자결재 문서 승인
      */
     @PatchMapping("/documents/{documentId}/{employeeId}")
-    public ResponseEntity approve(@PathVariable Long documentId, @PathVariable String employeeId) {
-        try {
-            plasService.approveDoc(documentId, employeeId);
-            return ResponseEntity.ok().build();
-        }
-        catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
-        }
+    public void approve(@PathVariable Long documentId, @PathVariable String employeeId) {
+        plasService.approveDoc(documentId, employeeId);
     }
 
     /**
@@ -106,15 +88,8 @@ public class PlasController {
      * 내 부서 문서 조회
      */
     @GetMapping("/documents/myDept/{deptCode}")
-    public ResponseEntity getMyDeptDocuments(@PathVariable String deptCode) {
-        try {
-            List<DocListDto> dtos = plasService.getMyDeptDocList(deptCode);
-            return ResponseEntity.ok(dtos);
-        }
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
-        }
-
+    public List<DocListDto> getMyDeptDocuments(@PathVariable String deptCode) {
+        return plasService.getMyDeptDocList(deptCode);
     }
 
     /**

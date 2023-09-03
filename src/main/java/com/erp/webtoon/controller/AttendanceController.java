@@ -3,9 +3,9 @@ package com.erp.webtoon.controller;
 import com.erp.webtoon.dto.attendance.AttendanceRequestDto;
 import com.erp.webtoon.dto.attendance.AttendanceResponseDto;
 import com.erp.webtoon.dto.attendance.TotalAttendanceResponseDto;
-import com.erp.webtoon.dto.common.ErrorResponseDto;
 import com.erp.webtoon.service.AttendanceService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,14 +27,8 @@ public class AttendanceController {
         출근 & 퇴근
      */
     @PostMapping
-    public ResponseEntity addAttendanceRecord(@RequestBody AttendanceRequestDto dto) throws IOException {
-        try {
+    public void addAttendanceRecord(@RequestBody AttendanceRequestDto dto) throws IOException {
             attendanceService.addAttendance(dto);
-            return ResponseEntity.ok().build();
-        }
-        catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponseDto(e.getMessage()));
-        }
     }
 
     /**
@@ -52,5 +46,4 @@ public class AttendanceController {
     public TotalAttendanceResponseDto getTotalAttendance() {
         return attendanceService.getTotalAttendance();
     }
-
 }
