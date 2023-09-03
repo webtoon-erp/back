@@ -84,7 +84,7 @@ public class RequestController {
     /**
      * 단계 변경
      */
-    @PostMapping("/request/step/{requestId}")
+    @PutMapping("/request/step/{requestId}")
     public ResponseEntity changeStep(@PathVariable Long requestId, @RequestBody RequestStepDto dto) {
         requestService.changeStep(requestId, dto);
         return new ResponseEntity(HttpStatus.OK);
