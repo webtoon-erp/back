@@ -5,6 +5,7 @@ import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.Request;
 import com.erp.webtoon.domain.RequestDt;
 import com.erp.webtoon.domain.User;
+import com.erp.webtoon.dto.file.FileResponseDto;
 import com.erp.webtoon.dto.itsm.*;
 import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.repository.MessageRepository;
@@ -71,6 +72,9 @@ public class RequestService {
 
         requestRepository.save(request);
 
+        //연관관계
+        request.updateUserRequest();
+
         //알림 발송
         addRequestMsg(request);
 
@@ -119,8 +123,8 @@ public class RequestService {
                 .collect(Collectors.toList());
 
         // 첨부파일 리스트
-        List<String> files = findRequest.getFiles().stream()
-                .map(file -> file.getOriginName())
+        List<FileResponseDto> files = findRequest.getFiles().stream()
+                .map(FileResponseDto::new)
                 .collect(Collectors.toList());
 
         return RequestResponseDto.builder()
@@ -132,7 +136,7 @@ public class RequestService {
                 .doneDate(findRequest.getDoneDate())
                 .reqUserId(findRequest.getReqUser().getEmployeeId())
                 .itUserId(findRequest.getItUser().getEmployeeId())
-                .fileOriginName(files)
+                .files(files)
                 .requestDtList(requestDtList)
                 .build();
     }
@@ -184,7 +188,6 @@ public class RequestService {
      * 단계 변경 기능
      */
     @Transactional
-
     public void changeStep(Long requestId, RequestStepDto dto) {
         Request findRequest = requestRepository.findById(requestId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 서비스 요청입니다."));
@@ -278,10 +281,10 @@ public class RequestService {
      */
     public void addRequestStepMsg(Request request) {
 
-        User rcvUser = userRepository.findByEmployeeId(request.getReqUser().getEmployeeId())
+        User rcvUser = userRepository.findByEmployeeId(request.getItUser().getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
 
-        User sendUser = userRepository.findByEmployeeId(request.getItUser().getEmployeeId())
+        User sendUser = userRepository.findByEmployeeId(request.getReqUser().getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
         MessageSaveDto dto = MessageSaveDto.builder()
