@@ -22,7 +22,7 @@ class UserRepositoryTest {
     @DisplayName("이메일로 사원 찾기 테스트")
     void findByEmail() {
         // given
-        User user = userRepository.save(UserFixture.FIRST_USER.생성(1L));
+        User user = userRepository.save(UserFixture.FIRST_USER.생성());
         // when
         User user1 = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("사원을 찾을 수 없습니다."));

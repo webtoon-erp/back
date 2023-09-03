@@ -8,9 +8,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Builder
+@Data
 public class UserResponseDto {
+
     private String employeeId; // 사번
 
     private String LoginId; // 아이디

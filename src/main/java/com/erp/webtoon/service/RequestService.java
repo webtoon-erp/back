@@ -64,8 +64,6 @@ public class RequestService {
         return RequestRegisterResponseDto.builder().requestId(request.getId()).createdAt(LocalDateTime.now()).build();
     }
 
-
-
     /**
      * 업무 지원 요청 기능
      */
@@ -84,7 +82,6 @@ public class RequestService {
 
         return RequestRegisterResponseDto.builder().requestId(request.getId()).createdAt(LocalDateTime.now()).build();
     }
-
 
     /**
      * IT 담당자 리스트 조회 기능
@@ -193,7 +190,6 @@ public class RequestService {
         //알림 발송
         addRequestStepMsg(findRequest);
     }
-
 
     /**
      * 코멘트 등록 기능

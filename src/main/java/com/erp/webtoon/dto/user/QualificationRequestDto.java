@@ -5,8 +5,8 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-@Data
 @Builder
+@Data
 public class QualificationRequestDto {
     private String employeeId; // 사원 번호
 

@@ -236,7 +236,6 @@ public class UserService {
             log.info("redisRefreshToken = {}", redisRefreshToken.getRefreshToken());
             throw new IllegalArgumentException("refreshToken이 일치하지 않습니다.");
         }
-
         return tokenProvider.generateToken(user);
     }
 

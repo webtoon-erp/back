@@ -25,7 +25,6 @@ public class PayService {
     private final UserRepository userRepository;
     private final QualificationRepository qualificationRepository;
 
-
     /**
      * 월 급여 등록
      */
@@ -41,7 +40,6 @@ public class PayService {
 
         payRepository.save(newPay);
     }
-
 
     /**
      * 급여 조회 -> 이때 직원 정보도 같이 조회해야함 + 급여 list
@@ -142,7 +140,6 @@ public class PayService {
         }
     }
 
-
     /**
      * 자격 수당 수정
      */
@@ -167,5 +164,4 @@ public class PayService {
         findPay.updatePayYN();
         return true;
     }
-
 }

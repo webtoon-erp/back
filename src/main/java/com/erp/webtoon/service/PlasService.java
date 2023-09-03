@@ -28,7 +28,7 @@ public class PlasService {
     private final MessageService messageService;
     private final AttendanceService attendanceService;
 
-    /*
+    /**
         결재자 / 참조자 조회
     */
     @Transactional(readOnly = true)
@@ -45,7 +45,7 @@ public class PlasService {
                 .collect(Collectors.toList());
     }
 
-    /*
+    /**
         내 문서 조회
     */
     @Transactional(readOnly = true)
@@ -56,10 +56,9 @@ public class PlasService {
         List<Document> myDocList = documentRepository.findAllByWriteUser(writeUser);
 
         return docStreamToList(myDocList);
-
     }
 
-    /*
+    /**
         내 부서 문서 조회
     */
     @Transactional(readOnly = true)
@@ -76,7 +75,7 @@ public class PlasService {
         return docStreamToList(myDeptDocList);
     }
 
-    /*
+    /**
         내 결재 & 참조 문서 조회
     */
     @Transactional(readOnly = true)
@@ -109,7 +108,7 @@ public class PlasService {
                 .collect(Collectors.toList());
     }
 
-    /*
+    /**
         전자결재 문서 저장
      */
     public void addDoc(DocumentRequestDto dto) throws IOException {
@@ -153,7 +152,7 @@ public class PlasService {
         }
     }
 
-    /*
+    /**
         연차 사용 신청 등록
      */
     public void addDayOffDoc(DayOffDocumentRequestDto dto) {
@@ -176,10 +175,9 @@ public class PlasService {
 
         String content = "새 전자결재 문서가 상신되었습니다. 문서명 - " + document.getTitle();
         sendMsg(document.getId(), appvUser, writeUser, content);
-
     }
 
-    /*
+    /**
         전자결재 문서 삭제
      */
     public void deleteDoc(Long documentId) {
@@ -213,7 +211,7 @@ public class PlasService {
         sendMsg(documentId, documentRcv.getUser(), document.getWriteUser(), content);
     }
 
-    /*
+    /**
         전자결재 문서 승인
      */
     public void approveDoc(Long documentId, String employeeId) {
@@ -264,10 +262,9 @@ public class PlasService {
         else {
             throw new IllegalStateException("해당 사용자의 승인 권한 아직 없거나 이미 처리되었습니다.");
         }
-
     }
 
-    /*
+    /**
        전자결재 문서 상세 조회
      */
     @Transactional(readOnly = true)
@@ -290,7 +287,6 @@ public class PlasService {
                 .documentRcvResponses(document.getRcvResponse())
                 .documentDataResponses(document.getDataResponse())
                 .build();
-
     }
 
     private void sendMsg(Long documentId, User rcvUser, User sendUser, String content) {

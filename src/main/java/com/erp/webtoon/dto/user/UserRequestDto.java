@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Builder
 @Data
 public class UserRequestDto {
+
     @NotBlank
     private String employeeId; // 사번
 

@@ -55,7 +55,6 @@ public class AttendanceService {
 
         Attendance attendance = dto.toEntity(user);
         attendanceRepository.save(attendance);
-
     }
 
     /*
@@ -90,7 +89,6 @@ public class AttendanceService {
         dto.setAttendanceList(attendanceRepository.findIndividualAttendance(user));
 
         return dto;
-
     }
 
     public String convertSecondsToTimeFormat(Long totalSeconds) {
@@ -146,7 +144,6 @@ public class AttendanceService {
                 .wtOvertimeSum(getOverTimeSumByDepartment("WT"))
                 .itOVertimeSum(getOverTimeSumByDepartment("IT"))
                 .build();
-
     }
 
     // 전체 근태 - 부서별 연장근무 시간 평균 조회
@@ -158,7 +155,6 @@ public class AttendanceService {
                 .wtOvertimeAvg(getOverTimeAvgByDepartment("WT"))
                 .itOVertimeAvg(getOverTimeAvgByDepartment("IT"))
                 .build();
-
     }
 
 
@@ -196,7 +192,6 @@ public class AttendanceService {
             this.count = count;
             this.userList = userList;
         }
-
     }
 
     // 전체 - 정시 출근 직원 수
@@ -380,7 +375,6 @@ public class AttendanceService {
         long totalSeconds = totalOverTime.toSecondsPart();
 
         return String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSeconds);
-
     }
 
     // USER -> TotalAttendanceUserListDto
@@ -398,5 +392,4 @@ public class AttendanceService {
                         .build())
                 .collect(Collectors.toList());
     }
-
 }

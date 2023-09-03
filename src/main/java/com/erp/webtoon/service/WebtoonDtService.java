@@ -26,7 +26,6 @@ public class WebtoonDtService {
     private final MessageService messageService;
     private final FileService fileService;
 
-
     /**
      * 회차 임시 업로드 (최초 등록)
      */
@@ -61,7 +60,6 @@ public class WebtoonDtService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회차입니다."));
 
         findWebtoonDt.changeUploadState();
-
     }
 
     /**

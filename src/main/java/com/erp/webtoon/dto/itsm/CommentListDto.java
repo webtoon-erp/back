@@ -14,6 +14,4 @@ public class CommentListDto {
     private String sendUserEmployeeId; // 발신자 사번
 
     private String sendUserName; // 발신자 이름
-
-
 }

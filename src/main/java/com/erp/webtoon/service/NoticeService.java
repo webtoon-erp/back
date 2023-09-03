@@ -83,7 +83,6 @@ public class NoticeService {
                 .build();
     }
 
-
     /**
      * 공지사항 전체 조회(List)
      */
@@ -107,7 +106,6 @@ public class NoticeService {
                 .map(NoticeCardViewDto::new)
                 .collect(Collectors.toList());
     }
-
 
     /**
      * 공지사항 수정

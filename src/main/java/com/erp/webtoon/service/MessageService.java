@@ -97,5 +97,4 @@ public class MessageService {
     public List<Message> getMessageListByRefId(Long refID) {
         return messageRepository.findByRefId(refID);
     }
-
 }

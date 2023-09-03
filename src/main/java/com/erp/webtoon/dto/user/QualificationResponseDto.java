@@ -8,7 +8,10 @@ import java.time.LocalDate;
 @Builder
 @Data
 public class QualificationResponseDto {
+
     private String qlfcType;
+
     private String content;
+
     private LocalDate qlfcDate;
 }

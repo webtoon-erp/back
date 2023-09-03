@@ -13,5 +13,4 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     List<Message> findByRcvUserAndStat(User rcvUser, char stat);
 
     List<Message> findByRefId(Long refId);
-
 }

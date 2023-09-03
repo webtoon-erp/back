@@ -39,9 +39,8 @@ public enum UserFixture {
         this.dayoff = dayoff;
     }
 
-    public User 생성(Long id) {
+    public User 생성() {
         return 기본_정보_생성()
-                .id(id)
                 .build();
     }
 
