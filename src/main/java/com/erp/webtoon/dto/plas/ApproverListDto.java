@@ -11,8 +11,8 @@ public class ApproverListDto {
 
     private String deptName;    //부서명
 
-    private int teamNum;    // 팀 번호
-
     private String position;    // 직급
+
+    private String employeeId; // 사번
 
 }

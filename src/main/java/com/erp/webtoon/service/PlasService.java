@@ -38,8 +38,8 @@ public class PlasService {
         return appvLineList.stream()
                 .map(user -> ApproverListDto.builder()
                         .name(user.getName())
-                        .deptName(user.getDeptName())
-                        .teamNum(user.getTeamNum())
+                        .deptName(user.getDeptName() + user.getTeamNum())
+                        .employeeId(user.getEmployeeId())
                         .position(user.getPosition())
                         .build())
                 .collect(Collectors.toList());
