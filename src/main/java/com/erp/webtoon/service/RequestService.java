@@ -188,7 +188,6 @@ public class RequestService {
      * 단계 변경 기능
      */
     @Transactional
-
     public void changeStep(Long requestId, RequestStepDto dto) {
         Request findRequest = requestRepository.findById(requestId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 서비스 요청입니다."));
@@ -282,10 +281,10 @@ public class RequestService {
      */
     public void addRequestStepMsg(Request request) {
 
-        User rcvUser = userRepository.findByEmployeeId(request.getReqUser().getEmployeeId())
+        User rcvUser = userRepository.findByEmployeeId(request.getItUser().getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 수신 직원의 정보가 존재하지 않습니다."));
 
-        User sendUser = userRepository.findByEmployeeId(request.getItUser().getEmployeeId())
+        User sendUser = userRepository.findByEmployeeId(request.getReqUser().getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
         MessageSaveDto dto = MessageSaveDto.builder()
