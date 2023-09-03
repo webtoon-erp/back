@@ -1,9 +1,15 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Attendance;
-import com.erp.webtoon.domain.Document;
 import com.erp.webtoon.domain.User;
-import com.erp.webtoon.dto.attendance.*;
+import com.erp.webtoon.dto.attendance.AttendanceRequestDto;
+import com.erp.webtoon.dto.attendance.AttendanceResponseDto;
+import com.erp.webtoon.dto.attendance.DepartmentOvertimeAvgDto;
+import com.erp.webtoon.dto.attendance.DepartmentOvertimeSumDto;
+import com.erp.webtoon.dto.attendance.MonthlyOvertimeSummaryDto;
+import com.erp.webtoon.dto.attendance.TotalAttendanceResponseDto;
+import com.erp.webtoon.dto.attendance.TotalAttendanceSummaryDto;
+import com.erp.webtoon.dto.attendance.TotalAttendanceUserListDto;
 import com.erp.webtoon.repository.AttendanceRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.Getter;
@@ -18,7 +24,9 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service

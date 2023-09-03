@@ -1,9 +1,21 @@
 package com.erp.webtoon.service;
 
-import com.erp.webtoon.domain.*;
+import com.erp.webtoon.domain.Document;
+import com.erp.webtoon.domain.DocumentData;
+import com.erp.webtoon.domain.DocumentRcv;
+import com.erp.webtoon.domain.File;
+import com.erp.webtoon.domain.Message;
+import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.message.MessageSaveDto;
-import com.erp.webtoon.dto.plas.*;
-import com.erp.webtoon.repository.*;
+import com.erp.webtoon.dto.plas.ApproverListDto;
+import com.erp.webtoon.dto.plas.DayOffDocumentRequestDto;
+import com.erp.webtoon.dto.plas.DocListDto;
+import com.erp.webtoon.dto.plas.DocumentRequestDto;
+import com.erp.webtoon.dto.plas.DocumentResponseDto;
+import com.erp.webtoon.repository.DocumentDataRepository;
+import com.erp.webtoon.repository.DocumentRcvRepository;
+import com.erp.webtoon.repository.DocumentRepository;
+import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service

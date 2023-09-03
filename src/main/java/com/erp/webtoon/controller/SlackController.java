@@ -24,14 +24,4 @@ public class SlackController {
 
         slackService.sendSlackChannel("슬랙 메시지 테스트", channel);
     }
-
-//    @GetMapping("/slack/{employeeId}")
-//    @ResponseBody
-//    public void dm(@PathVariable String employeeId){
-//
-//        log.info("슬랙 DM 테스트");
-//
-//        slackService.sendSlackChannel("슬랙 DM 테스트", slackService.findUserEmail(employeeId));
-//    }
-
 }

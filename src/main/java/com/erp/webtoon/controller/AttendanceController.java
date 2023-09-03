@@ -7,7 +7,12 @@ import com.erp.webtoon.dto.common.ErrorResponseDto;
 import com.erp.webtoon.service.AttendanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
@@ -18,7 +23,7 @@ public class AttendanceController {
 
     private final AttendanceService attendanceService;
 
-    /*
+    /**
         출근 & 퇴근
      */
     @PostMapping
@@ -32,7 +37,7 @@ public class AttendanceController {
         }
     }
 
-    /*
+    /**
         개인 근태 조회
      */
     @GetMapping("/{employeeId}")
@@ -40,7 +45,7 @@ public class AttendanceController {
         return attendanceService.getIndividualAttendance(employeeId);
     }
 
-    /*
+    /**
         전체 근태 조회
      */
     @GetMapping("/total")
