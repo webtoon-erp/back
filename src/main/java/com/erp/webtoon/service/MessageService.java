@@ -2,7 +2,7 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
-import com.erp.webtoon.dto.message.*;
+import com.erp.webtoon.dto.message.MessageListDto;
 import com.erp.webtoon.repository.MessageRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -97,5 +97,4 @@ public class MessageService {
     public List<Message> getMessageListByRefId(Long refID) {
         return messageRepository.findByRefId(refID);
     }
-
 }

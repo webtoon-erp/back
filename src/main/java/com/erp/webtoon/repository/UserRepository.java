@@ -15,5 +15,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // 전체 직원 수 조회
     Long countAllBy();
-
 }

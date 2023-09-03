@@ -2,7 +2,14 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Attendance;
 import com.erp.webtoon.domain.User;
-import com.erp.webtoon.dto.attendance.*;
+import com.erp.webtoon.dto.attendance.AttendanceRequestDto;
+import com.erp.webtoon.dto.attendance.AttendanceResponseDto;
+import com.erp.webtoon.dto.attendance.DepartmentOvertimeAvgDto;
+import com.erp.webtoon.dto.attendance.DepartmentOvertimeSumDto;
+import com.erp.webtoon.dto.attendance.MonthlyOvertimeSummaryDto;
+import com.erp.webtoon.dto.attendance.TotalAttendanceResponseDto;
+import com.erp.webtoon.dto.attendance.TotalAttendanceSummaryDto;
+import com.erp.webtoon.dto.attendance.TotalAttendanceUserListDto;
 import com.erp.webtoon.repository.AttendanceRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.Getter;
@@ -16,7 +23,9 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,7 +60,6 @@ public class AttendanceService {
 
         Attendance attendance = dto.toEntity(user);
         attendanceRepository.save(attendance);
-
     }
 
     /*
@@ -86,7 +94,6 @@ public class AttendanceService {
         dto.setAttendanceList(attendanceRepository.findIndividualAttendance(user));
 
         return dto;
-
     }
 
     private String convertSecondsToTimeFormat(Long totalSeconds) {
@@ -144,7 +151,6 @@ public class AttendanceService {
                 .wtOvertimeSum(getOverTimeSumByDepartment("WT"))
                 .itOVertimeSum(getOverTimeSumByDepartment("IT"))
                 .build();
-
     }
 
     // 전체 근태 - 부서별 연장근무 시간 평균 조회
@@ -156,7 +162,6 @@ public class AttendanceService {
                 .wtOvertimeAvg(getOverTimeAvgByDepartment("WT"))
                 .itOVertimeAvg(getOverTimeAvgByDepartment("IT"))
                 .build();
-
     }
 
 
@@ -194,7 +199,6 @@ public class AttendanceService {
             this.count = count;
             this.userList = userList;
         }
-
     }
 
     // 전체 - 정시 출근 직원 수
@@ -386,7 +390,6 @@ public class AttendanceService {
         long totalSeconds = totalOverTime.toSecondsPart();
 
         return String.format("%02d:%02d:%02d", totalHours, totalMinutes, totalSeconds);
-
     }
 
     // USER -> TotalAttendanceUserListDto
@@ -404,5 +407,4 @@ public class AttendanceService {
                         .build())
                 .collect(Collectors.toList());
     }
-
 }

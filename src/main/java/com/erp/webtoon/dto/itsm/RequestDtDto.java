@@ -12,5 +12,4 @@ public class RequestDtDto {
     private int count;
 
     private int cost;
-
 }

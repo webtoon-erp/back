@@ -37,7 +37,7 @@ class UserControllerTest {
     @Test
     void add() throws Exception {
         // given
-        User user = userRepository.save(UserFixture.FIRST_USER.생성(1L));
+        User user = userRepository.save(UserFixture.FIRST_USER.생성());
 
         UserRequestDto userRequestDto = UserRequestDto.builder()
                 .employeeId(user.getEmployeeId())

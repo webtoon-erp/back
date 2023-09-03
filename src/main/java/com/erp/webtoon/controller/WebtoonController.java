@@ -13,7 +13,12 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -68,52 +73,6 @@ public class WebtoonController {
         UrlResource resource = new UrlResource("file:" + fileService.getFullPath(webtoon.getThumbnailFileName()));
         return ResponseEntity.ok(new Result(resource.getURL(), webtoon));
 
-    }
-
-    /**
-     * 제목 웹툰 검색
-     */
-    @GetMapping("/webtoon/one/{title}")
-    public ResponseEntity showByTitle(@PathVariable("title") String title) {
-
-        List<WebtoonListResponseDto> dtos = webtoonService.getTitleWebtoon(title);
-
-        return ResponseEntity.ok(dtos);
-
-    }
-
-    /**
-     * 작가 웹툰 검색
-     */
-    @GetMapping("/webtoon/one/{artist}")
-    public ResponseEntity showByArtist(@PathVariable("artist") String artist) {
-
-        List<WebtoonListResponseDto> dtos = webtoonService.getTitleWebtoon(artist);
-
-        return ResponseEntity.ok(dtos);
-    }
-
-    /**
-     * 카테고리 웹툰 검색
-     */
-    @GetMapping("/webtoon/one/{category}")
-    public ResponseEntity showByCategory(@PathVariable("category") String category) {
-
-        List<WebtoonListResponseDto> dtos = webtoonService.getTitleWebtoon(category);
-
-        return ResponseEntity.ok(dtos);
-
-    }
-
-    /**
-     * 키워드 웹툰 검색
-     */
-    @GetMapping("/webtoon/one/{keyword}")
-    public ResponseEntity showByKeyword(@PathVariable("keyword") String keyword) {
-
-        List<WebtoonListResponseDto> dtos = webtoonService.getTitleWebtoon(keyword);
-
-        return ResponseEntity.ok(dtos);
     }
 
     /**

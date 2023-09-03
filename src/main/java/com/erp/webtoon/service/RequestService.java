@@ -5,8 +5,17 @@ import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.Request;
 import com.erp.webtoon.domain.RequestDt;
 import com.erp.webtoon.domain.User;
-import com.erp.webtoon.dto.file.FileResponseDto;
-import com.erp.webtoon.dto.itsm.*;
+
+import com.erp.webtoon.dto.itsm.CommentListDto;
+import com.erp.webtoon.dto.itsm.CommentResponseDto;
+import com.erp.webtoon.dto.itsm.ItEmployeeResponseDto;
+import com.erp.webtoon.dto.itsm.RequestDeleteDto;
+import com.erp.webtoon.dto.itsm.RequestDtResponseDto;
+import com.erp.webtoon.dto.itsm.RequestDto;
+import com.erp.webtoon.dto.itsm.RequestListResponseDto;
+import com.erp.webtoon.dto.itsm.RequestRegisterResponseDto;
+import com.erp.webtoon.dto.itsm.RequestResponseDto;
+import com.erp.webtoon.dto.itsm.RequestStepDto;
 import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.repository.MessageRepository;
 import com.erp.webtoon.repository.RequestRepository;
@@ -21,7 +30,6 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,25 +49,13 @@ public class RequestService {
      * 구매 요청 기능
      */
     @Transactional
-    public RequestRegisterResponseDto purchaseRequest(RequestDto requestDto) throws Exception {
+    public RequestRegisterResponseDto purchaseRequest(RequestDto requestDto, List<MultipartFile> files) throws Exception {
 
-        User reqUser = userRepository.findByEmployeeId(requestDto.getReqUserId())
-                .orElseThrow(() -> new EntityNotFoundException("발신자가 존재하지 않습니다."));
-        User itUser = userRepository.findByEmployeeId(requestDto.getItUserId())
-                .orElseThrow(() -> new EntityNotFoundException("수신자가 존재하지 않습니다."));
-        List<File> fileList = saveFile(requestDto);
+        User reqUser = getReqUser(requestDto);
+        User itUser = getItUser(requestDto);
 
-        Request request = Request.builder()
-                .reqType(requestDto.getReqType())
-                .title(requestDto.getTitle())
-                .content(requestDto.getContent())
-                .step(requestDto.getStep())
-                .dueDate(requestDto.getDueDate())
-                .doneDate(requestDto.getDueDate())
-                .reqUser(reqUser)
-                .itUser(itUser)
-                .files(fileList)
-                .build();
+        Request request = getRequest(requestDto, reqUser, itUser);
+        saveFiles(files, request);
 
         for(int i = 0; i < requestDto.getRequestDts().size(); i++){
             RequestDt requestDt = RequestDt.builder()
@@ -85,29 +81,36 @@ public class RequestService {
      * 업무 지원 요청 기능
      */
     @Transactional
-    public RequestRegisterResponseDto assistRequest(RequestDto requestDto) throws Exception {
-        User reqUser = userRepository.findByEmployeeId(requestDto.getReqUserId()).get();
-        User itUser = userRepository.findByEmployeeId(requestDto.getItUserId()).get();
-        List<File> fileList = saveFile(requestDto);
+    public RequestRegisterResponseDto assistRequest(RequestDto requestDto, List<MultipartFile> files) throws Exception {
 
-        Request request = Request.builder()
-                .reqType(requestDto.getReqType())
-                .title(requestDto.getTitle())
-                .content(requestDto.getContent())
-                .step(requestDto.getStep())
-                .dueDate(requestDto.getDueDate())
-                .doneDate(requestDto.getDueDate())
-                .reqUser(reqUser)
-                .itUser(itUser)
-                .files(fileList)
-                .build();
+        User reqUser = getReqUser(requestDto);
+        User itUser = getItUser(requestDto);
 
+        Request request = getRequest(requestDto, reqUser, itUser);
+        saveFiles(files, request);
         requestRepository.save(request);
 
         //알림 발송
         addRequestMsg(request);
 
         return RequestRegisterResponseDto.builder().requestId(request.getId()).createdAt(LocalDateTime.now()).build();
+    }
+
+    /**
+     * IT 담당자 리스트 조회 기능
+     */
+    public List<ItEmployeeResponseDto> searchItEmployee() {
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .filter(user -> user.getDeptName() == "IT")
+                .map(user -> ItEmployeeResponseDto.builder()
+                        .employeeId(user.getEmployeeId())
+                        .deptName(user.getDeptName() + user.getTeamNum())
+                        .position(user.getPosition())
+                        .name(user.getName())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     /**
@@ -200,12 +203,11 @@ public class RequestService {
         addRequestStepMsg(findRequest);
     }
 
-
     /**
      * 코멘트 등록 기능
      */
     @Transactional
-    public CommentResponseDto registerComment(MessageSaveDto dto) throws IOException{
+    public CommentResponseDto registerComment(MessageSaveDto dto) {
         User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
@@ -228,7 +230,7 @@ public class RequestService {
     /**
      * 코멘트 조회 기능
      */
-    public List<CommentListDto> getAllComments(Long requestId){
+    public List<CommentListDto> getAllComments(Long requestId) {
         List<Message> commentList = messageService.getMessageListByRefId(requestId);
 
         return commentList.stream()
@@ -246,7 +248,7 @@ public class RequestService {
      * 코멘트 삭제 기능
      */
     @Transactional
-    public void deleteComment(Long messageId){
+    public void deleteComment(Long messageId) {
         Message message = messageRepository.findById(messageId).orElseThrow(() -> new EntityNotFoundException("No Such Message"));
         message.changeStat('D');
     }
@@ -300,24 +302,36 @@ public class RequestService {
         messageService.addMsg(newMessage);
     }
 
-    /**
-     * 파일 업로드 기능
-     */
-    @Transactional
-    public List<File> saveFile(RequestDto requestDto) throws Exception {
-        List<MultipartFile> files = requestDto.getFiles();
-        List<File> result = new ArrayList<>();
+    private User getReqUser(RequestDto requestDto) {
+        return userRepository.findByEmployeeId(requestDto.getReqUserId())
+                .orElseThrow(() -> new EntityNotFoundException("발신자가 존재하지 않습니다."));
+    }
 
-        try {
-            if (!requestDto.getFiles().isEmpty()) {
-                for (MultipartFile file1 : files) {
-                    File targetFile = fileService.save(file1);
-                    result.add(targetFile);
-                }
+    private User getItUser(RequestDto requestDto) {
+        return userRepository.findByEmployeeId(requestDto.getItUserId())
+                .orElseThrow(() -> new EntityNotFoundException("수신자가 존재하지 않습니다."));
+    }
+
+    private Request getRequest(RequestDto requestDto, User reqUser, User itUser) {
+        return Request.builder()
+                .reqType(requestDto.getReqType())
+                .title(requestDto.getTitle())
+                .content(requestDto.getContent())
+                .step(requestDto.getStep())
+                .dueDate(requestDto.getDueDate())
+                .doneDate(requestDto.getDueDate())
+                .reqUser(reqUser)
+                .itUser(itUser)
+                .build();
+    }
+
+    private void saveFiles(List<MultipartFile> files, Request request) throws IOException {
+        if (!files.isEmpty()) {
+            for (MultipartFile file : files) {
+                File savedFile = fileService.save(file);
+                savedFile.updateFileRequest(request);
+                request.getFiles().add(savedFile);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return result;
     }
 }

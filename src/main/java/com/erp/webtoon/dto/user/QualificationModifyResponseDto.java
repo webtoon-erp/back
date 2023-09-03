@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Builder
 @Data
 public class QualificationModifyResponseDto {
+
     private Long qualificationId;
 
     private LocalDate modifiedAt;

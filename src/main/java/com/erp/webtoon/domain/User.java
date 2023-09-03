@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 @Entity
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class User implements UserDetails {
 
@@ -90,9 +89,8 @@ public class User implements UserDetails {
     private List<Notice> notices = new ArrayList<>();   // 작성한 공지사항 목록
 
     @Builder
-    public User(Long id, String employeeId, String password, String name, String deptCode, String deptName,int teamNum,
+    public User(String employeeId, String password, String name, String deptCode, String deptName,int teamNum,
                 String position, String email, String tel, LocalDate birthDate, LocalDate joinDate, int dayOff, boolean usable) {
-        this.id = id;
         this.employeeId = employeeId;
         this.password = password;
         this.name = name;

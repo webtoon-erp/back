@@ -44,8 +44,7 @@ public class TokenProvider {
     public TokenProvider(@Value("${spring.jwt.secret}") String secretKey,
                             RefreshTokenService refreshTokenService,
                             LogoutAccessTokenService logoutAccessTokenService,
-                            UserDetailsService userDetailsService
-    ) {
+                            UserDetailsService userDetailsService) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.refreshTokenService = refreshTokenService;
@@ -62,7 +61,7 @@ public class TokenProvider {
         setRefreshTokenAtCookie(refreshToken);
 
         // 3. 생성한 토큰을 DTO에 담아 반환
-        return TokenResponseDto.from(accessToken);
+        return TokenResponseDto.from(accessToken, user);
     }
 
     /**

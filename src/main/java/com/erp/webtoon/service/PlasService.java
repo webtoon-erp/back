@@ -1,9 +1,21 @@
 package com.erp.webtoon.service;
 
-import com.erp.webtoon.domain.*;
+import com.erp.webtoon.domain.Document;
+import com.erp.webtoon.domain.DocumentData;
+import com.erp.webtoon.domain.DocumentRcv;
+import com.erp.webtoon.domain.File;
+import com.erp.webtoon.domain.Message;
+import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.message.MessageSaveDto;
-import com.erp.webtoon.dto.plas.*;
-import com.erp.webtoon.repository.*;
+import com.erp.webtoon.dto.plas.ApproverListDto;
+import com.erp.webtoon.dto.plas.DayOffDocumentRequestDto;
+import com.erp.webtoon.dto.plas.DocListDto;
+import com.erp.webtoon.dto.plas.DocumentRequestDto;
+import com.erp.webtoon.dto.plas.DocumentResponseDto;
+import com.erp.webtoon.repository.DocumentDataRepository;
+import com.erp.webtoon.repository.DocumentRcvRepository;
+import com.erp.webtoon.repository.DocumentRepository;
+import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,7 +42,7 @@ public class PlasService {
     private final MessageService messageService;
     private final AttendanceService attendanceService;
 
-    /*
+    /**
         결재자 / 참조자 조회
     */
     @Transactional(readOnly = true)
@@ -45,7 +59,7 @@ public class PlasService {
                 .collect(Collectors.toList());
     }
 
-    /*
+    /**
         내 문서 조회
     */
     @Transactional(readOnly = true)
@@ -56,10 +70,9 @@ public class PlasService {
         List<Document> myDocList = documentRepository.findAllByWriteUser(writeUser);
 
         return docStreamToList(myDocList);
-
     }
 
-    /*
+    /**
         내 부서 문서 조회
     */
     @Transactional(readOnly = true)
@@ -76,7 +89,7 @@ public class PlasService {
         return docStreamToList(myDeptDocList);
     }
 
-    /*
+    /**
         내 결재 & 참조 문서 조회
     */
     @Transactional(readOnly = true)
@@ -109,7 +122,7 @@ public class PlasService {
                 .collect(Collectors.toList());
     }
 
-    /*
+    /**
         전자결재 문서 저장
      */
     public void addDoc(DocumentRequestDto dto, List<MultipartFile> files) throws IOException {
@@ -153,7 +166,7 @@ public class PlasService {
         }
     }
 
-    /*
+    /**
         연차 사용 신청 등록
      */
     public void addDayOffDoc(DayOffDocumentRequestDto dto) {
@@ -176,10 +189,9 @@ public class PlasService {
 
         String content = "새 전자결재 문서가 상신되었습니다. 문서명 - " + document.getTitle();
         sendMsg(document.getId(), appvUser, writeUser, content);
-
     }
 
-    /*
+    /**
         전자결재 문서 삭제
      */
     public void deleteDoc(Long documentId) {
@@ -216,7 +228,7 @@ public class PlasService {
         sendMsg(documentId, documentRcv.getUser(), document.getWriteUser(), content);
     }
 
-    /*
+    /**
         전자결재 문서 승인
      */
     public void approveDoc(Long documentId, String employeeId) {
@@ -258,10 +270,9 @@ public class PlasService {
             LocalDateTime dayOffDate = document.getDocumentDataList().get(0).getFromDate();
             attendanceService.addDayOff(dayOffDate, document.getWriteUser());
         }
-
     }
 
-    /*
+    /**
        전자결재 문서 상세 조회
      */
     @Transactional(readOnly = true)
@@ -284,7 +295,6 @@ public class PlasService {
                 .documentRcvResponses(document.getRcvResponse())
                 .documentDataResponses(document.getDataResponse())
                 .build();
-
     }
 
     private void sendMsg(Long documentId, User rcvUser, User sendUser, String content) {

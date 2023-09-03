@@ -1,6 +1,7 @@
 package com.erp.webtoon.controller;
 
 
+import com.erp.webtoon.dto.itsm.ItEmployeeResponseDto;
 import com.erp.webtoon.dto.itsm.RequestListResponseDto;
 import com.erp.webtoon.dto.itsm.RequestResponseDto;
 import com.erp.webtoon.dto.itsm.RequestStepDto;
@@ -15,7 +16,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
@@ -28,13 +37,18 @@ public class RequestController {
     private final RequestService requestService;
 
     @PostMapping("/purchase-request")
-    public RequestRegisterResponseDto purchaseRequest(@RequestBody RequestDto requestDto) throws Exception {
-        return requestService.purchaseRequest(requestDto);
+    public RequestRegisterResponseDto purchaseRequest(@RequestPart("dto") RequestDto requestDto, @RequestPart("files")List<MultipartFile> files) throws Exception {
+        return requestService.purchaseRequest(requestDto, files);
     }
 
     @PostMapping("/request")
-    public RequestRegisterResponseDto Request(@RequestBody RequestDto requestDto) throws Exception {
-        return requestService.assistRequest(requestDto);
+    public RequestRegisterResponseDto Request(@RequestPart("dto") RequestDto requestDto, @RequestPart("files")List<MultipartFile> files) throws Exception {
+        return requestService.assistRequest(requestDto, files);
+    }
+
+    @GetMapping("/IT-manager")
+    public List<ItEmployeeResponseDto> findItManager() {
+        return requestService.searchItEmployee();
     }
 
     @DeleteMapping("/request")
@@ -49,7 +63,7 @@ public class RequestController {
     }
 
     @GetMapping("/comment")
-    public List<CommentListDto> getAllComments(@RequestParam("requestId") Long requestId){
+    public List<CommentListDto> getAllComments(@RequestParam("requestId") Long requestId) {
         return requestService.getAllComments(requestId);
     }
 
@@ -91,7 +105,7 @@ public class RequestController {
     }
 
     @DeleteMapping("/comment")
-    public ResponseEntity deleteComment(@RequestParam("messageId") Long messageId){
+    public ResponseEntity deleteComment(@RequestParam("messageId") Long messageId) {
         requestService.deleteComment(messageId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

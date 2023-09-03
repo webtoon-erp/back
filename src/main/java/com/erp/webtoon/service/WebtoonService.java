@@ -1,10 +1,12 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.File;
-import com.erp.webtoon.domain.User;
 import com.erp.webtoon.domain.Webtoon;
-import com.erp.webtoon.domain.WebtoonDt;
-import com.erp.webtoon.dto.webtoon.*;
+import com.erp.webtoon.dto.webtoon.WebtoonDtListDto;
+import com.erp.webtoon.dto.webtoon.WebtoonListResponseDto;
+import com.erp.webtoon.dto.webtoon.WebtoonRequestDto;
+import com.erp.webtoon.dto.webtoon.WebtoonResponseDto;
+import com.erp.webtoon.dto.webtoon.WebtoonUpdaateDto;
 import com.erp.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -60,75 +62,6 @@ public class WebtoonService {
      * 주차별로 나눠야 함...주차를 뭘로 판단하지..
      */
 
-
-    /**
-     * 등록 웹툰 검색 조회 -> 제목 / 작가 / 카테고리 / 키워드 별
-     */
-
-    //제목 검색
-    public List<WebtoonListResponseDto> getTitleWebtoon(String title) {
-        List<Webtoon> webtoons = webtoonRepository.findByTitle(title);
-
-        // 해당하는 웹툰이 없는 경우
-        if(webtoons == null || webtoons.isEmpty()) {
-            throw new EntityNotFoundException("해당하는 제목의 웹툰이 없습니다.");
-        }
-
-        List<WebtoonListResponseDto> webtoonList = webtoons.stream()
-                .map(WebtoonListResponseDto::new)
-                .collect(Collectors.toList());
-
-        return webtoonList;
-    }
-
-    //작가 검색
-    public List<WebtoonListResponseDto> getArtistWebtoon(String artist) {
-        List<Webtoon> webtoons = webtoonRepository.findByArtist(artist);
-
-        // 해당하는 웹툰이 없는 경우
-        if(webtoons == null || webtoons.isEmpty()) {
-            throw new EntityNotFoundException("해당하는 작가의 웹툰이 없습니다.");
-        }
-
-        List<WebtoonListResponseDto> webtoonList = webtoons.stream()
-                .map(WebtoonListResponseDto::new)
-                .collect(Collectors.toList());
-
-        return webtoonList;
-    }
-
-    //카테고리 검색
-    public List<WebtoonListResponseDto> getCategoryWebtoon(String category) {
-        List<Webtoon> webtoons = webtoonRepository.findByCategory(category);
-
-        // 해당하는 웹툰이 없는 경우
-        if(webtoons == null || webtoons.isEmpty()) {
-            throw new EntityNotFoundException("해당하는 카테고리의 웹툰이 없습니다.");
-        }
-
-        List<WebtoonListResponseDto> webtoonList = webtoons.stream()
-                .map(WebtoonListResponseDto::new)
-                .collect(Collectors.toList());
-
-        return webtoonList;
-    }
-
-    // 키워드 검색
-    public List<WebtoonListResponseDto> getKeywordWebtoon(String keyword) {
-        List<Webtoon> webtoons = webtoonRepository.findByKeyword(keyword);
-
-        // 해당하는 웹툰이 없는 경우
-        if(webtoons == null || webtoons.isEmpty()) {
-            throw new EntityNotFoundException("해당하는 키워드의 웹툰이 없습니다.");
-        }
-
-        List<WebtoonListResponseDto> webtoonList = webtoons.stream()
-                .map(WebtoonListResponseDto::new)
-                .collect(Collectors.toList());
-
-        return webtoonList;
-    }
-
     /**
      * 등록 웹툰 개별 상세 조회
      */
@@ -155,7 +88,6 @@ public class WebtoonService {
                 .thumbnailFileName(findWebtoon.getFiles().get(findWebtoon.getFiles().size()-1).getFileName())   // 저장된 썸네일 파일 중 가장 마지막 썸네일 파일
                 .episode(episodeDtos).build();
     }
-
 
     /**
      * 등록 웹툰 수정

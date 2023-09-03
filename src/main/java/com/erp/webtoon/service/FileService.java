@@ -1,7 +1,6 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.File;
-import com.erp.webtoon.dto.file.FileSaveDto;
 import com.erp.webtoon.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

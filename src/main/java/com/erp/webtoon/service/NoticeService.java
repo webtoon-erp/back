@@ -3,8 +3,12 @@ package com.erp.webtoon.service;
 import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.Notice;
 import com.erp.webtoon.domain.User;
-import com.erp.webtoon.dto.file.FileResponseDto;
-import com.erp.webtoon.dto.notice.*;
+
+import com.erp.webtoon.dto.notice.NoticeCardViewDto;
+import com.erp.webtoon.dto.notice.NoticeListDto;
+import com.erp.webtoon.dto.notice.NoticeRequestDto;
+import com.erp.webtoon.dto.notice.NoticeResponseDto;
+import com.erp.webtoon.dto.notice.NoticeUpdateDto;
 import com.erp.webtoon.repository.NoticeRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.data.domain.Sort.Direction.*;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Service
 @RequiredArgsConstructor
@@ -85,7 +89,6 @@ public class NoticeService {
                 .build();
     }
 
-
     /**
      * 공지사항 전체 조회(List)
      */
@@ -109,7 +112,6 @@ public class NoticeService {
                 .map(NoticeCardViewDto::new)
                 .collect(Collectors.toList());
     }
-
 
     /**
      * 공지사항 수정

@@ -57,7 +57,7 @@ class NoticeServiceTest {
         noticeRequestDto.setContent("내용입니다.");
 
         //when
-        noticeService.save(noticeRequestDto);
+        noticeService.save(noticeRequestDto, null);
 
         //then
         assertEquals(1L, noticeRepository.count());
@@ -175,7 +175,7 @@ class NoticeServiceTest {
         updateDto.setContent("내용입니다2.");
 
         //when
-        noticeService.update(newNotice.getId(), updateDto);
+        noticeService.update(newNotice.getId(), updateDto, null);
 
         //then
         assertEquals(1L, noticeRepository.count());

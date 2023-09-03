@@ -59,7 +59,7 @@ public class UserService {
      */
 
     @Transactional
-    public void addNewCome(UserRequestDto userRequestDto){
+    public void addNewCome(UserRequestDto userRequestDto) {
         User user = User.builder()
                 .employeeId(userRequestDto.getEmployeeId())
                 .password(passwordEncoder.encode(userRequestDto.getPassword()))
@@ -140,7 +140,7 @@ public class UserService {
      * 자격증 추가 (인사팀에서 진행)
      */
     @Transactional
-    public List<RegisterQualificationResponse> registerQualification(List<QualificationRequestDto> qualificationRequestList){
+    public List<RegisterQualificationResponse> registerQualification(List<QualificationRequestDto> qualificationRequestList) {
         List<RegisterQualificationResponse> registerqualificationList = new ArrayList<>();
         List<Qualification> qualificationList = new ArrayList<>();
 
@@ -236,14 +236,13 @@ public class UserService {
             log.info("redisRefreshToken = {}", redisRefreshToken.getRefreshToken());
             throw new IllegalArgumentException("refreshToken이 일치하지 않습니다.");
         }
-
         return tokenProvider.generateToken(user);
     }
 
     /**
      * 메일 내용을 생성하고 임시 비밀번호로 회원 비밀번호를 변경
      */
-    public SlackRequestDto createMailAndChangePassword(String userEmail){
+    public SlackRequestDto createMailAndChangePassword(String userEmail) {
         String tempPassword = getTempPassword();
         SlackRequestDto dto = new SlackRequestDto();
         dto.setEmail(userEmail);
@@ -268,7 +267,7 @@ public class UserService {
     /**
      * 임시 비밀번호로 업데이트
      */
-    public void updatePassword(String password, String userEmail){
+    public void updatePassword(String password, String userEmail) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
         user.updatePassword(password);
@@ -277,7 +276,7 @@ public class UserService {
     /**
      * 랜덤함수로 임시 비밀번호 구문 만들기
      */
-    public String getTempPassword(){
+    public String getTempPassword() {
         char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
                 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 

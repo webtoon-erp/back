@@ -3,7 +3,11 @@ package com.erp.webtoon.controller;
 import com.erp.webtoon.dto.message.MessageListDto;
 import com.erp.webtoon.service.MessageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -14,7 +18,7 @@ public class MessageController {
 
     private final MessageService messageService;
 
-    /*
+    /**
         개인 메시지 조회
      */
     @GetMapping("/{employeeId}")
@@ -22,7 +26,7 @@ public class MessageController {
         return messageService.getMessageList(employeeId);
     }
 
-    /*
+    /**
         메시지 상태 변경
      */
     @PatchMapping("/{messageId}/{stat}")
