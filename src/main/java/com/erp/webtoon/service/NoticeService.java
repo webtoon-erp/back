@@ -4,6 +4,7 @@ import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.Notice;
 import com.erp.webtoon.domain.User;
 
+import com.erp.webtoon.dto.file.FileResponseDto;
 import com.erp.webtoon.dto.notice.NoticeCardViewDto;
 import com.erp.webtoon.dto.notice.NoticeListDto;
 import com.erp.webtoon.dto.notice.NoticeRequestDto;

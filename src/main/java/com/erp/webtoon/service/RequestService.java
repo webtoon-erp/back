@@ -6,6 +6,7 @@ import com.erp.webtoon.domain.Request;
 import com.erp.webtoon.domain.RequestDt;
 import com.erp.webtoon.domain.User;
 
+import com.erp.webtoon.dto.file.FileResponseDto;
 import com.erp.webtoon.dto.itsm.CommentListDto;
 import com.erp.webtoon.dto.itsm.CommentResponseDto;
 import com.erp.webtoon.dto.itsm.ItEmployeeResponseDto;
