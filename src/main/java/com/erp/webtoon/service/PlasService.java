@@ -265,11 +265,6 @@ public class PlasService {
             sendMsg(documentId, document.getWriteUser(), currentRcv.getUser(),
                     "전자결재 문서가 최종 승인 및 완료되었습니다. 문서명 - " + document.getTitle());
         }
-
-        if (document.getTemplateName().equals("연차사용신청서")) {
-            LocalDateTime dayOffDate = document.getDocumentDataList().get(0).getFromDate();
-            attendanceService.addDayOff(dayOffDate, document.getWriteUser());
-        }
     }
 
     /**
