@@ -11,6 +11,7 @@ import com.erp.webtoon.dto.attendance.TotalAttendanceResponseDto;
 import com.erp.webtoon.dto.attendance.TotalAttendanceSummaryDto;
 import com.erp.webtoon.dto.attendance.TotalAttendanceUserListDto;
 import com.erp.webtoon.repository.AttendanceRepository;
+import com.erp.webtoon.repository.DocumentRepository;
 import com.erp.webtoon.repository.UserRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
     private final UserRepository userRepository;
+    private final DocumentRepository documentRepository;
 
     /*
         출근 & 퇴근
@@ -65,16 +67,21 @@ public class AttendanceService {
     /*
         연차 등록
      */
-    public void addDayOff(LocalDateTime dayOffDate, User user) {
+    public void addDayOffData() {
+        List<Attendance> dayOffList = documentRepository.findByTemplateName("연차사용신청서").stream()
+                .map(document -> {
+                    LocalDateTime dayOffDate = document.getDocumentDataList().get(0).getFromDate();
 
-        Attendance attendance = Attendance.builder()
-                .attendMonth(dayOffDate.getMonthValue())
-                .attendDate(dayOffDate.toString())
-                .attendType("DAYOFF")
-                .user(user)
-                .build();
+                    return Attendance.builder()
+                            .attendMonth(dayOffDate.getMonthValue())
+                            .attendDate(dayOffDate.toString())
+                            .attendType("DAYOFF")
+                            .user(document.getWriteUser())
+                            .build();
+                })
+                .collect(Collectors.toList());
 
-        attendanceRepository.save(attendance);
+        attendanceRepository.saveAll(dayOffList);
     }
 
     /*
