@@ -330,4 +330,8 @@ public class UserService {
 
         return user;
     }
+
+    public void reduceDayOff(List<User> users) {
+        users.forEach(User::reduceDayOff);
+    }
 }

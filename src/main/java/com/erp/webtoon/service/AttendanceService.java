@@ -67,7 +67,7 @@ public class AttendanceService {
     /*
         연차 등록
      */
-    public void addDayOffData() {
+    public List<User> addDayOffData() {
         List<Attendance> dayOffList = documentRepository.findByTemplateName("연차사용신청서").stream()
                 .map(document -> {
                     LocalDateTime dayOffDate = document.getDocumentDataList().get(0).getFromDate();
@@ -82,6 +82,8 @@ public class AttendanceService {
                 .collect(Collectors.toList());
 
         attendanceRepository.saveAll(dayOffList);
+
+        return dayOffList.stream().map(Attendance::getUser).collect(Collectors.toList());
     }
 
     /*
