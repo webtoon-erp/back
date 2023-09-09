@@ -63,12 +63,11 @@ public class PlanService {
 
 
     /**
-     * 일정 개별 조회 -> 일정 개별 클릭 시
-     * 프론트에서 일별 계획의 ID를 가지고 있을 수 있나? -> 물어보기
+     * 일정 개별 조회
      */
     public PlanResponseDto getPlan(Long planId) {
         Plan findPlan = planRepository.findById(planId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 일정입니다"));
 
         return new PlanResponseDto(findPlan);
     }
