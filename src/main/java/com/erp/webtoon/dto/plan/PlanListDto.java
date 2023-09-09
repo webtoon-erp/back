@@ -10,7 +10,7 @@ public class PlanListDto {
 
     private String planType;
 
-    private String content;
+    private String title;
 
     private LocalDate startDate;
 
@@ -18,7 +18,7 @@ public class PlanListDto {
 
     public PlanListDto(Plan plan) {
         this.planType = plan.getPlanType();
-        this.content = plan.getTitle();
+        this.title = plan.getTitle();
         this.startDate = plan.getStartDate();
         this.endDate = plan.getEndDate();
     }
