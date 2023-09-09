@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -77,5 +78,37 @@ class PlanServiceTest {
         assertEquals(24, homePlans.size());
         assertEquals("title12", homePlans.get(0).getTitle());
         assertEquals("title24", homePlans.get(1).getTitle());
+    }
+
+    @Test
+    @DisplayName("일정 개별 조회")
+    void search() {
+        //given
+        User user = User.builder()
+                .employeeId("1")
+                .name("규규")
+                .deptName("인사")
+                .build();
+        userRepository.save(user);
+
+        Plan plan = Plan.builder()
+                .title("코딩")
+                .startDate(LocalDate.now())
+                .startTime(LocalTime.now())
+                .endDate(LocalDate.of(2023, 10, 12))
+                .endTime(LocalTime.of(13, 00))
+                .build();
+
+        plan.regisUser(user);
+        Plan savePlan = planRepository.save(plan);
+
+        //when
+        PlanResponseDto responseDto = planService.getPlan(savePlan.getId());
+
+        //then
+        assertEquals("코딩", responseDto.getTitle());
+        assertEquals("규규", responseDto.getName());
+        assertEquals(LocalDate.now(), responseDto.getStartDate());
+        assertEquals(LocalDate.of(2023, 10, 12), responseDto.getEndDate());
     }
 }
