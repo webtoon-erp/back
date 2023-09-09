@@ -1,11 +1,13 @@
 package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Plan;
+import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.plan.PlanListDto;
 import com.erp.webtoon.dto.plan.PlanRequestDto;
 import com.erp.webtoon.dto.plan.PlanResponseDto;
 import com.erp.webtoon.dto.plan.PlanUpdateDto;
 import com.erp.webtoon.repository.PlanRepository;
+import com.erp.webtoon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -25,16 +27,22 @@ public class PlanService {
 
     private final PlanRepository planRepository;
 
+    private final UserRepository userRepository;
+
     /**
      * 새로운 일정 등록
      */
     @Transactional
     public Long save(PlanRequestDto dto) {
+        User user = userRepository.findByEmployeeId(dto.getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
+
         Plan newPlan = dto.toEntity();
+        newPlan.regisUser(user);
 
-        planRepository.save(newPlan);
+        Plan savePlan = planRepository.save(newPlan);
 
-        return newPlan.getId();
+        return savePlan.getId();
     }
 
     /**

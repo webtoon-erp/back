@@ -9,6 +9,8 @@ import java.time.LocalTime;
 @Data
 public class PlanRequestDto {
 
+    private String employeeId; // 일정 작성한 직원
+
     private String planType; // 이걸로 아마 부서별로 다른 캘린더가 보이도록 조절
 
     private String title; // 플랜 내용

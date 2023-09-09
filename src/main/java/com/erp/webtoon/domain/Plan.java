@@ -49,6 +49,7 @@ public class Plan {
         this.startTime = startTime;
         this.endDate = endDate;
         this.endTime = endTime;
+        this.registerDate = LocalDate.now();
         this.holidayYN = holidayYN;
     }
 
@@ -59,5 +60,11 @@ public class Plan {
         this.startTime = startTime;
         this.endDate = endDate;
         this.endTime = endTime;
+    }
+
+    // -- 연관관계 메소드 -- //
+    public void regisUser(User user) {
+        this.user = user;
+        user.getPlans().add(this);
     }
 }
