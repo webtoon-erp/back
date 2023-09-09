@@ -48,7 +48,7 @@ public class PlanService {
         for (Plan plan : plans) {
             dtos.add(PlanResponseDto.builder()
                     .planType(plan.getPlanType())
-                    .content(plan.getContent())
+                    .content(plan.getTitle())
                     .startDate(plan.getStartDate())
                     .startTime(plan.getStartTime())
                     .endDate(plan.getEndDate())
@@ -71,7 +71,7 @@ public class PlanService {
 
         return PlanResponseDto.builder()
                 .planType(findPlan.getPlanType())
-                .content(findPlan.getContent())
+                .content(findPlan.getTitle())
                 .startDate(findPlan.getStartDate())
                 .startTime(findPlan.getStartTime())
                 .endDate(findPlan.getEndDate())

@@ -4,7 +4,6 @@ import com.erp.webtoon.domain.Plan;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Data
 public class PlanListDto {
@@ -19,7 +18,7 @@ public class PlanListDto {
 
     public PlanListDto(Plan plan) {
         this.planType = plan.getPlanType();
-        this.content = plan.getContent();
+        this.content = plan.getTitle();
         this.startDate = plan.getStartDate();
         this.endDate = plan.getEndDate();
     }
