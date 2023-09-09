@@ -11,27 +11,22 @@ import java.time.LocalTime;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PlanResponseDto {
-    private String planType;
 
     private String title;
 
-    private LocalDate startDate;
+    private String name;
 
-    private LocalTime startTime;
+    private LocalDate registerDate;
+
+    private LocalDate startDate;
 
     private LocalDate endDate;
 
-    private LocalTime endTime;
-
-    private boolean holidayYN;
-
     public PlanResponseDto(Plan plan) {
-        this.planType = plan.getPlanType();
         this.title = plan.getTitle();
+        this.name = plan.getUser().getName();
+        this.registerDate = plan.getRegisterDate();
         this.startDate = plan.getStartDate();
-        this.startTime = plan.getStartTime();
         this.endDate = plan.getEndDate();
-        this.endTime = plan.getEndTime();
-        this.holidayYN = plan.isHolidayYN();
     }
 }
