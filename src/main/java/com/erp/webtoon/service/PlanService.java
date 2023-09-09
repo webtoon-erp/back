@@ -75,9 +75,9 @@ public class PlanService {
     /**
      * 일정 전체 조회
      */
-    public List<PlanListDto> getAllPlan() {
+    public List<PlanResponseDto> getAllPlan() {
         return planRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
-                .map(PlanListDto::new)
+                .map(PlanResponseDto::new)
                 .collect(Collectors.toList());
     }
 

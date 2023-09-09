@@ -51,7 +51,7 @@ public class PlanController {
      */
     @GetMapping("/plans/list")
     public ResponseEntity getAll() {
-        List<PlanListDto> plans = planService.getAllPlan();
+        List<PlanResponseDto> plans = planService.getAllPlan();
 
         return ResponseEntity.ok(plans);
     }
