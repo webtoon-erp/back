@@ -46,26 +46,19 @@ public class PlanService {
     }
 
     /**
-     * 일정 전체 조회 -> 원하는 월별로 가져와야 함
+     * 일정 전체 조회 -> 홈 화면 시 보이는 일
      */
-    public List<PlanResponseDto> getMonthPlans(int month) {
-        List<Plan> plans = planRepository.findByMonth(month);
+    public List<PlanListDto> getHomePlans() {
+        List<Plan> plans = new ArrayList<>();
+        plans.addAll(planRepository.findAll(Sort.by("month")));
 
-        List<PlanResponseDto> dtos = new ArrayList<>();
-
-        for (Plan plan : plans) {
-            dtos.add(PlanResponseDto.builder()
-                    .planType(plan.getPlanType())
-                    .content(plan.getTitle())
-                    .startDate(plan.getStartDate())
-                    .startTime(plan.getStartTime())
-                    .endDate(plan.getEndDate())
-                    .endTime(plan.getEndTime())
-                    .holidayYN(plan.isHolidayYN())
-                    .build());
+        List<PlanListDto> responseDtoList = new ArrayList<>();
+        if (!plans.isEmpty()) {
+            responseDtoList.addAll(plans.stream()
+                    .map(PlanListDto::new)
+                    .collect(Collectors.toList()));
         }
-
-        return dtos;
+        return responseDtoList;
     }
 
 
@@ -77,15 +70,7 @@ public class PlanService {
         Plan findPlan = planRepository.findById(planId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다"));
 
-        return PlanResponseDto.builder()
-                .planType(findPlan.getPlanType())
-                .content(findPlan.getTitle())
-                .startDate(findPlan.getStartDate())
-                .startTime(findPlan.getStartTime())
-                .endDate(findPlan.getEndDate())
-                .endTime(findPlan.getEndTime())
-                .holidayYN(findPlan.isHolidayYN())
-                .build();
+        return new PlanResponseDto(findPlan);
     }
 
     /**
