@@ -29,7 +29,7 @@ public class PlanRequestDto {
         return Plan.builder()
                 .planType(planType)
                 .title(title)
-                .month(startDate.getMonth())
+                .month(startDate.getMonthValue())
                 .startDate(startDate)
                 .startTime(startTime)
                 .endDate(endDate)
