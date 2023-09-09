@@ -89,10 +89,8 @@ public class PlanService {
         Plan findPlan = planRepository.findById(planId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 일정입니다."));
 
-        findPlan.updatePlan(dto.getPlanType(), dto.getContent(), LocalDate.of(dto.getStartYear(), dto.getStartMonth(), dto.getStartDay()),
-                LocalTime.of(dto.getStartHour(), dto.getStartMinute()), LocalDate.of(dto.getEndYear(), dto.getEndMonth(), dto.getEndDay()),
-                LocalTime.of(dto.getEndHour(), dto.getEndMinute()));
-
+        findPlan.updatePlan(dto.getPlanType(), dto.getTitle(), dto.getStartDate(),
+                dto.getStartTime(), dto.getEndDate(), dto.getEndTime());
     }
 
     /**

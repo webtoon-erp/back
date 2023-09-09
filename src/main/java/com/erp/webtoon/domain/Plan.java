@@ -53,9 +53,9 @@ public class Plan {
         this.holidayYN = holidayYN;
     }
 
-    public void updatePlan(String planType, String content, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
+    public void updatePlan(String planType, String title, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         this.planType = planType;
-        this.title = content;
+        this.title = title;
         this.startDate = startDate;
         this.startTime = startTime;
         this.endDate = endDate;

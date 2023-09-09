@@ -4,40 +4,23 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 public class PlanUpdateDto {
 
     @NotBlank
-    private String planType; // 이걸로 아마 부서별로 다른 캘린더가 보이도록 조절
+    private String planType;
 
     @NotBlank
-    private String content; // 플랜 내용
+    private String title;
 
-    @NotNull
-    private int startYear;
+    private LocalDate startDate;
 
-    @NotNull
-    private int startMonth;
+    private LocalTime startTime;
 
-    @NotNull
-    private int startDay;
+    private LocalDate endDate;
 
-    @NotNull
-    private int startHour;
-    @NotNull
-    private int startMinute;
-
-    @NotNull
-    private int endYear;
-    @NotNull
-    private int endMonth;
-    @NotNull
-    private int endDay;
-
-    @NotNull
-    private int endHour;
-    @NotNull
-    private int endMinute;
-
+    private LocalTime endTime;
 }
