@@ -2,7 +2,9 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.Plan;
 import com.erp.webtoon.domain.User;
+import com.erp.webtoon.dto.plan.PlanListDto;
 import com.erp.webtoon.dto.plan.PlanRequestDto;
+import com.erp.webtoon.dto.plan.PlanResponseDto;
 import com.erp.webtoon.repository.PlanRepository;
 import com.erp.webtoon.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -53,4 +58,24 @@ class PlanServiceTest {
         assertEquals("규규", plan.getUser().getName());
     }
 
+    @Test
+    @DisplayName("일정 전체 조회")
+    void planList() {
+        //given
+        List<Plan> plans = IntStream.range(1, 25)
+                .mapToObj(i -> Plan.builder()
+                        .title("title" + i)
+                        .month(i % 12).build())
+                .collect(Collectors.toList());
+        planRepository.saveAll(plans);
+
+        //when
+        List<PlanListDto> homePlans = planService.getHomePlans();
+
+        //then
+        assertEquals(24L, planRepository.count());
+        assertEquals(24, homePlans.size());
+        assertEquals("title12", homePlans.get(0).getTitle());
+        assertEquals("title24", homePlans.get(1).getTitle());
+    }
 }
