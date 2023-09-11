@@ -11,4 +11,6 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     List<Document> findAllByWriteUser(User user);
 
     List<Document> findAllByWriteUserInAndStatNot(List<User> userList, char stat);
+
+    List<Document> findByTemplateName(String templateName);
 }

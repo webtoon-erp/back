@@ -9,19 +9,22 @@ spring:
   jwt:
       secret : VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
   redis:
-    host: localhost
+    host: 146.56.98.153
     port: 6379
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/erp?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
-    username: root
-    password: choi1016sdf!@
+    url: jdbc:mysql://146.56.98.153:3306/webtoon_erp?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: admin
+    password: P@ssword
+#    url: jdbc:mysql://localhost:3306/webtoon_erp?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+#    username: root
+#    password: 1234
 
   jpa:
     database: mysql   # 추가 해준 부분
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect # 추가 해준 부분
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
@@ -40,4 +43,6 @@ logging.level:
   org.hibernate.type: trace
 
 file:
-  dir: C:\Users\qhgus\Desktop
+  dir: /home/opc/file_repo
+#file:
+#  dir: C:\Users\82105\OneDrive\바탕 화면\workspace\webtoon-backend-file\
