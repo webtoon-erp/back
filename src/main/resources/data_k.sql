@@ -25,7 +25,7 @@ INSERT INTO `webtoon` VALUES (10, '입학 용병', '어린 시절 비행기 추�
 
 -- 웹툰 에피소드
 INSERT INTO `webtoon_dt` VALUES (1, 1, '프롤로그', '잘 부탁 드립니다.', '김이박', '2023-09-11', false, 1);
-INSERT INTO `webtoon_dt` VALUES (2, 2, '첫번쩨 20살', '.', '김이박', '2023-09-18', true, 1);
+INSERT INTO `webtoon_dt` VALUES (2, 2, '첫번째 20살', '.', '김이박', '2023-09-18', true, 1);
 INSERT INTO `webtoon_dt` VALUES (3, 1, '학교', '잘 부탁 드립니다.', '최최최', '2023-09-10', false, 2);
 INSERT INTO `webtoon_dt` VALUES (4, 1, '프롤로그', '잘 부탁 드립니다.', '박박박', '2023-09-12', false, 3);
 INSERT INTO `webtoon_dt` VALUES (5, 1, '시작', '잘 부탁 드립니다.', '조조조', '2023-09-13', true, 4);
