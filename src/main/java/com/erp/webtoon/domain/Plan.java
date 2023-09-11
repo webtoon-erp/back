@@ -20,7 +20,7 @@ public class Plan {
 
     private String planType;
 
-    private String content; // 플랜 내용
+    private String title; // 플랜 내용
 
     private int month; // 해당 계획 월 정보
 
@@ -32,26 +32,39 @@ public class Plan {
 
     private LocalTime endTime;
 
+    private LocalDate registerDate; // 등록 시간
+
     private boolean holidayYN;  // 휴일 여부
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
-    public Plan(String planType, String content, int month, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, boolean holidayYN) {
+    public Plan(String planType, String title, int month, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, boolean holidayYN) {
         this.planType = planType;
-        this.content = content;
+        this.title = title;
         this.month = month;
         this.startDate = startDate;
         this.startTime = startTime;
         this.endDate = endDate;
         this.endTime = endTime;
+        this.registerDate = LocalDate.now();
         this.holidayYN = holidayYN;
     }
 
-    public void updatePlan(String planType, String content, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
+    public void updatePlan(String planType, String title, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         this.planType = planType;
-        this.content = content;
+        this.title = title;
         this.startDate = startDate;
         this.startTime = startTime;
         this.endDate = endDate;
         this.endTime = endTime;
+    }
+
+    // -- 연관관계 메소드 -- //
+    public void regisUser(User user) {
+        this.user = user;
+        user.getPlans().add(this);
     }
 }

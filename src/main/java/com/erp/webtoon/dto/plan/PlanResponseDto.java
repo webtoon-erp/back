@@ -1,25 +1,32 @@
 package com.erp.webtoon.dto.plan;
 
-import lombok.Builder;
+import com.erp.webtoon.domain.Plan;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PlanResponseDto {
-    private String planType;
 
-    private String content;
+    private String title;
+
+    private String name;
+
+    private LocalDate registerDate;
 
     private LocalDate startDate;
 
-    private LocalTime startTime;
-
     private LocalDate endDate;
 
-    private LocalTime endTime;
-
-    private boolean holidayYN;
+    public PlanResponseDto(Plan plan) {
+        this.title = plan.getTitle();
+        this.name = plan.getUser().getName();
+        this.registerDate = plan.getRegisterDate();
+        this.startDate = plan.getStartDate();
+        this.endDate = plan.getEndDate();
+    }
 }

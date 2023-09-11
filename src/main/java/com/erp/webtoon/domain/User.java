@@ -88,6 +88,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notice> notices = new ArrayList<>();   // 작성한 공지사항 목록
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Plan> plans = new ArrayList<>();
+
     @Builder
     public User(String employeeId, String password, String name, String deptCode, String deptName,int teamNum,
                 String position, String email, String tel, LocalDate birthDate, LocalDate joinDate, int dayOff, boolean usable) {
