@@ -22,17 +22,18 @@ INSERT INTO `webtoon` VALUES (8, '호랑이 형님', '신비한 힘을 가진 �
 INSERT INTO `webtoon` VALUES (9, '초인의 시대', '지구에 근원 모를 괴물들이 출현하고 그들을 제압하는 \'초인\'들 또한 등장한다.', '섭이', '섭이', '액션', '토');
 INSERT INTO `webtoon` VALUES (10, '입학 용병', '어린 시절 비행기 추락 사고의 유일한 생존자 유이진. 살아남기 위해 용병으로 살아가던 유이진은 10년 후, 가족이 있는 고향으로 돌아왔다.', 'YC', '락현', '밀리터리', '일');
 
+
 -- 웹툰 에피소드
-INSERT INTO `webtoon_dt` VALUES (1,'001', '프롤로그', '잘 부탁 드립니다.', '김이박', '2023-09-11', false, 1);
-INSERT INTO `webtoon_dt` VALUES (2,'002', '첫번쩨 20살', '.', '김이박', '2023-09-18', true, 1);
-INSERT INTO `webtoon_dt` VALUES (3,'1', '학교', '잘 부탁 드립니다.', '최최최', '2023-09-10', false, 2);
-INSERT INTO `webtoon_dt` VALUES (4,'1', '프롤로그', '잘 부탁 드립니다.', '박박박', '2023-09-12', false, 3);
-INSERT INTO `webtoon_dt` VALUES (5,'1화', '시작', '잘 부탁 드립니다.', '조조조', '2023-09-13', true, 4);
-INSERT INTO `webtoon_dt` VALUES (6,'2화', '단계', '크하핫', '조조조', '2023-09-20', false, 4);
-INSERT INTO `webtoon_dt` VALUES (7,'1', 'start', '잘 부탁 드립니다.', '정정정', '2023-09-14', false, 5);
-INSERT INTO `webtoon_dt` VALUES (8,'0', '우리는?', '잘 부탁 드립니다.', '차차차', '2023-09-15', false, 6);
-INSERT INTO `webtoon_dt` VALUES (9,'1', '인연', '잘 부탁 드립니다.', '송송송', '2023-09-16', false, 7);
-INSERT INTO `webtoon_dt` VALUES (10,'1', '001', '잘 부탁 드립니다.', '서서서', '2023-09-17', false, 8);
+INSERT INTO `webtoon_dt` VALUES (1, 1, '프롤로그', '잘 부탁 드립니다.', '김이박', '2023-09-11', false, 1);
+INSERT INTO `webtoon_dt` VALUES (2, 2, '첫번쩨 20살', '.', '김이박', '2023-09-18', true, 1);
+INSERT INTO `webtoon_dt` VALUES (3, 1, '학교', '잘 부탁 드립니다.', '최최최', '2023-09-10', false, 2);
+INSERT INTO `webtoon_dt` VALUES (4, 1, '프롤로그', '잘 부탁 드립니다.', '박박박', '2023-09-12', false, 3);
+INSERT INTO `webtoon_dt` VALUES (5, 1, '시작', '잘 부탁 드립니다.', '조조조', '2023-09-13', true, 4);
+INSERT INTO `webtoon_dt` VALUES (6, 2, '단계', '크하핫', '조조조', '2023-09-20', false, 4);
+INSERT INTO `webtoon_dt` VALUES (7, 1, 'start', '잘 부탁 드립니다.', '정정정', '2023-09-14', false, 5);
+INSERT INTO `webtoon_dt` VALUES (8, 0, '우리는?', '잘 부탁 드립니다.', '차차차', '2023-09-15', false, 6);
+INSERT INTO `webtoon_dt` VALUES (9, 1, '인연', '잘 부탁 드립니다.', '송송송', '2023-09-16', false, 7);
+INSERT INTO `webtoon_dt` VALUES (10, 1 , '001', '잘 부탁 드립니다.', '서서서', '2023-09-17', false, 8);
 
 
 -- 공지사항
