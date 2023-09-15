@@ -19,9 +19,6 @@ public class UserRequestDto {
     private String employeeId; // 사번
 
     @NotBlank
-    private String password; // 비밀번호
-
-    @NotBlank
     private String name;    // 이름
 
     @NotBlank
