@@ -37,7 +37,7 @@ public class PayController {
     @PostMapping("/pays")
     public ResponseEntity save(@RequestBody PayRequestDto dto) {
         payService.save(dto);
-        return new ResponseEntity(redirect(dto.getEmployeeId()), HttpStatus.MOVED_PERMANENTLY);
+        return new ResponseEntity(redirect(dto.getEmployeeId()), HttpStatus.OK);
     }
 
     /**
