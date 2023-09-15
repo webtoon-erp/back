@@ -1,7 +1,6 @@
 package com.erp.webtoon.dto.file;
 
 import com.erp.webtoon.domain.File;
-import lombok.Builder;
 import lombok.Data;
 
 @Data

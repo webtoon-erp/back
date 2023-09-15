@@ -4,7 +4,6 @@ import com.erp.webtoon.domain.Plan;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Data
 public class PlanListDto {

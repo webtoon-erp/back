@@ -11,7 +11,6 @@ import com.erp.webtoon.dto.itsm.CommentResponseDto;
 import com.erp.webtoon.dto.itsm.RequestDeleteDto;
 import com.erp.webtoon.dto.itsm.RequestDto;
 import com.erp.webtoon.dto.itsm.RequestRegisterResponseDto;
-import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,13 +1,12 @@
 package com.erp.webtoon.dto.webtoon;
 
-import com.erp.webtoon.dto.webtoon.FeedbackListDto;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
-@Data
 @Builder
+@Data
 public class WebtoonDtResponseDto {
     private int episodeNum;  // 회차번호
 

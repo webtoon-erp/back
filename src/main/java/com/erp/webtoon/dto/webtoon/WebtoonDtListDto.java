@@ -5,8 +5,8 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-@Data
 @Builder
+@Data
 public class WebtoonDtListDto {
     private int episodeNum;  // 회차번호
 

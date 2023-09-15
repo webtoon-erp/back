@@ -3,8 +3,8 @@ package com.erp.webtoon.dto.attendance;
 import lombok.Builder;
 import lombok.Data;
 
-@Data
 @Builder
+@Data
 public class TotalAttendanceUserListDto {
 
     private String deptName;    //부서명

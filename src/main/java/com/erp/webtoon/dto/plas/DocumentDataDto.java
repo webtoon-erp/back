@@ -7,8 +7,8 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Data
 @Builder
+@Data
 public class DocumentDataDto {
 
     private LocalDateTime fromDate; // 시작일시

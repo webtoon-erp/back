@@ -2,7 +2,6 @@ package com.erp.webtoon.dto.pay;
 
 import com.erp.webtoon.domain.Pay;
 import com.erp.webtoon.domain.Qualification;
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;

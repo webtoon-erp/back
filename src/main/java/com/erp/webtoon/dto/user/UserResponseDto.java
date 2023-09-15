@@ -1,12 +1,10 @@
 package com.erp.webtoon.dto.user;
 
-import com.erp.webtoon.domain.Qualification;
 import com.erp.webtoon.domain.User;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder

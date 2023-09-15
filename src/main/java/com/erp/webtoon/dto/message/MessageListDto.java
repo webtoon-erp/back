@@ -1,11 +1,10 @@
 package com.erp.webtoon.dto.message;
 
-import com.erp.webtoon.domain.User;
 import lombok.Builder;
 import lombok.Data;
 
-@Data
 @Builder
+@Data
 public class MessageListDto {
 
     private String content;         // 메세지 내용

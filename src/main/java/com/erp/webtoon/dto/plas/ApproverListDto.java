@@ -3,8 +3,8 @@ package com.erp.webtoon.dto.plas;
 import lombok.Builder;
 import lombok.Data;
 
-@Data
 @Builder
+@Data
 public class ApproverListDto {
 
     private String name;    // 이름

@@ -1,7 +1,6 @@
 package com.erp.webtoon.dto.notice;
 
 import com.erp.webtoon.domain.Notice;
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
