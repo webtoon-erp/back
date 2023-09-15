@@ -37,7 +37,7 @@ public class WebtoonDtService {
     /**
      * 회차 임시 업로드 (최초 등록)
      */
-    public void upload(WebtoonDtRequestDto dto, MultipartFile episodeFile) throws IOException {
+    public void upload(WebtoonDtRequestDto dto, MultipartFile thumbnailFile, MultipartFile episodeFile) throws IOException {
         Webtoon findWebtoon = webtoonRepository.findById(dto.getWebtoonId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 웹툰입니다."));
 
@@ -52,6 +52,12 @@ public class WebtoonDtService {
         newWebtoonDt.setWebtoon(findWebtoon);
 
         //파일 저장
+        if(thumbnailFile != null) {
+            File uploadThumbFile = fileService.save(thumbnailFile);
+            uploadThumbFile.updateFileWebtoonDt(newWebtoonDt);
+            newWebtoonDt.getFiles().add(uploadThumbFile);
+        }
+
         if(episodeFile != null) {
             File uploadFile = fileService.save(episodeFile);
             uploadFile.updateFileWebtoonDt(newWebtoonDt);

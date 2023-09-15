@@ -42,8 +42,9 @@ public class WebtoonDtController {
      * 개별 웹툰 에피소드 등록
      */
     @PostMapping("/webtoonDt")
-    public ResponseEntity upload(@RequestPart WebtoonDtRequestDto dto, @RequestPart("file") MultipartFile file) throws IOException {
-        webtoonDtService.upload(dto, file);
+    public ResponseEntity upload(@RequestPart WebtoonDtRequestDto dto, @RequestPart("thumbnailFile") MultipartFile thumbnailFile,
+                                 @RequestPart("webtoonFile") MultipartFile webtoonFile) throws IOException {
+        webtoonDtService.upload(dto, thumbnailFile, webtoonFile);
 
         HttpHeaders headers = new HttpHeaders();
         URI location = UriComponentsBuilder.newInstance()

@@ -147,7 +147,7 @@ class WebtoonDtControllerTest {
         requestDto.setSubTitle("세상에 이런일이");
         requestDto.setEmployeeId("20232023");
 
-        webtoonDtService.upload(requestDto, getMultipartFile());
+        webtoonDtService.upload(requestDto, getMultipartFile(), getMultipartFile());
         Long id = webtoonDtRepository.findAll().get(0).getId();
 
         //expected
@@ -191,7 +191,7 @@ class WebtoonDtControllerTest {
         requestDto.setContent("감사합니다.");
         requestDto.setEmployeeId("20232023");
 
-        webtoonDtService.upload(requestDto, getMultipartFile());
+        webtoonDtService.upload(requestDto, getMultipartFile(), getMultipartFile());
 
         WebtoonDtUpdateDto updateDto = new WebtoonDtUpdateDto();
         updateDto.setSubTitle("세상에 저런일이");

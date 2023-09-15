@@ -82,7 +82,7 @@ class WebtoonDtServiceTest {
         requestDto.setEmployeeId("20232023");
 
         //when
-        webtoonDtService.upload(requestDto, getMultipartFile());
+        webtoonDtService.upload(requestDto, getMultipartFile(), getMultipartFile());
 
         //then
         assertEquals(1L, webtoonDtRepository.count());
@@ -138,7 +138,7 @@ class WebtoonDtServiceTest {
         requestDto.setSubTitle("세상에 이런일이");
         requestDto.setEmployeeId("20232023");
 
-        webtoonDtService.upload(requestDto, getMultipartFile());
+        webtoonDtService.upload(requestDto, getMultipartFile(), getMultipartFile());
 
         //when
         WebtoonDtResponseDto dto = webtoonDtService.showOne(webtoonDtRepository.findAll().get(0).getId());
