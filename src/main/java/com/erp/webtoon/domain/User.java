@@ -126,6 +126,16 @@ public class User implements UserDetails {
         this.qualifications = qualificationList;
     }
 
+    public void addRole(String role) {
+        if(role != null) {
+            roles.add(role);
+        }
+    }
+
+    public void changeUsable() {
+        this.usable = false;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
