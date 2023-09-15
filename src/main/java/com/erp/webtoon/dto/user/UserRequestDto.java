@@ -1,5 +1,6 @@
 package com.erp.webtoon.dto.user;
 
+import com.erp.webtoon.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +12,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-@Builder
 @Data
+@NoArgsConstructor
 public class UserRequestDto {
 
     @NotBlank
@@ -44,4 +45,23 @@ public class UserRequestDto {
 
     @NotNull
     private LocalDate joinDate;    // 입사날짜
+
+    public User toEntity(String encodedPassword) {
+        User user = User.builder()
+                .employeeId(employeeId)
+                .password(encodedPassword)
+                .name(name)
+                .email(email)
+                .tel(tel)
+                .birthDate(birthDate)
+                .deptName(deptName)
+                .deptCode(deptCode)
+                .teamNum(teamNum)
+                .position(position)
+                .joinDate(joinDate)
+                .dayOff(0)
+                .usable(true)
+                .build();
+        return user;
+    }
 }
