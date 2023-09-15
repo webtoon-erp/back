@@ -12,6 +12,8 @@ import java.time.LocalTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PlanResponseDto {
 
+    private Long planId;
+
     private String title;
 
     private String name;
@@ -23,6 +25,7 @@ public class PlanResponseDto {
     private LocalDate endDate;
 
     public PlanResponseDto(Plan plan) {
+        this.planId = plan.getId();
         this.title = plan.getTitle();
         this.name = plan.getUser().getName();
         this.registerDate = plan.getRegisterDate();
