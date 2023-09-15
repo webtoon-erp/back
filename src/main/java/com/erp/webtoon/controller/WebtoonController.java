@@ -42,13 +42,12 @@ public class WebtoonController {
     public ResponseEntity save(@RequestPart("dto") WebtoonRequestDto dto, @RequestPart("file") MultipartFile file) throws IOException {
         Long id = webtoonService.save(dto, file);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/webtoon"));
+        URI uri = URI.create("/webtoon");
 
         HashMap<String, Long> body = new HashMap<>();
         body.put("id", id);
 
-        return new ResponseEntity(body, headers, HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(new Result(uri, body));
     }
 
     /**
@@ -82,20 +81,17 @@ public class WebtoonController {
     public ResponseEntity update(@PathVariable Long webtoonId, @RequestPart("dto") WebtoonUpdaateDto dto, @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
         webtoonService.update(webtoonId,file, dto);
 
-        HttpHeaders headers = new HttpHeaders();
-        URI location = UriComponentsBuilder.newInstance()
+        URI url = UriComponentsBuilder.newInstance()
                 .path("/webtoon/{webtoonId}")
                 .buildAndExpand(webtoonId).toUri();
 
-        headers.setLocation(location);
-
-        return new ResponseEntity(headers, HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(new Result(url, null));
     }
 
     @Data
     @AllArgsConstructor
     static class Result<T> {
-        private T Resource;
+        private T url;
         private T info;
     }
 }
