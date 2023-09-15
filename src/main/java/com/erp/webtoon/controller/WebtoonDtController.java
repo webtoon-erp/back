@@ -46,14 +46,11 @@ public class WebtoonDtController {
                                  @RequestPart("webtoonFile") MultipartFile webtoonFile) throws IOException {
         webtoonDtService.upload(dto, thumbnailFile, webtoonFile);
 
-        HttpHeaders headers = new HttpHeaders();
-        URI location = UriComponentsBuilder.newInstance()
+        URI url = UriComponentsBuilder.newInstance()
                 .path("/webtoon/{webtoonId}")
                 .buildAndExpand(dto.getWebtoonId()).toUri();
 
-        headers.setLocation(location);
-
-        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(url);
     }
 
     /**
@@ -84,7 +81,7 @@ public class WebtoonDtController {
     public ResponseEntity update(@PathVariable Long webtoonDtId, @RequestPart("dto") WebtoonDtUpdateDto dto, @RequestPart("file") MultipartFile file) throws IOException {
         webtoonDtService.update(webtoonDtId, dto, file);
 
-        return new ResponseEntity<>(redirect(webtoonDtId), HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(redirect(webtoonDtId));
     }
 
     /**
@@ -93,7 +90,7 @@ public class WebtoonDtController {
     @DeleteMapping("/webtoonDt/{webtoonDtId}")
     public ResponseEntity delete(@PathVariable Long webtoonDtId) {
         webtoonDtService.delete(webtoonDtId);
-        return new ResponseEntity<>(redirect(webtoonDtId), HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(redirect(webtoonDtId));
     }
 
     /**
@@ -106,14 +103,12 @@ public class WebtoonDtController {
         return webtoonDtService.findFeedbackList(dto.getRefId());
     }
 
-    private HttpHeaders redirect(Long webtoonDtId) {
+    private URI redirect(Long webtoonDtId) {
         HttpHeaders headers = new HttpHeaders();
         URI location = UriComponentsBuilder.newInstance()
                 .path("/webtoonDt/{webtoonDtId}")
                 .buildAndExpand(webtoonDtId).toUri();
-
-        headers.setLocation(location);
-        return headers;
+        return location;
     }
 
     @Data
