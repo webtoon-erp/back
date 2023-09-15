@@ -6,10 +6,7 @@ import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.LoginRequestDto;
 import com.erp.webtoon.dto.user.QualificationDeleteRequestDto;
 import com.erp.webtoon.dto.user.QualificationModifyRequestDto;
-import com.erp.webtoon.dto.user.QualificationModifyResponseDto;
 import com.erp.webtoon.dto.user.QualificationRequestDto;
-import com.erp.webtoon.dto.user.RegisterQualificationResponse;
-import com.erp.webtoon.dto.user.SlackRequestDto;
 import com.erp.webtoon.dto.user.UserListResponseDto;
 import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.dto.user.UserResponseDto;
@@ -58,9 +55,9 @@ public class UserController {
         return userService.reissueToken(accessToken, refreshToken);
     }
 
-    @PostMapping("/sendPassword")
-    public String sendPassword(@RequestParam("userEmail") String userEmail) {
-        SlackRequestDto dto = userService.createMailAndChangePassword(userEmail);
+    @PostMapping("/tempPassword")
+    public String issueTempPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) throws Exception {
+        userService.resetPassword(accessToken);
 
         return "/users/login";
     }
@@ -97,20 +94,28 @@ public class UserController {
         userService.update(dto);
     }
 
+    @PatchMapping("{employeeId}")
+    public ResponseEntity retire(@PathVariable String employeeId) {
+        userService.retire(employeeId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     /**
      * 자격증 추가(인사팀)
      */
     @PostMapping("/qualification")
-    public List<RegisterQualificationResponse> registerQualification(@RequestBody List<QualificationRequestDto> qualificationRequestDtoList) {
-        return userService.registerQualification(qualificationRequestDtoList);
+    public ResponseEntity registerQualification(@RequestBody List<QualificationRequestDto> qualificationRequestDtoList) {
+        userService.registerQualification(qualificationRequestDtoList);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     /**
      * 자격증 수정
      */
     @PatchMapping("/qualification")
-    public List<QualificationModifyResponseDto> modifyQualification(@RequestBody List<QualificationModifyRequestDto> qualificationModifyRequestDtoList) {
-        return userService.updateQualification(qualificationModifyRequestDtoList);
+    public ResponseEntity modifyQualification(@RequestBody List<QualificationModifyRequestDto> qualificationModifyRequestDtoList) {
+        userService.updateQualification(qualificationModifyRequestDtoList);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
