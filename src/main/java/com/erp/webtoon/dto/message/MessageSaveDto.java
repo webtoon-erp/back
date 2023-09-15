@@ -2,13 +2,18 @@ package com.erp.webtoon.dto.message;
 
 import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
-@Data
+
+@AllArgsConstructor
 @Builder
+@Data
+@NoArgsConstructor
 public class MessageSaveDto {
 
     @NotBlank

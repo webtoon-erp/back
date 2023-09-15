@@ -1,14 +1,13 @@
 package com.erp.webtoon.dto.itsm;
 
-import lombok.Builder;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Builder
 @Data
+@NoArgsConstructor
 public class RequestDto {
     private String reqType;
 
