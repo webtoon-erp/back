@@ -12,10 +12,10 @@ import javax.persistence.EntityNotFoundException;
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public RefreshToken save(Long memberId, String refreshToken) {
+    public RefreshToken save(String employeeId, String refreshToken) {
         return refreshTokenRepository.save(
                 RefreshToken.from(
-                        memberId,
+                        Long.parseLong(employeeId),
                         refreshToken,
                         TokenConst.REFRESH_TOKEN_EXPIRE_TIME
                 )
@@ -27,8 +27,8 @@ public class RefreshTokenService {
                 .orElseThrow(() -> new EntityNotFoundException("토큰이 없습니다."));
     }
 
-    public void deleteByEmployeeId(Long memberId) {
-        refreshTokenRepository.deleteById(memberId);
+    public void deleteByEmployeeId(String memberId) {
+        refreshTokenRepository.deleteByEmployeeId(memberId);
     }
 }
 

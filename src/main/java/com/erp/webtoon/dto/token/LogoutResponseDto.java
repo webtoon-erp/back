@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @Builder
 public class LogoutResponseDto {
-    private Long employeeId;
+    private String employeeId;
 }
