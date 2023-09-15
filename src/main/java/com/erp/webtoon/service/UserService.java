@@ -15,7 +15,6 @@ import com.erp.webtoon.dto.token.TokenResponseDto;
 import com.erp.webtoon.dto.user.QualificationRequestDto;
 import com.erp.webtoon.dto.user.QualificationResponseDto;
 import com.erp.webtoon.dto.user.RegisterQualificationResponse;
-import com.erp.webtoon.dto.user.SlackRequestDto;
 import com.erp.webtoon.dto.user.UserListResponseDto;
 import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.dto.user.UserResponseDto;
@@ -38,6 +37,7 @@ import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,21 +60,9 @@ public class UserService {
 
     @Transactional
     public void addNewCome(UserRequestDto userRequestDto) {
-        User user = User.builder()
-                .employeeId(userRequestDto.getEmployeeId())
-                .password(passwordEncoder.encode("1234"))
-                .name(userRequestDto.getName())
-                .email(userRequestDto.getEmail())
-                .tel(userRequestDto.getTel())
-                .birthDate(userRequestDto.getBirthDate())
-                .deptName(userRequestDto.getDeptName())
-                .deptCode(userRequestDto.getDeptCode())
-                .teamNum(userRequestDto.getTeamNum())
-                .position(userRequestDto.getPosition())
-                .joinDate(userRequestDto.getJoinDate())
-                .dayOff(0)
-                .usable(true)
-                .build();
+        String encodedPassword = passwordEncoder.encode("1234");
+        User user = userRequestDto.toEntity(encodedPassword);
+        user.addRole("USER");
         userRepository.save(user);
     }
 
@@ -86,41 +74,35 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
         List<Qualification> qualifications = findUser.getQualifications();
-        List<QualificationResponseDto> qualificationList = new ArrayList<>();
-        for (Qualification qualification: qualifications) {
-            QualificationResponseDto qfresponse = QualificationResponseDto.builder()
-                    .qlfcType(qualification.getQlfcType())
-                    .content(qualification.getContent())
-                    .qlfcDate(qualification.getQlfcDate())
-                    .build();
-            qualificationList.add(qfresponse);
-        }
+        List<QualificationResponseDto> qualificationList = qualifications.stream()
+                .map(qualification -> QualificationResponseDto.from(qualification)).collect(Collectors.toList());
 
-        return UserResponseDto.builder()
-                .employeeId(findUser.getEmployeeId())
-                .name(findUser.getName())
-                .email(findUser.getEmail())
-                .tel(findUser.getTel())
-                .birthDate(findUser.getBirthDate())
-                .deptName(findUser.getDeptName())
-                .teamNum(findUser.getTeamNum())
-                .position(findUser.getPosition())
-                .joinDate(findUser.getJoinDate())
-                .dayOff(findUser.getDayOff())
-                .qualifications(qualificationList)
-                .build();
+        return UserResponseDto.of(findUser, qualificationList);
     }
 
     /**
      * 회원 수정(사번이랑, 연차빼고)
      */
     @Transactional
-    public void update(UserUpdateDto dto) {
-        User updateUser = userRepository.findByEmployeeId(dto.getEmployeeId())
+    public void update(UserUpdateDto userUpdateDto) {
+        User updateUser = userRepository.findByEmployeeId(userUpdateDto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
-        updateUser.updateInfo(dto.getPassword(), dto.getName(), dto.getDeptCode(), dto.getDeptName(), dto.getTeamNum(), dto.getPosition(),
-                dto.getEmail(), dto.getTel(), dto.getBirthDate());
+        String encodedPassword = passwordEncoder.encode(userUpdateDto.getPassword());
+
+        updateUser.updateInfo(encodedPassword, userUpdateDto.getName(), userUpdateDto.getDeptCode(), userUpdateDto.getDeptName(), userUpdateDto.getTeamNum(), userUpdateDto.getPosition(),
+                userUpdateDto.getEmail(), userUpdateDto.getTel(), userUpdateDto.getBirthDate());
+    }
+
+    /**
+     * 퇴사 및 은퇴사원 상태값 변경
+     */
+    @Transactional
+    public void retire(String employeeId) {
+        User user = userRepository.findByEmployeeId(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
+
+        user.changeUsable();
     }
 
     /**
@@ -140,55 +122,38 @@ public class UserService {
      * 자격증 추가 (인사팀에서 진행)
      */
     @Transactional
-    public List<RegisterQualificationResponse> registerQualification(List<QualificationRequestDto> qualificationRequestList) {
-        List<RegisterQualificationResponse> registerqualificationList = new ArrayList<>();
+    public void registerQualification(List<QualificationRequestDto> qualificationRequestList) {
         List<Qualification> qualificationList = new ArrayList<>();
+        User user = new User();
 
         for (QualificationRequestDto qualificationRequestDto : qualificationRequestList) {
+            user = userRepository.findByEmployeeId(qualificationRequestDto.getEmployeeId())
+                    .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
+
             Qualification qualification = qualificationRepository.save(Qualification.builder()
                     .qlfcDate(qualificationRequestDto.getQlfcDate())
                     .content(qualificationRequestDto.getContent())
                     .qlfcType(qualificationRequestDto.getQlfcType())
                     .qlfcPay(qualificationRequestDto.getQlfcPay())
+                    .user(user)
                     .build());
             qualificationList.add(qualification);
-
-            User user = userRepository.findByEmployeeId(qualificationRequestDto.getEmployeeId())
-                    .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
-            user.registerQualification(qualificationList);
         }
 
-        for (Qualification qualification : qualificationList) {
-            RegisterQualificationResponse register = RegisterQualificationResponse.builder()
-                    .QualificationId(qualification.getId())
-                    .createdAt(LocalDate.now())
-                    .build();
-            registerqualificationList.add(register);
-        }
-
-        return registerqualificationList;
+        user.registerQualification(qualificationList);
     }
 
     /**
      * 자격증 수정
      */
     @Transactional
-    public List<QualificationModifyResponseDto> updateQualification(List<QualificationModifyRequestDto> qualificationRequestList) {
-        List<QualificationModifyResponseDto> modifyQualifications = new ArrayList<>();
-
+    public void updateQualification(List<QualificationModifyRequestDto> qualificationRequestList) {
         for (QualificationModifyRequestDto qualificationModifyRequestDto : qualificationRequestList) {
-            QualificationModifyRequestDto requestDto = qualificationModifyRequestDto.updateInfo(qualificationModifyRequestDto.getEmployeeId(), qualificationModifyRequestDto.getQlfcType(),
+            Qualification qualification = qualificationRepository.findById(qualificationModifyRequestDto.getQualificationId())
+                    .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 자격증입니다."));
+            qualification.updateInfo(qualificationModifyRequestDto.getQlfcType(),
                     qualificationModifyRequestDto.getContent(), qualificationModifyRequestDto.getQlfcDate(), qualificationModifyRequestDto.getQlfcPay());
-
-            QualificationModifyResponseDto response = QualificationModifyResponseDto.builder()
-                    .qualificationId(requestDto.getQualificationId())
-                    .modifiedAt(LocalDate.now())
-                    .build();
-
-            modifyQualifications.add(response);
         }
-
-        return modifyQualifications;
     }
 
     /**
@@ -222,7 +187,6 @@ public class UserService {
         return tokenProvider.generateToken(user);
     }
 
-
     @Transactional
     public TokenResponseDto reissueToken(String accessToken, String refreshToken) throws Exception {
         User user = getUserFromAccessToken(accessToken);
@@ -240,35 +204,22 @@ public class UserService {
     }
 
     /**
-     * 메일 내용을 생성하고 임시 비밀번호로 회원 비밀번호를 변경
-     */
-    public SlackRequestDto createMailAndChangePassword(String userEmail) {
-        String tempPassword = getTempPassword();
-        SlackRequestDto dto = new SlackRequestDto();
-        dto.setEmail(userEmail);
-        dto.setTitle("Cocolo 임시비밀번호 안내 이메일 입니다.");
-        dto.setMessage("안녕하세요. Cocolo 임시비밀번호 안내 관련 이메일 입니다." + " 회원님의 임시 비밀번호는 "
-                + tempPassword + " 입니다." + "로그인 후에 비밀번호를 변경을 해주세요");
-        updatePassword(tempPassword,userEmail);
-        return dto;
-    }
-
-    /**
      * 비밀번호 초기화 & 슬랙 알림 메시지
      */
-    public void resetPassword(String employeeId) {
+    public void resetPassword(String accessToken) throws Exception {
+        User user = getUserFromAccessToken(accessToken);
         String tempPassword = getTempPassword();
         String msg = "안녕하세요. 피어나툰ERP 임시비밀번호 안내 관련 메시지 입니다." + " 회원님의 임시 비밀번호는 "
                 + tempPassword + " 입니다." + "로그인 후에 비밀번호를 변경을 해주세요";
-        slackService.sendSlackChannel(msg, employeeId);
-        updatePassword(tempPassword,employeeId);
+        slackService.sendSlackChannel(msg, user.getEmployeeId());
+        updatePassword(tempPassword, user.getEmployeeId());
     }
 
     /**
      * 임시 비밀번호로 업데이트
      */
-    public void updatePassword(String password, String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
+    public void updatePassword(String password, String employeeId) {
+        User user = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
         user.updatePassword(password);
     }
@@ -293,7 +244,7 @@ public class UserService {
 
     public LogoutResponseDto logout(String accessToken) {
         String resolvedAccessToken = tokenProvider.resolveToken(accessToken);
-        Long employeeId = tokenProvider.parseToken(resolvedAccessToken);
+        String employeeId = tokenProvider.parseToken(resolvedAccessToken);
         Long remainTime = tokenProvider.getRemainTime(resolvedAccessToken);
 
         refreshTokenService.deleteByEmployeeId(employeeId);
@@ -304,17 +255,11 @@ public class UserService {
                 .build();
     }
 
-    private void checkPassword(String loginPassword, String savedPassword) {
-        if(!passwordEncoder.matches(loginPassword, savedPassword)){
-            throw new RuntimeException("Password is not matched");
-        }
-    }
-
     public User getUserFromAccessToken(String accessToken) throws Exception {
         String resolvedAccessToken = tokenProvider.resolveToken(accessToken);
-        Long memberId = tokenProvider.parseToken(resolvedAccessToken);
+        String employeeId = tokenProvider.parseToken(resolvedAccessToken);
 
-        User user =  userRepository.findById(memberId).
+        User user =  userRepository.findByEmployeeId(employeeId).
                 orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
