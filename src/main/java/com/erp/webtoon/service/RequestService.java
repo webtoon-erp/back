@@ -104,7 +104,7 @@ public class RequestService {
         List<User> users = userRepository.findAll();
 
         return users.stream()
-                .filter(user -> user.getDeptName() == "IT")
+                .filter(user -> user.getDeptName() == "개발부")
                 .map(user -> ItEmployeeResponseDto.builder()
                         .employeeId(user.getEmployeeId())
                         .deptName(user.getDeptName() + user.getTeamNum())
