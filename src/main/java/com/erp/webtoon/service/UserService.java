@@ -62,7 +62,7 @@ public class UserService {
     public void addNewCome(UserRequestDto userRequestDto) {
         User user = User.builder()
                 .employeeId(userRequestDto.getEmployeeId())
-                .password("1234")
+                .password(passwordEncoder.encode("1234"))
                 .name(userRequestDto.getName())
                 .email(userRequestDto.getEmail())
                 .tel(userRequestDto.getTel())
@@ -72,7 +72,7 @@ public class UserService {
                 .teamNum(userRequestDto.getTeamNum())
                 .position(userRequestDto.getPosition())
                 .joinDate(userRequestDto.getJoinDate())
-                .dayOff(userRequestDto.getDayOff())
+                .dayOff(0)
                 .usable(true)
                 .build();
         userRepository.save(user);

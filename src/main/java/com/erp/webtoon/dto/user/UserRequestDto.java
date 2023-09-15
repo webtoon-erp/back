@@ -44,6 +44,4 @@ public class UserRequestDto {
 
     @NotNull
     private LocalDate joinDate;    // 입사날짜
-
-    private int dayOff;     // 연차개수
 }
