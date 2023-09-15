@@ -69,9 +69,10 @@ public class WebtoonDtController {
     public ResponseEntity<Result> getImage(@PathVariable("webtoonDtId") Long webtoonDtId) throws MalformedURLException {
         WebtoonDtResponseDto dto = webtoonDtService.showOne(webtoonDtId);
 
-        UrlResource resource = new UrlResource("file:" + fileService.getFullPath(dto.getFileName()));
+        UrlResource resourceThumb = new UrlResource("file:" + fileService.getFullPath(dto.getThumbnailFileName()));
+        UrlResource resourceEpisode = new UrlResource("file:" + fileService.getFullPath(dto.getEpisodeFileName()));
 
-        return ResponseEntity.ok(new Result(resource.getURL(), dto));
+        return ResponseEntity.ok(new Result(resourceThumb.getURL(), resourceEpisode.getURL(), dto));
     }
 
     /**
@@ -114,7 +115,8 @@ public class WebtoonDtController {
     @Data
     @AllArgsConstructor
     static class Result<T> {
-        private T resource;
+        private T resourceThumb;
+        private T resourceEpisode;
         private T info;
     }
 }

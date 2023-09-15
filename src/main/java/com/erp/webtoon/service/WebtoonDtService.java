@@ -91,7 +91,8 @@ public class WebtoonDtService {
                 .episodeNum(findWebtoonDt.getEpisodeNum())
                 .subTitle(findWebtoonDt.getSubTitle())
                 .content(findWebtoonDt.getContent())
-                .fileName(findWebtoonDt.getFiles().get(findWebtoonDt.getFiles().size()-1).getFileName())
+                .thumbnailFileName(findWebtoonDt.getFiles().get(findWebtoonDt.getFiles().size()-2).getFileName())
+                .episodeFileName(findWebtoonDt.getFiles().get(findWebtoonDt.getFiles().size()-1).getFileName())
                 .feedbackList(feedbackList)
                 .build();
     }
