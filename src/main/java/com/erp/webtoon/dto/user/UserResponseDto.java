@@ -1,6 +1,7 @@
 package com.erp.webtoon.dto.user;
 
 import com.erp.webtoon.domain.Qualification;
+import com.erp.webtoon.domain.User;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,8 +14,6 @@ import java.util.List;
 public class UserResponseDto {
 
     private String employeeId; // 사번
-
-    private String LoginId; // 아이디
 
     private String name;    // 이름
 
@@ -35,4 +34,20 @@ public class UserResponseDto {
     private int dayOff;     // 연차개수
 
     private List<QualificationResponseDto> qualifications;     // 자격증들
+
+    public static UserResponseDto of(User findUser, List<QualificationResponseDto> qualificationList) {
+        return UserResponseDto.builder()
+                .employeeId(findUser.getEmployeeId())
+                .name(findUser.getName())
+                .email(findUser.getEmail())
+                .tel(findUser.getTel())
+                .birthDate(findUser.getBirthDate())
+                .deptName(findUser.getDeptName())
+                .teamNum(findUser.getTeamNum())
+                .position(findUser.getPosition())
+                .joinDate(findUser.getJoinDate())
+                .dayOff(findUser.getDayOff())
+                .qualifications(qualificationList)
+                .build();
+    }
 }
