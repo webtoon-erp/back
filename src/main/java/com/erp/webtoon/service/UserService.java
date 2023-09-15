@@ -62,7 +62,7 @@ public class UserService {
     public void addNewCome(UserRequestDto userRequestDto) {
         User user = User.builder()
                 .employeeId(userRequestDto.getEmployeeId())
-                .password(passwordEncoder.encode(userRequestDto.getPassword()))
+                .password("1234")
                 .name(userRequestDto.getName())
                 .email(userRequestDto.getEmail())
                 .tel(userRequestDto.getTel())
