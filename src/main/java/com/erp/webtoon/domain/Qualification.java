@@ -1,5 +1,6 @@
 package com.erp.webtoon.domain;
 
+import com.erp.webtoon.dto.user.QualificationModifyRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,4 +45,10 @@ public class Qualification {
         this.user = user;
     }
 
+    public void updateInfo(String qlfcType, String content, LocalDate qlfcDate, int qlfcPay) {
+        this.qlfcType = qlfcType;
+        this.content = content;
+        this.qlfcDate = qlfcDate;
+        this.qlfcPay = qlfcPay;
+    }
 }
