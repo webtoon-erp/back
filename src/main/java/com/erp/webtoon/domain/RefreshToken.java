@@ -20,7 +20,6 @@ import javax.persistence.Id;
 public class RefreshToken {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
     private Long employeeId;
 
