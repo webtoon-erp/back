@@ -27,8 +27,8 @@ public class RefreshTokenService {
                 .orElseThrow(() -> new EntityNotFoundException("토큰이 없습니다."));
     }
 
-    public void deleteByEmployeeId(String memberId) {
-        refreshTokenRepository.deleteByEmployeeId(memberId);
+    public void deleteByEmployeeId(String employeeId) {
+        refreshTokenRepository.deleteByEmployeeId(Long.parseLong(employeeId));
     }
 }
 
