@@ -329,7 +329,7 @@ public class RequestService {
     }
 
     private void saveFiles(List<MultipartFile> files, Request request) throws IOException {
-        if (files != null) {
+        if (!files.isEmpty()) {
             for (MultipartFile file : files) {
                 File savedFile = fileService.save(file);
                 savedFile.updateFileRequest(request);

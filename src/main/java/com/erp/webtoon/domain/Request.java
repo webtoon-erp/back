@@ -66,7 +66,7 @@ public class Request {
     }
 
     @Builder
-    public Request(Long id, String reqType, String title, String content, int step, LocalDate dueDate, LocalDate doneDate, User reqUser, User itUser, List<File> files) {
+    public Request(Long id, String reqType, String title, String content, int step, LocalDate dueDate, LocalDate doneDate, User reqUser, User itUser) {
         this.id = id;
         this.reqType = reqType;
         this.title = title;
@@ -76,6 +76,5 @@ public class Request {
         this.doneDate = doneDate;
         this.reqUser = reqUser;
         this.itUser = itUser;
-        this.files = files;
     }
 }
