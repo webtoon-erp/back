@@ -1,6 +1,5 @@
 package com.erp.webtoon.controller;
 
-import com.erp.webtoon.dto.token.LogoutResponseDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 
 import com.erp.webtoon.dto.user.LoginRequestDto;
@@ -64,8 +63,9 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public LogoutResponseDto logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
-        return userService.logout(accessToken);
+    public ResponseEntity logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
+        userService.logout(accessToken);
+        return ResponseEntity.ok("로그아웃에 성공했습니다.");
     }
 
     /**

@@ -4,8 +4,6 @@ import com.erp.webtoon.domain.LogoutAccessToken;
 import com.erp.webtoon.domain.RefreshToken;
 import com.erp.webtoon.dto.user.QualificationDeleteRequestDto;
 import com.erp.webtoon.dto.user.QualificationModifyRequestDto;
-import com.erp.webtoon.dto.user.QualificationModifyResponseDto;
-import com.erp.webtoon.dto.token.LogoutResponseDto;
 import com.erp.webtoon.token.LogoutAccessTokenService;
 import com.erp.webtoon.token.RefreshTokenService;
 import com.erp.webtoon.token.TokenProvider;
@@ -246,17 +244,13 @@ public class UserService {
         return str;
     }
 
-    public LogoutResponseDto logout(String accessToken) {
+    public void logout(String accessToken) {
         String resolvedAccessToken = tokenProvider.resolveToken(accessToken);
         String employeeId = tokenProvider.parseToken(resolvedAccessToken);
         Long remainTime = tokenProvider.getRemainTime(resolvedAccessToken);
 
         refreshTokenService.deleteByEmployeeId(employeeId);
         logoutAccessTokenService.saveLogoutAccessToken(LogoutAccessToken.from(resolvedAccessToken, remainTime));
-
-        return LogoutResponseDto.builder()
-                .employeeId(employeeId)
-                .build();
     }
 
     public User getUserFromAccessToken(String accessToken) throws Exception {
