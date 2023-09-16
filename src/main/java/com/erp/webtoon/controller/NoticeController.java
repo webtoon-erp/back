@@ -32,7 +32,7 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     /**
-     * 공지사항 등록 -> 등록 후 어디로?
+     * 공지사항 등록
      */
     @PostMapping("/notice")
     public ResponseEntity<Result> save(@RequestPart NoticeRequestDto dto, @RequestPart("files")List<MultipartFile> files) throws IOException {

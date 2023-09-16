@@ -42,17 +42,15 @@ public class WebtoonDtController {
      * 개별 웹툰 에피소드 등록
      */
     @PostMapping("/webtoonDt")
-    public ResponseEntity upload(@RequestPart WebtoonDtRequestDto dto, @RequestPart("file") MultipartFile file) throws IOException {
-        webtoonDtService.upload(dto, file);
+    public ResponseEntity upload(@RequestPart WebtoonDtRequestDto dto, @RequestPart("thumbnailFile") MultipartFile thumbnailFile,
+                                 @RequestPart("webtoonFile") MultipartFile webtoonFile) throws IOException {
+        webtoonDtService.upload(dto, thumbnailFile, webtoonFile);
 
-        HttpHeaders headers = new HttpHeaders();
-        URI location = UriComponentsBuilder.newInstance()
+        URI url = UriComponentsBuilder.newInstance()
                 .path("/webtoon/{webtoonId}")
                 .buildAndExpand(dto.getWebtoonId()).toUri();
 
-        headers.setLocation(location);
-
-        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(url);
     }
 
     /**
@@ -71,9 +69,10 @@ public class WebtoonDtController {
     public ResponseEntity<Result> getImage(@PathVariable("webtoonDtId") Long webtoonDtId) throws MalformedURLException {
         WebtoonDtResponseDto dto = webtoonDtService.showOne(webtoonDtId);
 
-        UrlResource resource = new UrlResource("file:" + fileService.getFullPath(dto.getFileName()));
+        UrlResource resourceThumb = new UrlResource("file:" + fileService.getFullPath(dto.getThumbnailFileName()));
+        UrlResource resourceEpisode = new UrlResource("file:" + fileService.getFullPath(dto.getEpisodeFileName()));
 
-        return ResponseEntity.ok(new Result(resource.getURL(), dto));
+        return ResponseEntity.ok(new Result(resourceThumb.getURL(), resourceEpisode.getURL(), dto));
     }
 
     /**
@@ -83,7 +82,7 @@ public class WebtoonDtController {
     public ResponseEntity update(@PathVariable Long webtoonDtId, @RequestPart("dto") WebtoonDtUpdateDto dto, @RequestPart("file") MultipartFile file) throws IOException {
         webtoonDtService.update(webtoonDtId, dto, file);
 
-        return new ResponseEntity<>(redirect(webtoonDtId), HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(redirect(webtoonDtId));
     }
 
     /**
@@ -92,7 +91,7 @@ public class WebtoonDtController {
     @DeleteMapping("/webtoonDt/{webtoonDtId}")
     public ResponseEntity delete(@PathVariable Long webtoonDtId) {
         webtoonDtService.delete(webtoonDtId);
-        return new ResponseEntity<>(redirect(webtoonDtId), HttpStatus.MOVED_PERMANENTLY);
+        return ResponseEntity.ok(redirect(webtoonDtId));
     }
 
     /**
@@ -105,20 +104,19 @@ public class WebtoonDtController {
         return webtoonDtService.findFeedbackList(dto.getRefId());
     }
 
-    private HttpHeaders redirect(Long webtoonDtId) {
+    private URI redirect(Long webtoonDtId) {
         HttpHeaders headers = new HttpHeaders();
         URI location = UriComponentsBuilder.newInstance()
                 .path("/webtoonDt/{webtoonDtId}")
                 .buildAndExpand(webtoonDtId).toUri();
-
-        headers.setLocation(location);
-        return headers;
+        return location;
     }
 
     @Data
     @AllArgsConstructor
     static class Result<T> {
-        private T resource;
+        private T resourceThumb;
+        private T resourceEpisode;
         private T info;
     }
 }

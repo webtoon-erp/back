@@ -98,7 +98,7 @@ public class WebtoonService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 웹툰입니다."));
 
 
-        findWebtoon.updateInfo(dto.getTitle(), dto.getIntro(), dto.getArtist(), dto.getIllustrator(), dto.getCategory(), dto.getKeyword());
+        findWebtoon.updateInfo(dto.getTitle(), dto.getIntro(), dto.getArtist(), dto.getIllustrator());
 
         //파일 업데이트
         //만약 파일을 업데이트 하는 경우

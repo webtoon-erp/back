@@ -6,6 +6,7 @@ import com.erp.webtoon.dto.plan.PlanResponseDto;
 import com.erp.webtoon.dto.plan.PlanUpdateDto;
 import com.erp.webtoon.service.PlanService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,15 +62,17 @@ public class PlanController {
      * 일정 수정
      */
     @PutMapping("/plans/{planId}")
-    public void update(@PathVariable("planId") Long planId, @RequestBody PlanUpdateDto dto) {
+    public ResponseEntity update(@PathVariable("planId") Long planId, @RequestBody PlanUpdateDto dto) {
         planService.update(planId, dto);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     /**
      * 일정삭제
      */
     @DeleteMapping("/plans/{planId}")
-    public void delete(@PathVariable Long planId) {
+    public ResponseEntity delete(@PathVariable Long planId) {
         planService.delete(planId);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

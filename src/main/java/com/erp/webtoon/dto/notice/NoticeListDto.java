@@ -12,6 +12,8 @@ public class NoticeListDto {
 
     private String title;
 
+    private String noticeType;
+
     private LocalDate noticeDate; // 작성일
 
     private String name; // 작성자
@@ -21,6 +23,7 @@ public class NoticeListDto {
     public NoticeListDto(Notice notice) {
         this.deptName = notice.getUser().getDeptName();
         this.title = notice.getTitle();
+        this.noticeType = notice.getNoticeType();
         this.noticeDate = notice.getNoticeDate();
         this.name = notice.getUser().getName();
         this.readCount = notice.getReadCount();

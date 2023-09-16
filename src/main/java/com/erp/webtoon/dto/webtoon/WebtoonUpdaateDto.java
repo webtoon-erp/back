@@ -20,11 +20,4 @@ public class WebtoonUpdaateDto {
     @NotBlank
     private String illustrator; // 그림 작가 이름
 
-    @NotBlank
-    private String category;    //업로드 요일
-
-    @NotBlank
-    private String keyword; //키워드
-
-    //private MultipartFile uploadFile;   //썸네일 파일
 }
