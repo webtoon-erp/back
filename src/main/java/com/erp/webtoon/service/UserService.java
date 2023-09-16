@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -242,6 +243,17 @@ public class UserService {
             str += charSet[idx];
         }
         return str;
+    }
+
+    /**
+     * 연차 증가
+     */
+    @Scheduled(cron = "0 0 02 1 * ?")
+    public void addDayoff() {
+        List<User> userList = userRepository.findAll();
+        for (User user : userList) {
+            user.addDayoff();
+        }
     }
 
     public void logout(String accessToken) {

@@ -140,6 +140,10 @@ public class User implements UserDetails {
         }
     }
 
+    public void addDayoff() {
+        this.dayOff++;
+    }
+
     public void changeUsable() {
         this.usable = false;
     }
