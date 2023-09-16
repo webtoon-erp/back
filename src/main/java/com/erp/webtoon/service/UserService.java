@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -120,8 +121,9 @@ public class UserService {
      * 자격증 추가 (인사팀에서 진행)
      */
     @Transactional
-    public void registerQualification(List<QualificationRequestDto> qualificationRequestList) {
+    public List<RegisterQualificationResponse> registerQualification(List<QualificationRequestDto> qualificationRequestList) {
         List<Qualification> qualificationList = new ArrayList<>();
+        List<RegisterQualificationResponse> responseList = new ArrayList<>();
         User user = new User();
 
         for (QualificationRequestDto qualificationRequestDto : qualificationRequestList) {
@@ -136,9 +138,13 @@ public class UserService {
                     .user(user)
                     .build());
             qualificationList.add(qualification);
+
+            responseList.add(RegisterQualificationResponse.builder().QualificationId(qualification.getId()).createdAt(LocalDate.now()).build());
         }
 
         user.registerQualification(qualificationList);
+
+        return responseList;
     }
 
     /**
