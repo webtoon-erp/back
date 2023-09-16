@@ -147,8 +147,6 @@ class WebtoonControllerTest {
         updaateDto.setIntro("인트로입니다.");
         updaateDto.setArtist("규규2");
         updaateDto.setIllustrator("규규2");
-        updaateDto.setCategory("월요일");
-        updaateDto.setKeyword("공포");
 
         String updateDtoJson = objectMapper.writeValueAsString(updaateDto);
         MockMultipartFile dto = new MockMultipartFile("dto", "dto", "application/json", updateDtoJson.getBytes(StandardCharsets.UTF_8));
@@ -180,8 +178,6 @@ class WebtoonControllerTest {
         updaateDto.setIntro("인트로입니다.");
         updaateDto.setArtist("규규2");
         updaateDto.setIllustrator("규규2");
-        updaateDto.setCategory("월요일");
-        updaateDto.setKeyword("공포");
 
         String updateDtoJson = objectMapper.writeValueAsString(updaateDto);
         MockMultipartFile dto = new MockMultipartFile("dto", "dto", "application/json", updateDtoJson.getBytes(StandardCharsets.UTF_8));
