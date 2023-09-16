@@ -1,10 +1,10 @@
 package com.erp.webtoon.dto.user;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Builder
 @Data
+@NoArgsConstructor
 public class QualificationDeleteRequestDto {
     private Long qualificationId;
 }

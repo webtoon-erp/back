@@ -11,8 +11,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
-@Data
 @Builder
+@Data
 public class DayOffDocumentRequestDto {
 
     @NotBlank

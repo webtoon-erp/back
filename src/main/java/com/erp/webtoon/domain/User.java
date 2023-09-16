@@ -1,7 +1,6 @@
 package com.erp.webtoon.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +28,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class User implements UserDetails {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     @Column(name = "user_id")
     private Long id;
@@ -127,6 +135,20 @@ public class User implements UserDetails {
 
     public void registerQualification(List<Qualification> qualificationList){
         this.qualifications = qualificationList;
+    }
+
+    public void addRole(String role) {
+        if(role != null) {
+            roles.add(role);
+        }
+    }
+
+    public void addDayoff() {
+        this.dayOff++;
+    }
+
+    public void changeUsable() {
+        this.usable = false;
     }
 
     @Override

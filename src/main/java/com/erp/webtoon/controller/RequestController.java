@@ -1,6 +1,7 @@
 package com.erp.webtoon.controller;
 
 
+import com.erp.webtoon.dto.itsm.CommentSaveDto;
 import com.erp.webtoon.dto.itsm.ItEmployeeResponseDto;
 import com.erp.webtoon.dto.itsm.RequestListResponseDto;
 import com.erp.webtoon.dto.itsm.RequestResponseDto;
@@ -10,7 +11,6 @@ import com.erp.webtoon.dto.itsm.CommentResponseDto;
 import com.erp.webtoon.dto.itsm.RequestDeleteDto;
 import com.erp.webtoon.dto.itsm.RequestDto;
 import com.erp.webtoon.dto.itsm.RequestRegisterResponseDto;
-import com.erp.webtoon.dto.message.MessageSaveDto;
 import com.erp.webtoon.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,12 +38,12 @@ public class RequestController {
     private final RequestService requestService;
 
     @PostMapping("/purchase-request")
-    public RequestRegisterResponseDto purchaseRequest(@RequestPart("dto") RequestDto requestDto, @RequestPart("files")List<MultipartFile> files) throws Exception {
+    public RequestRegisterResponseDto purchaseRequest(@RequestPart("dto") RequestDto requestDto, @RequestPart(value = "files", required = false)List<MultipartFile> files) throws Exception {
         return requestService.purchaseRequest(requestDto, files);
     }
 
     @PostMapping("/request")
-    public RequestRegisterResponseDto Request(@RequestPart("dto") RequestDto requestDto, @RequestPart("files")List<MultipartFile> files) throws Exception {
+    public RequestRegisterResponseDto Request(@RequestPart("dto") RequestDto requestDto, @RequestPart(value = "files", required = false)List<MultipartFile> files) throws Exception {
         return requestService.assistRequest(requestDto, files);
     }
 
@@ -59,8 +59,8 @@ public class RequestController {
     }
 
     @PostMapping ("/comment")
-    public CommentResponseDto registerComment(@RequestBody MessageSaveDto messageSaveDto) throws IOException {
-        return requestService.registerComment(messageSaveDto);
+    public CommentResponseDto registerComment(@RequestBody CommentSaveDto commentSaveDto) throws IOException {
+        return requestService.registerComment(commentSaveDto);
     }
 
     @GetMapping("/comment")

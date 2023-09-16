@@ -23,6 +23,7 @@ public class FeedbackSaveDto {
 
     @NotBlank
     private String sendEmpId;
+
     public Message toEntity(User sendUser) {
         return Message.builder()
                 .msgType(msgType)

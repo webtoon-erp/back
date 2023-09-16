@@ -1,7 +1,6 @@
 package com.erp.webtoon.dto.pay;
 
 import com.erp.webtoon.domain.User;
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;

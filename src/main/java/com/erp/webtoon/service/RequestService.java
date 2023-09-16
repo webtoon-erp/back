@@ -9,6 +9,7 @@ import com.erp.webtoon.domain.User;
 import com.erp.webtoon.dto.file.FileResponseDto;
 import com.erp.webtoon.dto.itsm.CommentListDto;
 import com.erp.webtoon.dto.itsm.CommentResponseDto;
+import com.erp.webtoon.dto.itsm.CommentSaveDto;
 import com.erp.webtoon.dto.itsm.ItEmployeeResponseDto;
 import com.erp.webtoon.dto.itsm.RequestDeleteDto;
 import com.erp.webtoon.dto.itsm.RequestDtResponseDto;
@@ -33,6 +34,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -104,10 +106,10 @@ public class RequestService {
         List<User> users = userRepository.findAll();
 
         return users.stream()
-                .filter(user -> user.getDeptName() == "개발부")
+                .filter(user -> Objects.equals(user.getDeptName(), "개발부"))
                 .map(user -> ItEmployeeResponseDto.builder()
                         .employeeId(user.getEmployeeId())
-                        .deptName(user.getDeptName() + user.getTeamNum())
+                        .deptName(user.getDeptName() + " " + user.getTeamNum() + "팀")
                         .position(user.getPosition())
                         .name(user.getName())
                         .build())
@@ -208,12 +210,12 @@ public class RequestService {
      * 코멘트 등록 기능
      */
     @Transactional
-    public CommentResponseDto registerComment(MessageSaveDto dto) {
+    public CommentResponseDto registerComment(CommentSaveDto dto) {
         User sendUser = userRepository.findByEmployeeId(dto.getSendEmpId())
                 .orElseThrow(() -> new EntityNotFoundException("메시지 발신 직원의 정보가 존재하지 않습니다."));
 
         //피드백 저장
-        Message feedbackMsg = dto.toEntity(null, sendUser);
+        Message feedbackMsg = dto.toEntity(sendUser);
         messageService.save(feedbackMsg);
 
         //메시지 저장
@@ -222,8 +224,8 @@ public class RequestService {
 
         String originContent = feedbackMsg.getContent();
         dto.setContent(request.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
-        Message message = dto.toEntity(null, sendUser);
-        messageService.addMsg(feedbackMsg);
+        Message message = dto.toEntity(sendUser);
+        messageService.addMsg(message);
 
         return CommentResponseDto.builder().messageId(feedbackMsg.getId()).createdAt(LocalDate.now()).build();
     }

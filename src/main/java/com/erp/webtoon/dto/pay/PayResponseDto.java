@@ -3,7 +3,6 @@ package com.erp.webtoon.dto.pay;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data

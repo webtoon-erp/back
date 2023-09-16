@@ -1,15 +1,12 @@
 package com.erp.webtoon.controller;
 
-import com.erp.webtoon.dto.token.LogoutResponseDto;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 
 import com.erp.webtoon.dto.user.LoginRequestDto;
 import com.erp.webtoon.dto.user.QualificationDeleteRequestDto;
 import com.erp.webtoon.dto.user.QualificationModifyRequestDto;
-import com.erp.webtoon.dto.user.QualificationModifyResponseDto;
 import com.erp.webtoon.dto.user.QualificationRequestDto;
 import com.erp.webtoon.dto.user.RegisterQualificationResponse;
-import com.erp.webtoon.dto.user.SlackRequestDto;
 import com.erp.webtoon.dto.user.UserListResponseDto;
 import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.dto.user.UserResponseDto;
@@ -58,16 +55,17 @@ public class UserController {
         return userService.reissueToken(accessToken, refreshToken);
     }
 
-    @PostMapping("/sendPassword")
-    public String sendPassword(@RequestParam("userEmail") String userEmail) {
-        SlackRequestDto dto = userService.createMailAndChangePassword(userEmail);
+    @PostMapping("/tempPassword")
+    public String issueTempPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) throws Exception {
+        userService.resetPassword(accessToken);
 
         return "/users/login";
     }
 
     @PostMapping("/logout")
-    public LogoutResponseDto logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
-        return userService.logout(accessToken);
+    public ResponseEntity logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
+        userService.logout(accessToken);
+        return ResponseEntity.ok("로그아웃에 성공했습니다.");
     }
 
     /**
@@ -97,6 +95,12 @@ public class UserController {
         userService.update(dto);
     }
 
+    @PatchMapping("{employeeId}")
+    public ResponseEntity retire(@PathVariable String employeeId) {
+        userService.retire(employeeId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     /**
      * 자격증 추가(인사팀)
      */
@@ -109,8 +113,9 @@ public class UserController {
      * 자격증 수정
      */
     @PatchMapping("/qualification")
-    public List<QualificationModifyResponseDto> modifyQualification(@RequestBody List<QualificationModifyRequestDto> qualificationModifyRequestDtoList) {
-        return userService.updateQualification(qualificationModifyRequestDtoList);
+    public ResponseEntity modifyQualification(@RequestBody List<QualificationModifyRequestDto> qualificationModifyRequestDtoList) {
+        userService.updateQualification(qualificationModifyRequestDtoList);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**

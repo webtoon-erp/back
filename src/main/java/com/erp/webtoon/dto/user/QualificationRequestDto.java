@@ -1,12 +1,12 @@
 package com.erp.webtoon.dto.user;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Builder
 @Data
+@NoArgsConstructor
 public class QualificationRequestDto {
     private String employeeId; // 사원 번호
 

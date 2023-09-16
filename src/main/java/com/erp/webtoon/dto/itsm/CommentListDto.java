@@ -3,8 +3,8 @@ package com.erp.webtoon.dto.itsm;
 import lombok.Builder;
 import lombok.Data;
 
-@Data
 @Builder
+@Data
 public class CommentListDto {
 
     private String content;     // 메세지 내용

@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, NumberFormatException {
-        return userRepository.findById(Long.valueOf(username))
+        return userRepository.findByEmployeeId(username)
                 .map(this::createUserDetails)
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
     }

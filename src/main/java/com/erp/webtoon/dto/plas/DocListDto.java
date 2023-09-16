@@ -3,12 +3,10 @@ package com.erp.webtoon.dto.plas;
 import lombok.Builder;
 import lombok.Data;
 
-
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Data
 @Builder
+@Data
 public class DocListDto {
 
     private String templateName; // 문서종류

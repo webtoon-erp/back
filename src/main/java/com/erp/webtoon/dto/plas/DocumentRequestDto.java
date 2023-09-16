@@ -4,16 +4,13 @@ import com.erp.webtoon.domain.Document;
 import com.erp.webtoon.domain.User;
 import lombok.Builder;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
 @Builder
+@Data
 public class DocumentRequestDto {
 
     @NotBlank

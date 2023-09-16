@@ -54,8 +54,8 @@ public class TokenProvider {
 
     public TokenResponseDto generateToken(User user) {
         // 1. 토큰 생성
-        String accessToken = createAccessToken(Long.parseLong(user.getEmployeeId()), user.getAuthorities());
-        RefreshToken refreshToken = refreshTokenService.save(user.getId(), createRefreshToken());
+        String accessToken = createAccessToken(user.getEmployeeId(), user.getAuthorities());
+        RefreshToken refreshToken = refreshTokenService.save(user.getEmployeeId(), createRefreshToken());
 
         // 2. 쿠키에 Refresh 토큰 등록
         setRefreshTokenAtCookie(refreshToken);
@@ -80,13 +80,13 @@ public class TokenProvider {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    private String createAccessToken(Long memberId, Collection<? extends GrantedAuthority> authorities) {
+    private String createAccessToken(String employeeId, Collection<? extends GrantedAuthority> authorities) {
         Date now = new Date();
 
         return Jwts.builder()
                 .setHeaderParam(TokenConst.ALG_KEY, SignatureAlgorithm.HS256.getValue())
                 .setHeaderParam(TokenConst.TYPE_KEY, TokenConst.TYPE_VALUE)
-                .setSubject(String.valueOf(memberId))
+                .setSubject(employeeId)
                 .setIssuedAt(now)   // 토큰 발행 시간
                 .setExpiration(new Date(now.getTime() + TokenConst.ACCESS_TOKEN_EXPIRE_TIME))  // 만료시간 : 현재 + 1시간
                 .claim(TokenConst.AUTHORITIES_KEY, authorities)
@@ -158,8 +158,8 @@ public class TokenProvider {
      * @param accessToken 엑세스 토큰 값
      * @return 토큰에 저장되어 있는 회원 pk
      */
-    public Long parseToken(String accessToken) {
-        return Long.parseLong(parseClaims(accessToken).getSubject());
+    public String parseToken(String accessToken) {
+        return parseClaims(accessToken).getSubject();
     }
 
     public void setRefreshTokenAtCookie(RefreshToken refreshToken) {

@@ -1,43 +1,35 @@
-package com.erp.webtoon.dto.message;
+package com.erp.webtoon.dto.itsm;
 
 import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
-
-@AllArgsConstructor
-@Builder
 @Data
-@NoArgsConstructor
-public class MessageSaveDto {
-
+public class CommentSaveDto {
     @NotBlank
-    private String channel;     // 메세지 타입
+    private String msgType;     // 메세지 타입
 
     @NotBlank
     private String content;     // 메세지 내용
 
+    @NotBlank
     private Long refId; // 참조 ID
 
     private String programId;    // 참조 프로그램ID
 
-    private String rcvEmpId;
-
+    @NotBlank
     private String sendEmpId;
 
-    public Message toEntity(User rcvUser, User sendUser) {
+    public Message toEntity(User sendUser) {
         return Message.builder()
-                .msgType(channel)
+                .msgType(msgType)
                 .content(content)
                 .refId(refId)
                 .programId(programId)
-                .rcvUser(rcvUser)
                 .sendUser(sendUser)
                 .build();
     }
+
 }

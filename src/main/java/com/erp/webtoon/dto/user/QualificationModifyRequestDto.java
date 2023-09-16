@@ -1,12 +1,12 @@
 package com.erp.webtoon.dto.user;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Builder
 @Data
+@NoArgsConstructor
 public class QualificationModifyRequestDto {
     private Long qualificationId;
 
@@ -19,14 +19,4 @@ public class QualificationModifyRequestDto {
     private LocalDate qlfcDate;    // 만료일자
 
     private int qlfcPay;    // 자격수당
-
-    public QualificationModifyRequestDto updateInfo(String employeeId, String qlfcType, String content, LocalDate qlfcDate, int qlfcPay) {
-        return QualificationModifyRequestDto.builder()
-                .employeeId(employeeId)
-                .qlfcType(qlfcType)
-                .content(content)
-                .qlfcDate(qlfcDate)
-                .qlfcPay(qlfcPay)
-                .build();
-    }
 }
