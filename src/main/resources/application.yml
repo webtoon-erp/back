@@ -13,12 +13,12 @@ spring:
     port: 6379
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://146.56.98.153:3306/webtoon_erp?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-#    username: admin
-#    password: P@ssword
-    url: jdbc:mysql://localhost:3306/webtoon_erp?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-    username: root
-    password: 1234
+    url: jdbc:mysql://146.56.98.153:3306/webtoon_erp?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: admin
+    password: P@ssword
+#    url: jdbc:mysql://localhost:3306/webtoon_erp?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+#    username: root
+#    password: 1234
 
   jpa:
     database: mysql   # 추가 해준 부분
@@ -36,7 +36,7 @@ spring:
       max-request-size: 20MB
 
 slack:
-  token: xoxb-5503708125634-5506201560196-LRbutSniUjcY7g4QmsZ7n6A1
+  token: xoxb-5503708125634-5907497077875-3K2FxHEI5ORGrPGQyQXlCW2A
 
 logging.level:
   org.hibernate.SQL: debug
