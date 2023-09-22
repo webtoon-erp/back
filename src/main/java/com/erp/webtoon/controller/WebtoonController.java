@@ -55,7 +55,7 @@ public class WebtoonController {
      * 웹툰 카드뷰
      */
     @GetMapping("/webtoon/cardview")
-    public ResponseEntity showCardView() {
+    public ResponseEntity showCardView() throws MalformedURLException {
         WebtoonAllCardViewDto weekWebtoon = webtoonService.getWeekWebtoon();
         return ResponseEntity.ok(weekWebtoon);
     }

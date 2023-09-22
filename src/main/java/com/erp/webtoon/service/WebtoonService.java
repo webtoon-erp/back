@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.Date;
@@ -65,7 +66,7 @@ public class WebtoonService {
     /**
      * 웹툰 카드뷰 조회
      */
-    public WebtoonAllCardViewDto getWeekWebtoon() {
+    public WebtoonAllCardViewDto getWeekWebtoon() throws MalformedURLException {
         int numWeek = LocalDate.now().get(WeekFields.ISO.dayOfWeek());
 
         List<WebtoonCardViewDto> notFinalWebtoons = webtoonRepository.findAll().stream()
@@ -74,7 +75,7 @@ public class WebtoonService {
                     return recentWebtoonDt.isFinalUploadYN() == false &&
                             recentWebtoonDt.getUploadDate().get(WeekFields.ISO.dayOfWeek()) == numWeek;
                 })
-                .map(WebtoonCardViewDto::new)
+                .map(webtoon -> new WebtoonCardViewDto(webtoon, fileService.getFullPath(webtoon.getFiles().get(webtoon.getFiles().size()-1).getFileName())))
                 .collect(Collectors.toList());
 
         List<WebtoonCardViewDto> finalWebtoons = webtoonRepository.findAll().stream()
@@ -83,7 +84,7 @@ public class WebtoonService {
                     return recentWebtoonDt.isFinalUploadYN() == true &&
                             recentWebtoonDt.getUploadDate().get(WeekFields.ISO.dayOfWeek()) == numWeek;
                 })
-                .map(WebtoonCardViewDto::new)
+                .map(webtoon -> new WebtoonCardViewDto(webtoon, fileService.getFullPath(webtoon.getFiles().get(webtoon.getFiles().size()-1).getFileName())))
                 .collect(Collectors.toList());
 
         return WebtoonAllCardViewDto.builder()
