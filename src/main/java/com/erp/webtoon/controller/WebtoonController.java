@@ -1,5 +1,6 @@
 package com.erp.webtoon.controller;
 
+import com.erp.webtoon.dto.webtoon.WebtoonAllCardViewDto;
 import com.erp.webtoon.dto.webtoon.WebtoonListResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonRequestDto;
 import com.erp.webtoon.dto.webtoon.WebtoonResponseDto;
@@ -49,6 +50,16 @@ public class WebtoonController {
 
         return ResponseEntity.ok(new Result(uri, body));
     }
+
+    /**
+     * 웹툰 카드뷰
+     */
+    @GetMapping("/webtoon/cardview")
+    public ResponseEntity showCardView() {
+        WebtoonAllCardViewDto weekWebtoon = webtoonService.getWeekWebtoon();
+        return ResponseEntity.ok(weekWebtoon);
+    }
+
 
     /**
      * 등록된 모든 웹툰 조회
