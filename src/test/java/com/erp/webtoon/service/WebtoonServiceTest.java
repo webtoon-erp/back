@@ -136,9 +136,6 @@ class WebtoonServiceTest {
         dto.setIntro("인트로입니다.");
         dto.setArtist("규규2");
         dto.setIllustrator("규규2");
-        dto.setCategory("월요일");
-        dto.setKeyword("공포");
-
 
         //when
         webtoonService.update(newWebtoon.getId(), null, dto);
