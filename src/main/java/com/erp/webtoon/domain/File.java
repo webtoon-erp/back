@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 
 @Entity
@@ -53,6 +54,10 @@ public class File {
     @JoinColumn(name = "doc_id")
     private Document document;    // 해당 파일이 첨부된 문서
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
     public File(String fileName, String originName, String ext, Long fileSize) {
         this.fileName = fileName;
@@ -81,6 +86,12 @@ public class File {
     public void updateFileRequest(Request request) {
         if (request != null) {
             this.request = request;
+        }
+    }
+
+    public void updateFileUser(User user) {
+        if (user != null) {
+            this.user = user;
         }
     }
 

@@ -9,16 +9,16 @@ spring:
   jwt:
       secret : VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
   redis:
-    host: localhost
+    host: 146.56.98.153
     port: 6379
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://146.56.98.153:3306/webtoon_erp?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-#    username: admin
-#    password: P@ssword
-    url: jdbc:mysql://localhost:3306/webtoon_erp?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-    username: root
-    password: 1234
+    url: jdbc:mysql://146.56.98.153:3306/webtoon_erp?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: admin
+    password: P@ssword
+#    url: jdbc:mysql://localhost:3306/webtoon_erp?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+#    username: root
+#    password: 1234
 
   jpa:
     database: mysql   # 추가 해준 부분
