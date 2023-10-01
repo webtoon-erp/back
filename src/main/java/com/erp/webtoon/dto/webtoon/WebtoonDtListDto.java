@@ -8,6 +8,8 @@ import java.time.LocalDate;
 @Builder
 @Data
 public class WebtoonDtListDto {
+    private Long webtoonDtId;
+
     private int episodeNum;  // 회차번호
 
     private String subTitle; // 소제목
