@@ -102,6 +102,7 @@ public class WebtoonService {
 
         List<WebtoonDtListDto> episodeDtos = findWebtoon.getWebtoonDts().stream()
                 .map(webtoonDt -> WebtoonDtListDto.builder()
+                        .webtoonDtId(webtoonDt.getId())
                         .episodeNum(webtoonDt.getEpisodeNum())
                         .subTitle(webtoonDt.getSubTitle())
                         .uploadDate(LocalDate.now())
