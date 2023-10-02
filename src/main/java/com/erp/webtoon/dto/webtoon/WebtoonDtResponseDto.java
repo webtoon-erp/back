@@ -12,6 +12,8 @@ public class WebtoonDtResponseDto {
 
     private String subTitle; // 소제목
 
+    private String manager; // 관리자
+
     private String content; // 작가의 말
 
     private String thumbnailFileName; // 썸네일 파일명
