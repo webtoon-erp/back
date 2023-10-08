@@ -107,7 +107,7 @@ public class WebtoonService {
                         .subTitle(webtoonDt.getSubTitle())
                         .uploadDate(LocalDate.now())
                         .manager(webtoonDt.getManager())
-                        .finalUploadYN(false).build())
+                        .finalUploadYN(webtoonDt.isFinalUploadYN()).build())
                 .collect(Collectors.toList());
 
         return WebtoonResponseDto.builder()
