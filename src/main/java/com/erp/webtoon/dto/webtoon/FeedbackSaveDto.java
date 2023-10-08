@@ -2,6 +2,7 @@ package com.erp.webtoon.dto.webtoon;
 
 import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -9,8 +10,8 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class FeedbackSaveDto {
 
-    @NotBlank
-    private String msgType;     // 메세지 타입
+    @Builder.Default
+    private String msgType = "WEBTOOB";     // 메세지 타입
 
     @NotBlank
     private String content;     // 메세지 내용
