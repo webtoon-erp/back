@@ -79,8 +79,10 @@ public class WebtoonDtController {
      * 회차 수정
      */
     @PutMapping("/webtoonDt/{webtoonDtId}")
-    public ResponseEntity update(@PathVariable Long webtoonDtId, @RequestPart("dto") WebtoonDtUpdateDto dto, @RequestPart("file") MultipartFile file) throws IOException {
-        webtoonDtService.update(webtoonDtId, dto, file);
+    public ResponseEntity update(@PathVariable Long webtoonDtId, @RequestPart("dto") WebtoonDtUpdateDto dto,
+                                 @RequestPart("thumbnailFile") MultipartFile thumbnailFile,
+                                 @RequestPart("webtoonFile") MultipartFile webtoonFile) throws IOException {
+        webtoonDtService.update(webtoonDtId, dto, thumbnailFile, webtoonFile);
 
         return ResponseEntity.ok(redirect(webtoonDtId));
     }

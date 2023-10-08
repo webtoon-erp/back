@@ -52,17 +52,16 @@ public class WebtoonDtService {
         newWebtoonDt.setWebtoon(findWebtoon);
 
         //파일 저장
-        if(thumbnailFile != null) {
-            File uploadThumbFile = fileService.save(thumbnailFile);
-            uploadThumbFile.updateFileWebtoonDt(newWebtoonDt);
-            newWebtoonDt.getFiles().add(uploadThumbFile);
-        }
+        File uploadThumbFile = fileService.save(thumbnailFile);
+        uploadThumbFile.updateFileWebtoonDt(newWebtoonDt);
+        newWebtoonDt.getFiles().add(uploadThumbFile);
+        newWebtoonDt.setThumbFileId(uploadThumbFile.getId());
 
-        if(episodeFile != null) {
-            File uploadFile = fileService.save(episodeFile);
-            uploadFile.updateFileWebtoonDt(newWebtoonDt);
-            newWebtoonDt.getFiles().add(uploadFile);
-        }
+        File uploadFile = fileService.save(episodeFile);
+        uploadFile.updateFileWebtoonDt(newWebtoonDt);
+        newWebtoonDt.getFiles().add(uploadFile);
+        newWebtoonDt.setEpisodeFileId(uploadFile.getId());
+
         webtoonDtRepository.save(newWebtoonDt);
     }
 
@@ -87,13 +86,16 @@ public class WebtoonDtService {
         //해당 회차 피드백들
         List<FeedbackListDto> feedbackList = findFeedbackList(webtoonDtId);
 
+        File thumbFile = fileService.find(findWebtoonDt.getThumbnailFileId());
+        File episodeFile = fileService.find(findWebtoonDt.getEpisodeFileId());
+
         return WebtoonDtResponseDto.builder()
                 .episodeNum(findWebtoonDt.getEpisodeNum())
                 .subTitle(findWebtoonDt.getSubTitle())
                 .manager(findWebtoonDt.getManager())
                 .content(findWebtoonDt.getContent())
-                .thumbnailFileName(findWebtoonDt.getFiles().get(findWebtoonDt.getFiles().size()-2).getFileName())
-                .episodeFileName(findWebtoonDt.getFiles().get(findWebtoonDt.getFiles().size()-1).getFileName())
+                .thumbnailFileName(thumbFile.getFileName())
+                .episodeFileName(episodeFile.getFileName())
                 .feedbackList(feedbackList)
                 .build();
     }
@@ -101,7 +103,7 @@ public class WebtoonDtService {
     /**
      * 회차 수정
      */
-    public void update(Long webtoonDtId, WebtoonDtUpdateDto dto, MultipartFile episodeFile) throws IOException {
+    public void update(Long webtoonDtId, WebtoonDtUpdateDto dto, MultipartFile thumbnailFile, MultipartFile episodeFile) throws IOException {
         WebtoonDt findWebtoonDt = webtoonDtRepository.findById(webtoonDtId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회차입니다."));
 
@@ -115,6 +117,15 @@ public class WebtoonDtService {
 
             //파일 업데이트
             //만약 파일을 업데이트 하는 경우
+            if (thumbnailFile != null) {
+                // 기존의 저장된 가장 최근의 파일 상태 변경
+                fileService.changeStat(findWebtoonDt.getEpisodeFileId());
+
+                File newThumbFile = fileService.save(thumbnailFile);
+                newThumbFile.updateFileWebtoonDt(findWebtoonDt);
+                findWebtoonDt.getFiles().add(newThumbFile);
+                findWebtoonDt.setThumbFileId(newThumbFile.getId());
+            }
             if (episodeFile != null) {
                 // 기존의 저장된 가장 최근의 파일 상태 변경
                 File file = findWebtoonDt.getFiles().get(findWebtoonDt.getFiles().size()-1);
@@ -123,6 +134,7 @@ public class WebtoonDtService {
                 File uploadFile = fileService.save(episodeFile);
                 uploadFile.updateFileWebtoonDt(findWebtoonDt);
                 findWebtoonDt.getFiles().add(uploadFile);
+                findWebtoonDt.setEpisodeFileId(uploadFile.getId());
             }
         }
     }

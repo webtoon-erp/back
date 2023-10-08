@@ -39,6 +39,10 @@ public class WebtoonDt {
 
     private boolean finalUploadYN; // 임시 업로드(false) or 최종 업로드 여부(true)
 
+    private Long thumbnailFileId;
+
+    private Long episodeFileId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "webtoon_id")
     private Webtoon webtoon;    // 웹툰
@@ -80,5 +84,13 @@ public class WebtoonDt {
     // 담당자 등록
     public void setManager(String name) {
         this.manager = name;
+    }
+
+    public void setThumbFileId(Long thumbnailFileId) {
+        this.thumbnailFileId = thumbnailFileId;
+    }
+
+    public void setEpisodeFileId(Long episodeFileId) {
+        this.episodeFileId = episodeFileId;
     }
 }

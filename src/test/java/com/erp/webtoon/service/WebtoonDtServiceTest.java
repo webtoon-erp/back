@@ -176,7 +176,7 @@ class WebtoonDtServiceTest {
         updateDto.setManagerId("20232023");
 
         //when
-        webtoonDtService.update(newWebtoonDt.getId(), updateDto, null);
+        webtoonDtService.update(newWebtoonDt.getId(), updateDto, null, null);
 
         //then
         assertEquals(1L, webtoonDtRepository.count());
