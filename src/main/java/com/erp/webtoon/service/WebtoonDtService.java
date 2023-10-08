@@ -172,11 +172,11 @@ public class WebtoonDtService {
         messageService.save(feedbackMsg);
 
         //메시지 저장
-        Webtoon webtoon = webtoonRepository.findById(feedbackMsg.getRefId())
-                .orElseThrow(() -> new EntityNotFoundException("웹툰 정보가 존재하지 않습니다."));
+        WebtoonDt webtoonDt = webtoonDtRepository.findById(dto.getRefId())
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 웹툰 회차 정보가 존재하지 않습니다."));
 
         String originContent = feedbackMsg.getContent();
-        dto.setContent(webtoon.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
+        dto.setContent(webtoonDt.getWebtoon().getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
         Message message = dto.toEntity(sendUser);
         messageService.addMsg(message);
     }
