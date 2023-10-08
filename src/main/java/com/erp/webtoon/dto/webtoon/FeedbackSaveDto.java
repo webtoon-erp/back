@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 public class FeedbackSaveDto {
 
     @Builder.Default
-    private String msgType = "WEBTOOB";     // 메세지 타입
+    private String msgType = "WEBTOON";     // 메세지 타입
 
     @NotBlank
     private String content;     // 메세지 내용
