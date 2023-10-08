@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,6 +18,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -99,6 +101,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Plan> plans = new ArrayList<>();
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private File file;
+
     @Builder
     public User(String employeeId, String password, String name, String deptCode, String deptName,int teamNum,
                 String position, String email, String tel, LocalDate birthDate, LocalDate joinDate, int dayOff, boolean usable) {
@@ -140,6 +145,12 @@ public class User implements UserDetails {
     public void addRole(String role) {
         if(role != null) {
             roles.add(role);
+        }
+    }
+
+    public void addPhoto(File file) {
+        if (file != null) {
+            this.file = file;
         }
     }
 

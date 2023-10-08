@@ -27,9 +27,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -40,8 +43,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity add(@Valid @RequestBody UserRequestDto userRequestDto) {
-        userService.addNewCome(userRequestDto);
+    public ResponseEntity add(@Valid @RequestPart("dto") UserRequestDto userRequestDto, @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        userService.addNewCome(userRequestDto, file);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -56,10 +59,9 @@ public class UserController {
     }
 
     @PostMapping("/tempPassword")
-    public String issueTempPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) throws Exception {
+    public ResponseEntity issueTempPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) throws Exception {
         userService.resetPassword(accessToken);
-
-        return "/users/login";
+        return ResponseEntity.ok("임시 비밀번호 발급에 성공했습니다.");
     }
 
     @PostMapping("/logout")
@@ -127,4 +129,3 @@ public class UserController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
-

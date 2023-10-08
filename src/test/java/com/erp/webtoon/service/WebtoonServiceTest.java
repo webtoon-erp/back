@@ -137,7 +137,6 @@ class WebtoonServiceTest {
         dto.setArtist("규규2");
         dto.setIllustrator("규규2");
 
-
         //when
         webtoonService.update(newWebtoon.getId(), null, dto);
 

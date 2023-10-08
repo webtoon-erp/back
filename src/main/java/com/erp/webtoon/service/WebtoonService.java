@@ -2,6 +2,9 @@ package com.erp.webtoon.service;
 
 import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.Webtoon;
+import com.erp.webtoon.domain.WebtoonDt;
+import com.erp.webtoon.dto.webtoon.WebtoonAllCardViewDto;
+import com.erp.webtoon.dto.webtoon.WebtoonCardViewDto;
 import com.erp.webtoon.dto.webtoon.WebtoonDtListDto;
 import com.erp.webtoon.dto.webtoon.WebtoonListResponseDto;
 import com.erp.webtoon.dto.webtoon.WebtoonRequestDto;
@@ -16,7 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.time.LocalDate;
+import java.time.temporal.WeekFields;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,9 +64,34 @@ public class WebtoonService {
     }
 
     /**
-     * 웹툰 카드뷰 조회 -> 임시와 최종 나눠서 각각 6개씩
-     * 주차별로 나눠야 함...주차를 뭘로 판단하지..
+     * 웹툰 카드뷰 조회
      */
+    public WebtoonAllCardViewDto getWeekWebtoon() throws MalformedURLException {
+        int numWeek = LocalDate.now().get(WeekFields.ISO.dayOfWeek());
+
+        List<WebtoonCardViewDto> notFinalWebtoons = webtoonRepository.findAll().stream()
+                .filter(webtoon -> {
+                    WebtoonDt recentWebtoonDt = webtoon.getWebtoonDts().get(webtoon.getWebtoonDts().size() - 1);
+                    return recentWebtoonDt.isFinalUploadYN() == false &&
+                            recentWebtoonDt.getUploadDate().get(WeekFields.ISO.dayOfWeek()) == numWeek;
+                })
+                .map(webtoon -> new WebtoonCardViewDto(webtoon, fileService.getFullPath(webtoon.getFiles().get(webtoon.getFiles().size()-1).getFileName())))
+                .collect(Collectors.toList());
+
+        List<WebtoonCardViewDto> finalWebtoons = webtoonRepository.findAll().stream()
+                .filter(webtoon -> {
+                    WebtoonDt recentWebtoonDt = webtoon.getWebtoonDts().get(webtoon.getWebtoonDts().size() - 1);
+                    return recentWebtoonDt.isFinalUploadYN() == true &&
+                            recentWebtoonDt.getUploadDate().get(WeekFields.ISO.dayOfWeek()) == numWeek;
+                })
+                .map(webtoon -> new WebtoonCardViewDto(webtoon, fileService.getFullPath(webtoon.getFiles().get(webtoon.getFiles().size()-1).getFileName())))
+                .collect(Collectors.toList());
+
+        return WebtoonAllCardViewDto.builder()
+                .notFinalWebtoons(notFinalWebtoons)
+                .finalWebtoons(finalWebtoons)
+                .build();
+    }
 
     /**
      * 등록 웹툰 개별 상세 조회
@@ -71,6 +102,7 @@ public class WebtoonService {
 
         List<WebtoonDtListDto> episodeDtos = findWebtoon.getWebtoonDts().stream()
                 .map(webtoonDt -> WebtoonDtListDto.builder()
+                        .webtoonDtId(webtoonDt.getId())
                         .episodeNum(webtoonDt.getEpisodeNum())
                         .subTitle(webtoonDt.getSubTitle())
                         .uploadDate(LocalDate.now())

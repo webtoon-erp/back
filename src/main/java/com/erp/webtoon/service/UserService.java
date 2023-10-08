@@ -1,5 +1,6 @@
 package com.erp.webtoon.service;
 
+import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.LogoutAccessToken;
 import com.erp.webtoon.domain.RefreshToken;
 import com.erp.webtoon.dto.user.QualificationDeleteRequestDto;
@@ -31,8 +32,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,16 +54,24 @@ public class UserService {
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final SlackService slackService;
+    private final FileService fileService;
 
     /**
      * 신규 직원 추가
      */
 
     @Transactional
-    public void addNewCome(UserRequestDto userRequestDto) {
+    public void addNewCome(UserRequestDto userRequestDto, MultipartFile file) throws IOException {
         String encodedPassword = passwordEncoder.encode("1234");
         User user = userRequestDto.toEntity(encodedPassword);
         user.addRole("USER");
+
+        if (!file.isEmpty()) {
+            File savedFile = fileService.save(file);
+            savedFile.updateFileUser(user);
+            user.addPhoto(savedFile);
+        }
+
         userRepository.save(user);
     }
 
@@ -209,28 +220,28 @@ public class UserService {
     /**
      * 비밀번호 초기화 & 슬랙 알림 메시지
      */
+    @Transactional
     public void resetPassword(String accessToken) throws Exception {
         User user = getUserFromAccessToken(accessToken);
         String tempPassword = getTempPassword();
         String msg = "안녕하세요. 피어나툰ERP 임시비밀번호 안내 관련 메시지 입니다." + " 회원님의 임시 비밀번호는 "
                 + tempPassword + " 입니다." + "로그인 후에 비밀번호를 변경을 해주세요";
         slackService.sendSlackChannel(msg, user.getEmployeeId());
-        updatePassword(tempPassword, user.getEmployeeId());
+        updatePassword(tempPassword, user);
     }
 
     /**
      * 임시 비밀번호로 업데이트
      */
-    public void updatePassword(String password, String employeeId) {
-        User user = userRepository.findByEmployeeId(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
-        user.updatePassword(password);
+    private void updatePassword(String password, User user) {
+        String encodedPassword = passwordEncoder.encode(password);
+        user.updatePassword(encodedPassword);
     }
 
     /**
      * 랜덤함수로 임시 비밀번호 구문 만들기
      */
-    public String getTempPassword() {
+    private String getTempPassword() {
         char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
                 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
@@ -265,7 +276,7 @@ public class UserService {
         logoutAccessTokenService.saveLogoutAccessToken(LogoutAccessToken.from(resolvedAccessToken, remainTime));
     }
 
-    public User getUserFromAccessToken(String accessToken) throws Exception {
+    private User getUserFromAccessToken(String accessToken) throws Exception {
         String resolvedAccessToken = tokenProvider.resolveToken(accessToken);
         String employeeId = tokenProvider.parseToken(resolvedAccessToken);
 

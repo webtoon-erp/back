@@ -31,6 +31,8 @@ public class UserResponseDto {
 
     private int dayOff;     // 연차개수
 
+    private String photoName;
+
     private List<QualificationResponseDto> qualifications;     // 자격증들
 
     public static UserResponseDto of(User findUser, List<QualificationResponseDto> qualificationList) {
@@ -45,6 +47,7 @@ public class UserResponseDto {
                 .position(findUser.getPosition())
                 .joinDate(findUser.getJoinDate())
                 .dayOff(findUser.getDayOff())
+                .photoName(findUser.getFile().getFileName())
                 .qualifications(qualificationList)
                 .build();
     }
