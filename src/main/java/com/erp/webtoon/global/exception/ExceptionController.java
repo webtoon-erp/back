@@ -46,6 +46,19 @@ public class ExceptionController {
                 .body(body);
     }
 
+    @ExceptionHandler(IllegalAccessException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(IllegalAccessException exception) {
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(400)
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .errorMessage(exception.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(body);
+    }
+
     /**
      * NoSuchElement 예외 처리
      */
