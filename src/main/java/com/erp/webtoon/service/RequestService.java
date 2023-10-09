@@ -224,6 +224,7 @@ public class RequestService {
 
         String originContent = feedbackMsg.getContent();
         dto.setContent(request.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
+        dto.setMsgType("IT");
         Message message = dto.toEntity(sendUser);
         messageService.addMsg(message);
 

@@ -2,14 +2,21 @@ package com.erp.webtoon.dto.itsm;
 
 import com.erp.webtoon.domain.Message;
 import com.erp.webtoon.domain.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentSaveDto {
-    @NotBlank
-    private String msgType;     // 메세지 타입
+
+    @Builder.Default
+    private String msgType = "FEEDBACK";     // 메세지 타입
 
     @NotBlank
     private String content;     // 메세지 내용
