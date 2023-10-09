@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 public class CommentSaveDto {
 
     @Builder.Default
-    private String msgType = "FEEDBACK";     // 메세지 타입
+    private String msgType = "COMMENT";     // 메세지 타입
 
     @NotBlank
     private String content;     // 메세지 내용
