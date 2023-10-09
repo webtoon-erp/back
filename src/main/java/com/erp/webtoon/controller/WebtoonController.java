@@ -80,7 +80,7 @@ public class WebtoonController {
         WebtoonResponseDto webtoon = webtoonService.getOneWebtoon(webtoonId);
 
         // 썸네일 이미지 조회
-        UrlResource resource = new UrlResource(fileService.getFullPath(webtoon.getThumbnailFileName()));
+        UrlResource resource = new UrlResource("http://146.56.98.153:8080" +fileService.getFullPath(webtoon.getThumbnailFileName()));
         return ResponseEntity.ok(new Result(resource.getURL(), webtoon));
 
     }
