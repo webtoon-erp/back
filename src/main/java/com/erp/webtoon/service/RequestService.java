@@ -235,10 +235,9 @@ public class RequestService {
      * 코멘트 조회 기능
      */
     public List<CommentListDto> getAllComments(Long requestId) {
-        List<Message> commentList = messageService.getMessageListByRefId(requestId);
+        List<Message> commentList = messageService.getFeedbackList(requestId);
 
         return commentList.stream()
-                .filter(message -> message.getRcvUser() == null)
                 .map(comment -> CommentListDto.builder()
                         .content(comment.getContent())
                         .sendUserDeptName(comment.getSendUser().getDeptName())
