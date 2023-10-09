@@ -11,11 +11,13 @@ import com.erp.webtoon.dto.user.UserListResponseDto;
 import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.dto.user.UserResponseDto;
 import com.erp.webtoon.dto.user.UserUpdateDto;
+import com.erp.webtoon.service.FileService;
 import com.erp.webtoon.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +49,8 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+
+    private final FileService fileService;
 
     @PostMapping
     public ResponseEntity add(@Valid @RequestPart("dto") UserRequestDto userRequestDto, @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
@@ -84,7 +88,7 @@ public class UserController {
 
         UserResponseDto userResponseDto = userService.find(employeeId);
 
-        URL photo = new URL(userResponseDto.getPhoto());
+        UrlResource photo = new UrlResource("http://146.56.98.153:8080" +fileService.getFullPath(userResponseDto.getPhoto()));
         return ResponseEntity.ok(new Result(photo, userResponseDto));
     }
 

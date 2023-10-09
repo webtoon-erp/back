@@ -2,6 +2,7 @@ package com.erp.webtoon.dto.pay;
 
 import com.erp.webtoon.domain.User;
 import lombok.Data;
+import org.springframework.core.io.UrlResource;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,7 +24,7 @@ public class PayUserResponseDto {
 
     private String tel; // 전화번호
 
-    private URL photo;
+    private UrlResource photo;
 
     public PayUserResponseDto(User user, String photo) throws MalformedURLException {
         this.employeeId = user.getEmployeeId();
@@ -33,6 +34,6 @@ public class PayUserResponseDto {
         this.position = user.getPosition();
         this.joinDate = user.getJoinDate();
         this.tel = user.getTel();
-        this.photo = new URL(photo);
+        this.photo = new UrlResource("http://146.56.98.153:8080" + photo);
     }
 }
