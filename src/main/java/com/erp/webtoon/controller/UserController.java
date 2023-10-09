@@ -89,7 +89,7 @@ public class UserController {
         UserResponseDto userResponseDto = userService.find(employeeId);
 
         UrlResource photo = new UrlResource("http://146.56.98.153:8080" +fileService.getFullPath(userResponseDto.getPhoto()));
-        return ResponseEntity.ok(new Result(photo, userResponseDto));
+        return ResponseEntity.ok(new Result(photo.getURL(), userResponseDto));
     }
 
     /**
