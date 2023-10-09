@@ -3,6 +3,8 @@ package com.erp.webtoon.dto.pay;
 import com.erp.webtoon.domain.User;
 import lombok.Data;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 
 @Data
@@ -21,7 +23,9 @@ public class PayUserResponseDto {
 
     private String tel; // 전화번호
 
-    public PayUserResponseDto(User user) {
+    private URL photo;
+
+    public PayUserResponseDto(User user, String photo) throws MalformedURLException {
         this.employeeId = user.getEmployeeId();
         this.name = user.getName();
         this.email = user.getEmail();
@@ -29,5 +33,6 @@ public class PayUserResponseDto {
         this.position = user.getPosition();
         this.joinDate = user.getJoinDate();
         this.tel = user.getTel();
+        this.photo = new URL(photo);
     }
 }
