@@ -224,6 +224,7 @@ public class RequestService {
 
         String originContent = feedbackMsg.getContent();
         dto.setContent(request.getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
+        dto.setMsgType("IT");
         Message message = dto.toEntity(sendUser);
         messageService.addMsg(message);
 
@@ -234,10 +235,9 @@ public class RequestService {
      * 코멘트 조회 기능
      */
     public List<CommentListDto> getAllComments(Long requestId) {
-        List<Message> commentList = messageService.getMessageListByRefId(requestId);
+        List<Message> commentList = messageService.getFeedbackList(requestId, "COMMENT");
 
         return commentList.stream()
-                .filter(message -> message.getRcvUser() == null)
                 .map(comment -> CommentListDto.builder()
                         .content(comment.getContent())
                         .sendUserDeptName(comment.getSendUser().getDeptName())

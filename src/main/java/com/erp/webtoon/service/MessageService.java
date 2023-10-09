@@ -94,7 +94,7 @@ public class MessageService {
          참조 ID로 메시지 찾기
      */
     @Transactional(readOnly = true)
-    public List<Message> getMessageListByRefId(Long refID) {
-        return messageRepository.findByRefId(refID);
+    public List<Message> getFeedbackList(Long refID, String msgType) {
+        return messageRepository.findByRefIdAndMsgType(refID, msgType);
     }
 }

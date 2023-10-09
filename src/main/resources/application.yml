@@ -36,7 +36,7 @@ spring:
       max-request-size: 20MB
 
 slack:
-  token: xoxb-5503708125634-5506201560196-LRbutSniUjcY7g4QmsZ7n6A1
+  token: xoxb-5503708125634-5907497077875-3K2FxHEI5ORGrPGQyQXlCW2A
 
 logging.level:
   org.hibernate.SQL: debug
