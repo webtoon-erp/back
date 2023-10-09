@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,7 @@ public class PayController {
      * 개인 급여 조회
      */
     @GetMapping("/pays/{employeeId}")
-    public ResponseEntity show(@PathVariable String employeeId) {
+    public ResponseEntity show(@PathVariable String employeeId) throws MalformedURLException {
         PayResponseDto dto = payService.search(employeeId);
 
         return ResponseEntity.ok(dto);

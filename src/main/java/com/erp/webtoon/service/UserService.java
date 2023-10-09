@@ -36,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,7 +122,13 @@ public class UserService {
         Pageable pageable = PageRequest.of(page, 10, Sort.Direction.ASC, "id");
 
         List<UserListResponseDto> userList = userRepository.findAll(pageable).stream()
-                .map(UserListResponseDto::new)
+                .map(u -> {
+                    try {
+                        return new UserListResponseDto(u, fileService.getFullPath(u.getFile().getFileName()));
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .collect(Collectors.toList());
 
         return userList;

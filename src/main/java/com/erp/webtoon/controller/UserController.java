@@ -12,6 +12,8 @@ import com.erp.webtoon.dto.user.UserRequestDto;
 import com.erp.webtoon.dto.user.UserResponseDto;
 import com.erp.webtoon.dto.user.UserUpdateDto;
 import com.erp.webtoon.service.UserService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -33,7 +35,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -74,9 +80,12 @@ public class UserController {
      * 직원 개별 조회
      */
     @GetMapping("/{employeeId}")
-    public ResponseEntity singleView(@PathVariable String employeeId) {
+    public ResponseEntity singleView(@PathVariable String employeeId) throws MalformedURLException {
+
         UserResponseDto userResponseDto = userService.find(employeeId);
-        return ResponseEntity.ok(userResponseDto);
+
+        URL photo = new URL(userResponseDto.getPhoto());
+        return ResponseEntity.ok(new Result(photo, userResponseDto));
     }
 
     /**
@@ -127,5 +136,12 @@ public class UserController {
     public ResponseEntity deleteQualification(@RequestBody List<QualificationDeleteRequestDto> qualificationDeleteRequestDtoList) {
         userService.deleteQualification(qualificationDeleteRequestDtoList);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private T resource;
+        private T info;
     }
 }

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ class PayServiceTest {
 
     @Test
     @DisplayName("개인 급여 상세 조회")
-    void test2() {
+    void test2() throws MalformedURLException {
         //given
         User user = User.builder()
                 .employeeId("2000")
@@ -284,7 +285,7 @@ class PayServiceTest {
 
     @Test
     @DisplayName("자격 수당 수정")
-    void test7() {
+    void test7() throws MalformedURLException {
         //given
         User user = User.builder()
                 .employeeId("2000")
