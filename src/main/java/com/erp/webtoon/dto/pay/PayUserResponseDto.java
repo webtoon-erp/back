@@ -24,7 +24,7 @@ public class PayUserResponseDto {
 
     private String tel; // 전화번호
 
-    private UrlResource photo;
+    private URL photo;
 
     public PayUserResponseDto(User user, String photo) throws MalformedURLException {
         this.employeeId = user.getEmployeeId();
@@ -34,6 +34,6 @@ public class PayUserResponseDto {
         this.position = user.getPosition();
         this.joinDate = user.getJoinDate();
         this.tel = user.getTel();
-        this.photo = new UrlResource("http://146.56.98.153:8080" + photo);
+        this.photo = new UrlResource("http://146.56.98.153:8080" + photo).getURL();
     }
 }
