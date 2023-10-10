@@ -80,8 +80,8 @@ public class WebtoonDtController {
      */
     @PutMapping("/webtoonDt/{webtoonDtId}")
     public ResponseEntity update(@PathVariable Long webtoonDtId, @RequestPart("dto") WebtoonDtUpdateDto dto,
-                                 @RequestPart("thumbnailFile") MultipartFile thumbnailFile,
-                                 @RequestPart("webtoonFile") MultipartFile webtoonFile) throws IOException {
+                                 @RequestPart(value = "thumbnailFile", required = false) MultipartFile thumbnailFile,
+                                 @RequestPart(value = "webtoonFile", required = false) MultipartFile webtoonFile) throws IOException {
         webtoonDtService.update(webtoonDtId, dto, thumbnailFile, webtoonFile);
 
         return ResponseEntity.ok(redirect(webtoonDtId));

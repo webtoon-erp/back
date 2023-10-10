@@ -111,31 +111,32 @@ public class WebtoonDtService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
 
         //임시 업로드의 경우만 업데이트
-        if(findWebtoonDt.isFinalUploadYN() == false) {
+        if(findWebtoonDt.isFinalUploadYN() == true) {
+            throw new IllegalArgumentException("최종 업로드한 웹툰 회차입니다!");
+        }
 
-            findWebtoonDt.updateInfo(dto.getSubTitle(), dto.getContent(), findUser.getName());
+        findWebtoonDt.updateInfo(dto.getSubTitle(), dto.getContent(), findUser.getName());
 
-            //파일 업데이트
-            //만약 파일을 업데이트 하는 경우
-            if (thumbnailFile != null) {
-                // 기존의 저장된 가장 최근의 파일 상태 변경
-                fileService.changeStat(findWebtoonDt.getEpisodeFileId());
+        //파일 업데이트
+        //만약 파일을 업데이트 하는 경우
+        if (thumbnailFile != null) {
+            // 기존의 저장된 가장 최근의 파일 상태 변경
+            fileService.changeStat(findWebtoonDt.getEpisodeFileId());
 
-                File newThumbFile = fileService.save(thumbnailFile);
-                newThumbFile.updateFileWebtoonDt(findWebtoonDt);
-                findWebtoonDt.getFiles().add(newThumbFile);
-                findWebtoonDt.setThumbFileId(newThumbFile.getId());
-            }
-            if (episodeFile != null) {
-                // 기존의 저장된 가장 최근의 파일 상태 변경
-                File file = findWebtoonDt.getFiles().get(findWebtoonDt.getFiles().size()-1);
-                fileService.changeStat(file.getId());
+            File newThumbFile = fileService.save(thumbnailFile);
+            newThumbFile.updateFileWebtoonDt(findWebtoonDt);
+            findWebtoonDt.getFiles().add(newThumbFile);
+            findWebtoonDt.setThumbFileId(newThumbFile.getId());
+        }
+        if (episodeFile != null) {
+            // 기존의 저장된 가장 최근의 파일 상태 변경
+            File file = findWebtoonDt.getFiles().get(findWebtoonDt.getFiles().size()-1);
+            fileService.changeStat(file.getId());
 
-                File uploadFile = fileService.save(episodeFile);
-                uploadFile.updateFileWebtoonDt(findWebtoonDt);
-                findWebtoonDt.getFiles().add(uploadFile);
-                findWebtoonDt.setEpisodeFileId(uploadFile.getId());
-            }
+            File uploadFile = fileService.save(episodeFile);
+            uploadFile.updateFileWebtoonDt(findWebtoonDt);
+            findWebtoonDt.getFiles().add(uploadFile);
+            findWebtoonDt.setEpisodeFileId(uploadFile.getId());
         }
     }
 

@@ -87,6 +87,9 @@ public class UserController {
     public ResponseEntity singleView(@PathVariable String employeeId) throws MalformedURLException {
 
         UserResponseDto userResponseDto = userService.find(employeeId);
+        if(userResponseDto.getPhoto() == null) {
+            return ResponseEntity.ok(new Result(null, userResponseDto));
+        }
 
         UrlResource photo = new UrlResource("http://146.56.98.153:8080" +fileService.getFullPath(userResponseDto.getPhoto()));
         return ResponseEntity.ok(new Result(photo.getURL(), userResponseDto));

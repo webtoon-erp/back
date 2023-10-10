@@ -83,6 +83,10 @@ public class UserService {
         User findUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
+        if(findUser.isUsable() == false) {
+            throw new EntityNotFoundException("퇴사한 직원입니다.");
+        }
+
         List<Qualification> qualifications = findUser.getQualifications();
         List<QualificationResponseDto> qualificationList = qualifications.stream()
                 .map(qualification -> QualificationResponseDto.from(qualification)).collect(Collectors.toList());
@@ -97,6 +101,10 @@ public class UserService {
     public void update(UserUpdateDto userUpdateDto) {
         User updateUser = userRepository.findByEmployeeId(userUpdateDto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
+
+        if(updateUser.isUsable() == false) {
+            throw new EntityNotFoundException("퇴사한 직원입니다.");
+        }
 
         String encodedPassword = passwordEncoder.encode(userUpdateDto.getPassword());
 
@@ -122,8 +130,12 @@ public class UserService {
         Pageable pageable = PageRequest.of(page, 10, Sort.Direction.ASC, "id");
 
         List<UserListResponseDto> userList = userRepository.findAll(pageable).stream()
+                .filter(user -> user.isUsable() == true)
                 .map(u -> {
                     try {
+                        if(u.getFile() == null){
+                            return new UserListResponseDto(u, null);
+                        }
                         return new UserListResponseDto(u, fileService.getFullPath(u.getFile().getFileName()));
                     } catch (MalformedURLException e) {
                         throw new RuntimeException(e);
@@ -146,6 +158,10 @@ public class UserService {
         for (QualificationRequestDto qualificationRequestDto : qualificationRequestList) {
             user = userRepository.findByEmployeeId(qualificationRequestDto.getEmployeeId())
                     .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
+
+            if(user.isUsable() == false) {
+                throw new EntityNotFoundException("퇴사한 직원입니다.");
+            }
 
             Qualification qualification = qualificationRepository.save(Qualification.builder()
                     .qlfcDate(qualificationRequestDto.getQlfcDate())
