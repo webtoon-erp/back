@@ -133,6 +133,9 @@ public class UserService {
                 .filter(user -> user.isUsable() == true)
                 .map(u -> {
                     try {
+                        if(u.getFile() == null){
+                            return new UserListResponseDto(u, null);
+                        }
                         return new UserListResponseDto(u, fileService.getFullPath(u.getFile().getFileName()));
                     } catch (MalformedURLException e) {
                         throw new RuntimeException(e);

@@ -17,6 +17,11 @@ public class UserListResponseDto {
     public UserListResponseDto(User user, String photo) throws MalformedURLException {
         this.position = user.getPosition();
         this.name = user.getName();
-        this.photo = new UrlResource("http://146.56.98.153:8080" + photo).getURL();
+        if (photo == null) {
+            this.photo = null;
+        }
+        else{
+            this.photo = new UrlResource("http://146.56.98.153:8080" + photo).getURL();
+        }
     }
 }
