@@ -47,7 +47,7 @@ public class NoticeService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 직원입니다."));
 
         if (!dto.getDeptName().equals(writeUser.getDeptName())) {
-            throw new EntityNotFoundException("부서가 일치하지 않습니다.");
+            throw new EntityNotFoundException("부서가 일치하지 않습니다. 작성부서 : " + writeUser.getDeptName() + " 등록부서 : " + dto.getDeptName());
         }
 
         notice.setWriteUser(writeUser);
