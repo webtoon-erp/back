@@ -71,18 +71,32 @@ public class WebtoonService {
 
         List<WebtoonCardViewDto> notFinalWebtoons = webtoonRepository.findAll().stream()
                 .filter(webtoon -> {
-                    WebtoonDt recentWebtoonDt = webtoon.getWebtoonDts().get(webtoon.getWebtoonDts().size() - 1);
-                    return recentWebtoonDt.isFinalUploadYN() == false &&
-                            recentWebtoonDt.getUploadDate().get(WeekFields.ISO.dayOfWeek()) == numWeek;
+                    int webtoonDtSize = webtoon.getWebtoonDts().size();
+
+                    if (webtoonDtSize == 0) {
+                        return false;
+                    }
+                    else {
+                        WebtoonDt recentWebtoonDt = webtoon.getWebtoonDts().get(webtoon.getWebtoonDts().size() - 1);
+                        return recentWebtoonDt.isFinalUploadYN() == false &&
+                                recentWebtoonDt.getUploadDate().get(WeekFields.ISO.dayOfWeek()) == numWeek;
+                    }
                 })
                 .map(webtoon -> new WebtoonCardViewDto(webtoon, fileService.getFullPath(webtoon.getFiles().get(webtoon.getFiles().size()-1).getFileName())))
                 .collect(Collectors.toList());
 
         List<WebtoonCardViewDto> finalWebtoons = webtoonRepository.findAll().stream()
                 .filter(webtoon -> {
-                    WebtoonDt recentWebtoonDt = webtoon.getWebtoonDts().get(webtoon.getWebtoonDts().size() - 1);
-                    return recentWebtoonDt.isFinalUploadYN() == true &&
-                            recentWebtoonDt.getUploadDate().get(WeekFields.ISO.dayOfWeek()) == numWeek;
+                    int webtoonDtSize = webtoon.getWebtoonDts().size();
+
+                    if (webtoonDtSize == 0) {
+                        return false;
+                    }
+                    else {
+                        WebtoonDt recentWebtoonDt = webtoon.getWebtoonDts().get(webtoon.getWebtoonDts().size() - 1);
+                        return recentWebtoonDt.isFinalUploadYN() == true &&
+                                recentWebtoonDt.getUploadDate().get(WeekFields.ISO.dayOfWeek()) == numWeek;
+                    }
                 })
                 .map(webtoon -> new WebtoonCardViewDto(webtoon, fileService.getFullPath(webtoon.getFiles().get(webtoon.getFiles().size()-1).getFileName())))
                 .collect(Collectors.toList());
