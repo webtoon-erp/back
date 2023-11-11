@@ -7,6 +7,8 @@ import java.time.LocalDate;
 
 @Data
 public class NoticeListDto {
+    private Long id;
+
     private String deptName; // 부서명
 
     private String title;
@@ -20,6 +22,7 @@ public class NoticeListDto {
     private int readCount;  //조회수
 
     public NoticeListDto(Notice notice) {
+        this.id = notice.getId();
         this.deptName = notice.getUser().getDeptName();
         this.title = notice.getTitle();
         this.noticeType = notice.getNoticeType();
