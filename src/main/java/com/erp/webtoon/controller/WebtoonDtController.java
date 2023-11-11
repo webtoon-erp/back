@@ -46,7 +46,7 @@ public class WebtoonDtController {
                                  @RequestPart("webtoonFile") MultipartFile webtoonFile) throws IOException {
         webtoonDtService.upload(dto, thumbnailFile, webtoonFile);
 
-        String successMsg = "{ \" webtoonId \": "+ dto.getWebtoonId() +" }";
+        String successMsg = "{ \"webtoonId\": "+ dto.getWebtoonId() +" }";
 
         return ResponseEntity.ok(successMsg);
     }
