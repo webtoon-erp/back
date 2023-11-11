@@ -9,7 +9,7 @@ spring:
   jwt:
       secret : VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
   redis:
-    host: 146.56.98.153
+    host: localhost
     port: 6379
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
