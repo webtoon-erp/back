@@ -11,12 +11,14 @@ import java.net.URL;
 public class UserListResponseDto {
 
     private URL photo;
+    private String employeeId;
     private String position;
     private String name;
     private String deptCode;
     private String deptName;
 
     public UserListResponseDto(User user, String photo) throws MalformedURLException {
+        this.employeeId = user.getEmployeeId();
         this.position = user.getPosition();
         this.name = user.getName();
         this.deptCode = user.getDeptCode();
