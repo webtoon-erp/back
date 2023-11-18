@@ -16,19 +16,14 @@ public class WebtoonCardViewDto {
 
     private Long webtoonId;
 
-    private URL fileUrl;
+    private String fileName;
 
     private String category;
 
     public WebtoonCardViewDto(Webtoon webtoon, String fileName) {
-        try {
-            this.title = webtoon.getTitle();
-            this.webtoonId = webtoon.getId();
-            UrlResource resource = new UrlResource("file:" + fileName);
-            this.fileUrl = resource.getURL();
-            this.category = webtoon.getCategory();
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        this.title = webtoon.getTitle();
+        this.webtoonId = webtoon.getId();
+        this.fileName = fileName;
+        this.category = webtoon.getCategory();
     }
 }
