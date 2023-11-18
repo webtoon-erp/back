@@ -67,10 +67,13 @@ public class UserService {
         User user = userRequestDto.toEntity(encodedPassword);
         user.addRole("USER");
 
-        if (!file.isEmpty()) {
+        if (file != null && !file.isEmpty()) {
             File savedFile = fileService.save(file);
-            savedFile.updateFileUser(user);
-            user.addPhoto(savedFile);
+
+            if (savedFile != null) {
+                savedFile.updateFileUser(user);
+                user.addPhoto(savedFile);
+            }
         }
 
         userRepository.save(user);
