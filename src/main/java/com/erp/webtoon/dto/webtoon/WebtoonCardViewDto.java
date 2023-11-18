@@ -14,6 +14,8 @@ public class WebtoonCardViewDto {
 
     private String title;
 
+    private Long webtoonId;
+
     private URL fileUrl;
 
     private String category;
@@ -21,6 +23,7 @@ public class WebtoonCardViewDto {
     public WebtoonCardViewDto(Webtoon webtoon, String fileName) {
         try {
             this.title = webtoon.getTitle();
+            this.webtoonId = webtoon.getId();
             UrlResource resource = new UrlResource("file:" + fileName);
             this.fileUrl = resource.getURL();
             this.category = webtoon.getCategory();
