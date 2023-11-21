@@ -41,7 +41,7 @@ public class SlackService {
                 channelAddress = SlackConstant.ALL_CHANNEL;  // 전체 알림
                 break;
 
-            case "WEBTOON":
+            case "WT":
                 channelAddress = SlackConstant.WT_CHANNEL;   // 웹툰
                 break;
 
