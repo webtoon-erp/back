@@ -47,6 +47,7 @@ public class MessageService {
                 .sorted(Comparator.comparing(Message::getCreatedDate).reversed())
                 .limit(5)
                 .map(message -> MessageListDto.builder()
+                        .messageId(message.getId())
                         .content(message.getContent())
                         .refId(message.getRefId())
                         .programId(message.getProgramId())
