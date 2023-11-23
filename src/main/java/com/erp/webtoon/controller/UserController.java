@@ -68,9 +68,9 @@ public class UserController {
         return userService.reissueToken(accessToken, refreshToken);
     }
 
-    @PostMapping("/tempPassword")
-    public ResponseEntity issueTempPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) throws Exception {
-        userService.resetPassword(accessToken);
+    @PostMapping("/tempPassword/{employeeId}")
+    public ResponseEntity issueTempPassword(@PathVariable String employeeId) throws Exception {
+        userService.resetPassword(employeeId);
         return ResponseEntity.ok("임시 비밀번호 발급에 성공했습니다.");
     }
 

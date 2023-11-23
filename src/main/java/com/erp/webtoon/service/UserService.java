@@ -247,12 +247,13 @@ public class UserService {
      * 비밀번호 초기화 & 슬랙 알림 메시지
      */
     @Transactional
-    public void resetPassword(String accessToken) throws Exception {
-        User user = getUserFromAccessToken(accessToken);
+    public void resetPassword(String employeeId) throws Exception {
+        User user = userRepository.findByEmployeeId(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
         String tempPassword = getTempPassword();
         String msg = "안녕하세요. 피어나툰ERP 임시비밀번호 안내 관련 메시지 입니다." + " 회원님의 임시 비밀번호는 "
                 + tempPassword + " 입니다." + "로그인 후에 비밀번호를 변경을 해주세요";
-        slackService.sendSlackChannel(msg, user.getEmployeeId());
+        slackService.sendSlackChannel(msg, employeeId);
         updatePassword(tempPassword, user);
     }
 
