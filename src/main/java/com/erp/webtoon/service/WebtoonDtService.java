@@ -162,6 +162,7 @@ public class WebtoonDtService {
 
         return feedbackList.stream()
                 .map(feedback -> FeedbackListDto.builder()
+                        .createdDate(feedback.getCreatedDate())
                         .content(feedback.getContent())
                         .sendUserName(feedback.getSendUser().getName())
                         .sendUserEmployeeId(feedback.getSendUser().getEmployeeId())
