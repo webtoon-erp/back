@@ -3,6 +3,7 @@ package com.erp.webtoon.service;
 import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.LogoutAccessToken;
 import com.erp.webtoon.domain.RefreshToken;
+import com.erp.webtoon.dto.user.NewPasswordDto;
 import com.erp.webtoon.dto.user.QualificationDeleteRequestDto;
 import com.erp.webtoon.dto.user.QualificationModifyRequestDto;
 import com.erp.webtoon.token.LogoutAccessTokenService;
@@ -281,6 +282,14 @@ public class UserService {
             str += charSet[idx];
         }
         return str;
+    }
+
+    @Transactional
+    public void changePassword(NewPasswordDto dto) {
+        User user = userRepository.findByEmployeeId(dto.getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
+        String newPassword = dto.getPassword();
+        updatePassword(newPassword, user);
     }
 
     /**
