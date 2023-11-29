@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Data
 public class DocListDto {
 
+    private Long id;
+
     private String templateName; // 문서종류
 
     private LocalDateTime reg_date; // 작성일시

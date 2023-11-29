@@ -110,6 +110,7 @@ public class PlasService {
 
         return documentList.stream()
                 .map(doc -> DocListDto.builder()
+                        .id(doc.getId())
                         .templateName(doc.getTemplateName())
                         .title(doc.getTitle())
                         .reg_date(doc.getRegDate())
