@@ -38,6 +38,7 @@ public class Document {
 
     private String title;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     private char stat; // N : 임시 , Y : 상신 , C : 완료
