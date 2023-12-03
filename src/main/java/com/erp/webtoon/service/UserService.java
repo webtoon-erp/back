@@ -128,12 +128,10 @@ public class UserService {
     }
 
     /**
-     * 회원 카드뷰 조회 (페이징 처리)
+     * 회원 카드뷰 조회
      */
-    public List<UserListResponseDto> getCardView(int page) {
-        Pageable pageable = PageRequest.of(page, 10, Sort.Direction.ASC, "id");
-
-        List<UserListResponseDto> userList = userRepository.findAll(pageable).stream()
+    public List<UserListResponseDto> getCardView() {
+        List<UserListResponseDto> userList = userRepository.findAll().stream()
                 .filter(user -> user.isUsable() == true)
                 .map(u -> {
                     try {

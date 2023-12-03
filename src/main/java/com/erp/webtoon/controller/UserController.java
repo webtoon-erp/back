@@ -106,8 +106,8 @@ public class UserController {
      * 직원조회 -> 카드뷰
      */
     @GetMapping
-    public ResponseEntity cardView(@RequestParam("page") int page) {
-        List<UserListResponseDto> dtos = userService.getCardView(page);
+    public ResponseEntity cardView() {
+        List<UserListResponseDto> dtos = userService.getCardView();
 
         return ResponseEntity.ok(dtos);
     }
