@@ -50,6 +50,7 @@ public class PlasService {
         List<User> appvLineList = userRepository.findAll();
 
         return appvLineList.stream()
+                .filter(User::isUsable)
                 .map(user -> ApproverListDto.builder()
                         .name(user.getName())
                         .deptName(user.getDeptName() + user.getTeamNum())
