@@ -123,17 +123,17 @@ public class NoticeService {
 
         boolean updated = false;
 
-        if (!dto.getNoticeType().isBlank()) {
+        if (dto.getNoticeType() != null && !dto.getNoticeType().isBlank()) {
             findNotice.updateNoticeType(dto.getNoticeType());
             updated = true;
         }
 
-        if (!dto.getTitle().isBlank()) {
+        if (dto.getTitle() != null && !dto.getTitle().isBlank()) {
             findNotice.updateTitle(dto.getTitle());
             updated = true;
         }
 
-        if (!dto.getContent().isBlank()) {
+        if (dto.getContent() != null && !dto.getContent().isBlank()) {
             findNotice.updateContent(dto.getContent());
             updated = true;
         }
@@ -142,7 +142,7 @@ public class NoticeService {
         //공지사항에 저장된 파일목록을 지워야함 + 해당 파일의 상태가 Y인 경우 N으로 만들기
         List<Long> fileList = new ArrayList<>();
 
-        if (!files.isEmpty()) {
+        if (files != null && !files.isEmpty()) {
             for (File file: findNotice.getFiles()) {
                 fileService.changeStat(file.getId());
             }
