@@ -110,9 +110,7 @@ public class UserService {
             throw new EntityNotFoundException("퇴사한 직원입니다.");
         }
 
-        String encodedPassword = passwordEncoder.encode(userUpdateDto.getPassword());
-
-        updateUser.updateInfo(encodedPassword, userUpdateDto);
+        updateUser.updateInfo(userUpdateDto);
     }
 
     /**

@@ -123,9 +123,7 @@ public class User implements UserDetails {
         this.usable = usable;
     }
 
-    public void updateInfo(String password, UserUpdateDto dto) {
-        if(dto.getEmployeeId() != null) this.employeeId = dto.getEmployeeId();
-        if(dto.getPassword() != null) this.password = dto.getPassword();
+    public void updateInfo(UserUpdateDto dto) {
         if(dto.getName() != null) this.name = dto.getName();
         if(dto.getDeptCode() != null) this.deptCode = dto.getDeptCode();
         if(dto.getDeptName() != null) this.deptName = dto.getDeptName();
