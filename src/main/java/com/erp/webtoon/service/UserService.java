@@ -106,14 +106,13 @@ public class UserService {
         User updateUser = userRepository.findByEmployeeId(userUpdateDto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
-        if(updateUser.isUsable() == false) {
+        if(!updateUser.isUsable()) {
             throw new EntityNotFoundException("퇴사한 직원입니다.");
         }
 
         String encodedPassword = passwordEncoder.encode(userUpdateDto.getPassword());
 
-        updateUser.updateInfo(encodedPassword, userUpdateDto.getName(), userUpdateDto.getDeptCode(), userUpdateDto.getDeptName(), userUpdateDto.getTeamNum(), userUpdateDto.getPosition(),
-                userUpdateDto.getEmail(), userUpdateDto.getTel(), userUpdateDto.getBirthDate());
+        updateUser.updateInfo(encodedPassword, userUpdateDto);
     }
 
     /**
