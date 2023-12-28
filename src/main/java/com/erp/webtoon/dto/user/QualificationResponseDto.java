@@ -10,6 +10,8 @@ import java.time.LocalDate;
 @Data
 public class QualificationResponseDto {
 
+    private Long qlfcId;
+
     private String qlfcType;
 
     private String content;
@@ -18,6 +20,7 @@ public class QualificationResponseDto {
 
     public static QualificationResponseDto from(Qualification qualification) {
         return QualificationResponseDto.builder()
+                .qlfcId(qualification.getId())
                 .qlfcType(qualification.getQlfcType())
                 .content(qualification.getContent())
                 .qlfcDate(qualification.getQlfcDate())
