@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 public class MessageListDto {
 
+    private Long messageId;         // 메시지 ID
+
     private String content;         // 메세지 내용
 
     private Long refId;             // 참조 ID

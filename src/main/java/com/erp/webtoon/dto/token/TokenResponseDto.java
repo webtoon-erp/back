@@ -16,6 +16,7 @@ public class TokenResponseDto {
     private String accessToken;
     private String employeeId;
     private String position;
+    private String deptCode;
 
     public static TokenResponseDto from(String accessToken, User user) {
         return TokenResponseDto.builder()
@@ -23,6 +24,7 @@ public class TokenResponseDto {
                 .accessToken(accessToken)
                 .employeeId(user.getEmployeeId())
                 .position(user.getPosition())
+                .deptCode(user.getDeptCode())
                 .build();
     }
 }

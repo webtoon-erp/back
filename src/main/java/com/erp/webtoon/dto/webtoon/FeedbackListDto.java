@@ -3,9 +3,13 @@ package com.erp.webtoon.dto.webtoon;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Data
 public class FeedbackListDto {
+
+    private LocalDateTime createdDate; // 발신 일시
 
     private String content;     // 메세지 내용
 

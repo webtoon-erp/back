@@ -26,6 +26,8 @@ public class MessageSaveDto {
 
     private String programId;    // 참조 프로그램ID
 
+    private String stat;
+
     private String rcvEmpId;
 
     private String sendEmpId;
@@ -36,6 +38,7 @@ public class MessageSaveDto {
                 .content(content)
                 .refId(refId)
                 .programId(programId)
+                .stat('Y')
                 .rcvUser(rcvUser)
                 .sendUser(sendUser)
                 .build();

@@ -10,8 +10,11 @@ public class FileResponseDto {
 
     private String fileOriginName;
 
+    private String filePath;
+
     public FileResponseDto(File file) {
         this.fileId = file.getId();
         this.fileOriginName = file.getOriginName();
+        this.filePath = file.getFileName();
     }
 }

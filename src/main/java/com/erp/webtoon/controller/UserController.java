@@ -3,6 +3,7 @@ package com.erp.webtoon.controller;
 import com.erp.webtoon.dto.token.TokenResponseDto;
 
 import com.erp.webtoon.dto.user.LoginRequestDto;
+import com.erp.webtoon.dto.user.NewPasswordDto;
 import com.erp.webtoon.dto.user.QualificationDeleteRequestDto;
 import com.erp.webtoon.dto.user.QualificationModifyRequestDto;
 import com.erp.webtoon.dto.user.QualificationRequestDto;
@@ -68,10 +69,16 @@ public class UserController {
         return userService.reissueToken(accessToken, refreshToken);
     }
 
-    @PostMapping("/tempPassword")
-    public ResponseEntity issueTempPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) throws Exception {
-        userService.resetPassword(accessToken);
+    @PostMapping("/tempPassword/{employeeId}")
+    public ResponseEntity issueTempPassword(@PathVariable String employeeId) throws Exception {
+        userService.resetPassword(employeeId);
         return ResponseEntity.ok("임시 비밀번호 발급에 성공했습니다.");
+    }
+
+    @PostMapping("/newPassword")
+    public ResponseEntity changePassword(@RequestBody NewPasswordDto dto) throws Exception {
+        userService.changePassword(dto);
+        return ResponseEntity.ok("비밀번호 변경에 성공했습니다.");
     }
 
     @PostMapping("/logout")
@@ -99,8 +106,8 @@ public class UserController {
      * 직원조회 -> 카드뷰
      */
     @GetMapping
-    public ResponseEntity cardView(@RequestParam("page") int page) {
-        List<UserListResponseDto> dtos = userService.getCardView(page);
+    public ResponseEntity cardView() {
+        List<UserListResponseDto> dtos = userService.getCardView();
 
         return ResponseEntity.ok(dtos);
     }

@@ -1,5 +1,6 @@
 package com.erp.webtoon.service;
 
+import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.Pay;
 import com.erp.webtoon.domain.Qualification;
 import com.erp.webtoon.domain.User;
@@ -62,8 +63,15 @@ public class PayService {
         User findUser = userRepository.findByEmployeeId(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
+        File userFile = findUser.getFile();
+        String fullPath = "";
+        if (userFile != null) {
+            fullPath = fileService.getFullPath(userFile.getFileName());
+        }
+
         //유저 정보
-        PayUserResponseDto userInfoDto = new PayUserResponseDto(findUser, fileService.getFullPath(findUser.getFile().getFileName()));
+        PayUserResponseDto userInfoDto = new PayUserResponseDto(findUser, fullPath);
+
 
         //자격 수당 리스트
         List<PayQualificationDto> qualificationDtos = findUser.getQualifications().stream()

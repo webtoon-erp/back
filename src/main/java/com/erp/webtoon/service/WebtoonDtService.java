@@ -162,6 +162,7 @@ public class WebtoonDtService {
 
         return feedbackList.stream()
                 .map(feedback -> FeedbackListDto.builder()
+                        .createdDate(feedback.getCreatedDate())
                         .content(feedback.getContent())
                         .sendUserName(feedback.getSendUser().getName())
                         .sendUserEmployeeId(feedback.getSendUser().getEmployeeId())
@@ -190,7 +191,7 @@ public class WebtoonDtService {
 
         String originContent = feedbackMsg.getContent();
         dto.setContent(webtoonDt.getWebtoon().getTitle() + "에 피드백이 등록되었습니다. \n\n" + originContent);
-        dto.setMsgType("WEBTOON");
+        dto.setMsgType("WT");
         Message message = dto.toEntity(sendUser);
         messageService.addMsg(message);
     }

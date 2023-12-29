@@ -46,11 +46,9 @@ public class WebtoonDtController {
                                  @RequestPart("webtoonFile") MultipartFile webtoonFile) throws IOException {
         webtoonDtService.upload(dto, thumbnailFile, webtoonFile);
 
-        URI url = UriComponentsBuilder.newInstance()
-                .path("/webtoon/{webtoonId}")
-                .buildAndExpand(dto.getWebtoonId()).toUri();
+        String successMsg = "{ \"webtoonId\": "+ dto.getWebtoonId() +" }";
 
-        return ResponseEntity.ok(url);
+        return ResponseEntity.ok(successMsg);
     }
 
     /**

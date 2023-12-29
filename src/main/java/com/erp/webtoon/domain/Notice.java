@@ -67,10 +67,19 @@ public class Notice {
                 .collect(Collectors.toList());
     }
 
-    public void updateNotice(String noticeType, String title, String content) {
+    public void updateNoticeType(String noticeType) {
         this.noticeType = noticeType;
+    }
+
+    public void updateTitle (String title) {
         this.title = title;
+    }
+
+    public void updateContent(String content) {
         this.content = content;
+    }
+
+    public void updateNoticeDate() {
         this.noticeDate = LocalDate.now();
     }
 

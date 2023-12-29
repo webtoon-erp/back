@@ -11,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,11 +49,16 @@ public class MessageService {
                 .sorted(Comparator.comparing(Message::getCreatedDate).reversed())
                 .limit(5)
                 .map(message -> MessageListDto.builder()
+                        .messageId(message.getId())
                         .content(message.getContent())
                         .refId(message.getRefId())
                         .programId(message.getProgramId())
-                        .sendEmployeeId(message.getSendUser().getEmployeeId())
-                        .sendName(message.getSendUser().getUsername())
+                        .sendEmployeeId(Optional.ofNullable(message.getSendUser())
+                                .map(User::getEmployeeId)
+                                .orElse(null))
+                        .sendName(Optional.ofNullable(message.getSendUser())
+                                .map(User::getUsername)
+                                .orElse(null))
                         .build())
                 .collect(Collectors.toList());
     }

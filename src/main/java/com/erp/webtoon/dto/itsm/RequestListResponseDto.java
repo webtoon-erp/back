@@ -8,6 +8,8 @@ import java.time.LocalDate;
 @Data
 public class RequestListResponseDto {
 
+    private Long reqId;
+
     private String reqType;
 
     private String title;
@@ -23,6 +25,7 @@ public class RequestListResponseDto {
     private String itUser;  // 담당자 사번
 
     public RequestListResponseDto(Request request) {
+        this.reqId = request.getId();
         this.reqType = request.getReqType();
         this.title = request.getTitle();
         this.step = request.getStep();

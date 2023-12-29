@@ -1,5 +1,6 @@
 package com.erp.webtoon.domain;
 
+import com.erp.webtoon.dto.user.UserUpdateDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
@@ -122,16 +123,16 @@ public class User implements UserDetails {
         this.usable = usable;
     }
 
-    public void updateInfo(String password, String name, String deptCode, String deptName, int teamNum, String position, String email, String tel, LocalDate birthDate) {
-        this.password = password;
-        this.name = name;
-        this.deptCode = deptCode;
-        this.deptName = deptName;
-        this.teamNum = teamNum;
-        this.position = position;
-        this.email = email;
-        this.tel = tel;
-        this.birthDate = birthDate;
+    public void updateInfo(UserUpdateDto dto) {
+        if(dto.getName() != null) this.name = dto.getName();
+        if(dto.getDeptCode() != null) this.deptCode = dto.getDeptCode();
+        if(dto.getDeptName() != null) this.deptName = dto.getDeptName();
+        if(dto.getTeamNum() != 0) this.teamNum = dto.getTeamNum();
+        if(dto.getPosition() != null) this.position = dto.getPosition();
+        if(dto.getEmail() != null) this.email = dto.getEmail();
+        if(dto.getTel() != null) this.tel = dto.getTel();
+        if(dto.getBirthDate() != null) this.birthDate = dto.getBirthDate();
+        if(dto.getDayOff() != 0) this.dayOff = dto.getDayOff();
     }
 
     public void updatePassword(String password){
@@ -171,7 +172,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return employeeId;
+        return name;
     }
 
     @Override

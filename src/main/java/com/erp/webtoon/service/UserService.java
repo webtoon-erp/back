@@ -3,6 +3,7 @@ package com.erp.webtoon.service;
 import com.erp.webtoon.domain.File;
 import com.erp.webtoon.domain.LogoutAccessToken;
 import com.erp.webtoon.domain.RefreshToken;
+import com.erp.webtoon.dto.user.NewPasswordDto;
 import com.erp.webtoon.dto.user.QualificationDeleteRequestDto;
 import com.erp.webtoon.dto.user.QualificationModifyRequestDto;
 import com.erp.webtoon.token.LogoutAccessTokenService;
@@ -67,10 +68,13 @@ public class UserService {
         User user = userRequestDto.toEntity(encodedPassword);
         user.addRole("USER");
 
-        if (!file.isEmpty()) {
+        if (file != null && !file.isEmpty()) {
             File savedFile = fileService.save(file);
-            savedFile.updateFileUser(user);
-            user.addPhoto(savedFile);
+
+            if (savedFile != null) {
+                savedFile.updateFileUser(user);
+                user.addPhoto(savedFile);
+            }
         }
 
         userRepository.save(user);
@@ -102,14 +106,11 @@ public class UserService {
         User updateUser = userRepository.findByEmployeeId(userUpdateDto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
 
-        if(updateUser.isUsable() == false) {
+        if(!updateUser.isUsable()) {
             throw new EntityNotFoundException("퇴사한 직원입니다.");
         }
 
-        String encodedPassword = passwordEncoder.encode(userUpdateDto.getPassword());
-
-        updateUser.updateInfo(encodedPassword, userUpdateDto.getName(), userUpdateDto.getDeptCode(), userUpdateDto.getDeptName(), userUpdateDto.getTeamNum(), userUpdateDto.getPosition(),
-                userUpdateDto.getEmail(), userUpdateDto.getTel(), userUpdateDto.getBirthDate());
+        updateUser.updateInfo(userUpdateDto);
     }
 
     /**
@@ -124,12 +125,10 @@ public class UserService {
     }
 
     /**
-     * 회원 카드뷰 조회 (페이징 처리)
+     * 회원 카드뷰 조회
      */
-    public List<UserListResponseDto> getCardView(int page) {
-        Pageable pageable = PageRequest.of(page, 10, Sort.Direction.ASC, "id");
-
-        List<UserListResponseDto> userList = userRepository.findAll(pageable).stream()
+    public List<UserListResponseDto> getCardView() {
+        List<UserListResponseDto> userList = userRepository.findAll().stream()
                 .filter(user -> user.isUsable() == true)
                 .map(u -> {
                     try {
@@ -244,12 +243,13 @@ public class UserService {
      * 비밀번호 초기화 & 슬랙 알림 메시지
      */
     @Transactional
-    public void resetPassword(String accessToken) throws Exception {
-        User user = getUserFromAccessToken(accessToken);
+    public void resetPassword(String employeeId) throws Exception {
+        User user = userRepository.findByEmployeeId(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
         String tempPassword = getTempPassword();
         String msg = "안녕하세요. 피어나툰ERP 임시비밀번호 안내 관련 메시지 입니다." + " 회원님의 임시 비밀번호는 "
                 + tempPassword + " 입니다." + "로그인 후에 비밀번호를 변경을 해주세요";
-        slackService.sendSlackChannel(msg, user.getEmployeeId());
+        slackService.sendSlackChannel(msg, employeeId);
         updatePassword(tempPassword, user);
     }
 
@@ -277,6 +277,14 @@ public class UserService {
             str += charSet[idx];
         }
         return str;
+    }
+
+    @Transactional
+    public void changePassword(NewPasswordDto dto) {
+        User user = userRepository.findByEmployeeId(dto.getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사번입니다."));
+        String newPassword = dto.getPassword();
+        updatePassword(newPassword, user);
     }
 
     /**

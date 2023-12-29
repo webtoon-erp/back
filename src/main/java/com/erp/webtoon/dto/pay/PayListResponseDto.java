@@ -15,7 +15,7 @@ public class PayListResponseDto {
     private int totalMonthSalary; // 월 지급 총합
 
     public PayListResponseDto(Pay pay) {
-        this.payMonth = getPayDate().toString().substring(0, 4);
+        this.payMonth = pay.getPayDate().toString().substring(0, 4);
         this.totalMonthSalary = pay.getSalary() + pay.getAddPay();
         this.payDate = pay.getPayDate();
     }

@@ -76,7 +76,7 @@ public class NoticeController {
      * 공지사항 수정 (리다이렉트)
      */
     @PutMapping("/notice/{noticeId}")
-    public ResponseEntity<Result> update(@PathVariable Long noticeId, @RequestPart NoticeUpdateDto dto, @RequestPart List<MultipartFile> files ) throws IOException {
+    public ResponseEntity<Result> update(@PathVariable Long noticeId, @RequestPart NoticeUpdateDto dto, @RequestPart(required = false) List<MultipartFile> files ) throws IOException {
         List<Long> fileIds = noticeService.update(noticeId, dto, files);
 
         return ResponseEntity.ok(new Result(redirect(), fileIds));

@@ -50,6 +50,7 @@ public class PlasService {
         List<User> appvLineList = userRepository.findAll();
 
         return appvLineList.stream()
+                .filter(User::isUsable)
                 .map(user -> ApproverListDto.builder()
                         .name(user.getName())
                         .deptName(user.getDeptName() + user.getTeamNum())
@@ -110,6 +111,7 @@ public class PlasService {
 
         return documentList.stream()
                 .map(doc -> DocListDto.builder()
+                        .id(doc.getId())
                         .templateName(doc.getTemplateName())
                         .title(doc.getTitle())
                         .reg_date(doc.getRegDate())
